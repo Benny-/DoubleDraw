@@ -4,62 +4,18 @@
     <head>
         <title>All hail our computer overlords</title>
         
-        <link rel="stylesheet" type="text/css" media="screen" href="index.css" />
+        <link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="resources/css/index.css" />
         
-        <script src="paper.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="apf_debug.js"></script>
+        <script type="text/javascript" src="extjs/ext-debug.js"></script>
+        <script type="text/javascript" src="resources/js/paper.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
         
-        <script src="/index.js"></script>
+        <script type="text/javascript" src="app.js"></script>
     </head>
     <body>
-        <a:skin src="skins/platform/skins.xml" media-path="skins/platform/images/" icon-path="icons/" />
         
-        <a:menu id="file_dropdown">
-            <a:item>Save</a:item>
-            <a:item>Exit</a:item>
-        </a:menu>
-        <a:menu id="edit_dropdown">
-            <a:item>Do something</a:item>
-        </a:menu>
         
-        <a:vbox left="0" right="0" top="0" bottom="0">
-            <a:toolbar height="20">
-                <a:menubar>
-                    <a:button submenu="file_dropdown">File</a:button>
-                    <a:button submenu="edit_dropdown">Edit</a:button>
-                    <a:divider />
-                    <a:button tooltip="Help">?</a:button>
-                </a:menubar>
-            </a:toolbar>
-            
-        <a:hbox left="0" right="0" top="0" bottom="0">
-            <a:bar id="apf_canvasBar" onresize="">
-                <canvas id="html5_canvas" width="256" height="256"><p>Canvas is not supported in your browser.</p></canvas>
-            </a:bar>
-        </a:hbox>
-        
-        <a:statusbar height="20">
-                <a:section>x,y info</a:section>
-                <a:section>color info</a:section>
-        </a:statusbar>
-        </a:vbox>
-        
-        <a:window
-            skin="dockwin"
-            title="Tools"
-            id="b2"
-            popout    = "true"
-            dock = "true"
-            dockable = "true"
-            resizable = "true" 
-            minwidth  = "40" 
-            minheight = "20"
-            visible="true"
-            splitter="3">
-                <a:button submenu="1">One</a:button>
-                <a:button submenu="2">Two</a:button>
-        </a:window>
         
     </body>
 </html>

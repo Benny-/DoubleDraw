@@ -13,7 +13,7 @@ io.set('loglevel',0)
 
 app.use(express.compress());
 app.use(express.static(__dirname + '/client'));
-server.listen(process.env.PORT);
+server.listen(process.env.PORT, process.env.IP);
 
 io.sockets.on('connection', function (socket) {
     console.log("New socket.io connection. More friends! yay");

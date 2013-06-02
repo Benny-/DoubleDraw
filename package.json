@@ -1,6 +1,7 @@
 {
-    "name" : "Painter",
+    "name" : "doubledraw",
     "version": "0.0.0",
+    "license": "GPLv3",
     "scripts": {
         "start": "node ./server.js"
     },
