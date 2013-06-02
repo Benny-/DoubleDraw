@@ -46,8 +46,8 @@ Ext.define('DD.controller.Canvas', {
         // We should include it in our calculation, but I can't seem to find a programic way to obtain that information.
         // This is not portable, the size of the decorations might change.
         // A additional reason this is unportable is if you zoom in.
-        this.html5_canvas.width = width-22;
-        this.html5_canvas.height = height-22;
+        this.html5_canvas.width = width-18;
+        this.html5_canvas.height = height-18;
         paper.view.draw();
     }
 });
