@@ -3,6 +3,7 @@ Ext.application({
 
     canvas : undefined,
     paper : new paper.PaperScope(),
+    socket : undefined,
 
     controllers: [
         'Canvas',
@@ -12,10 +13,14 @@ Ext.application({
         
         createLayout(); // See app/view/layout.js
         
-        var socket = io.connect('http://doubledraw.klasma.c9.io/');
-        socket.on('news', function (data) {
-            console.log(data);
-            socket.emit('my other event', { my: 'data' });
+        var socket = io.connect();
+        this.socket = socket;
+        socket.on('connect', function () {
+            console.log("socket.io connection established");
+            socket.on('news', function (data) {
+                console.log(data);
+                socket.emit('my other event', { my: 'data' });
+            });
         });
     }
 });

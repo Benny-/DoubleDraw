@@ -85,7 +85,7 @@ createLayout = function()
                         region: 'center',
                         minWidth: 50,
                         minHeight: 50,
-                        html : '<canvas id="html5_canvas" width="256" height="256"><p>Canvas is not supported in your browser.</p></canvas>',
+                        html : '<canvas id="html5_canvas" width="0" height="0"><p>Canvas is not supported in your browser.</p></canvas>',
                     },
                     {
                         xtype: 'tabpanel',
@@ -121,7 +121,7 @@ createLayout = function()
                 
                 bbar: {
                     items: [
-                        'pos values',
+                        'position values',
                         '-',
                         'colour values',
                         '-',

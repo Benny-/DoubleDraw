@@ -4,7 +4,7 @@ tool_creator.push( function(paper){
     with (paper)
     {
     	var path;
-        var tool = new Tool();
+        var cutom_tool = new Tool();
 		var types = ['point', 'handleIn', 'handleOut'];
 		function findHandle(point) {
 			for (var i = 0, l = path.segments.length; i < l; i++) {
@@ -27,7 +27,7 @@ tool_creator.push( function(paper){
 		}
 
 		var currentSegment, mode, type;
-		tool.onMouseDown = function(event) {
+		cutom_tool.onMouseDown = function(event) {
 			if (currentSegment)
 				currentSegment.selected = false;
 			mode = type = currentSegment = null;
@@ -63,7 +63,7 @@ tool_creator.push( function(paper){
 			}
 		}
 
-		tool.onMouseDrag = function(event) {
+		cutom_tool.onMouseDrag = function(event) {
 			if (mode == 'move' && type == 'point') {
 				currentSegment.point = event.point;
 			} else if (mode != 'close') {
@@ -75,7 +75,7 @@ tool_creator.push( function(paper){
 			}
 		}
         
-        return tool;
+        return cutom_tool;
     }
     
 });

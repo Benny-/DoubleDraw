@@ -16,9 +16,9 @@ app.use(express.static(__dirname + '/client'));
 server.listen(process.env.PORT, process.env.IP);
 
 io.sockets.on('connection', function (socket) {
-    console.log("New socket.io connection. More friends! yay");
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        console.log(data);
+    socket.broadcast.emit('user::connected');
+    
+    socket.on('disconnect', function () {
+        socket.broadcast.emit('user::disconnected');
     });
 });

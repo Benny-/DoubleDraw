@@ -8,3 +8,11 @@ You need to alter the url for websocket to work correctly:
 var socket = io.connect('http://your.url.com/');
 
 If you dont't run this app in cloud9, you will need to replace process.env.PORT in server.js by a port number. Most likely 80 or 8080. The second parameter (process.env.IP) can be removed.
+
+TODO:
+    chat
+    user management
+    rooms - https://github.com/LearnBoost/socket.io/wiki/Rooms
+    shared drawning
+    upload picture
+    
