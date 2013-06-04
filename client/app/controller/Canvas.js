@@ -18,7 +18,7 @@ Ext.define('DD.controller.Canvas', {
         this.application.canvas = document.getElementById('html5_canvas');
         this.application.paper.setup('html5_canvas');
         
-        this.application.fireEvent("PaperReady");
+        this.application.fireEvent("PaperReady", this.application.canvas, this.application.paper);
     },
     
     // The onRezie function resizes the html canvas match the outer container.

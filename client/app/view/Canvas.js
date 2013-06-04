@@ -1,3 +1,4 @@
+
 Ext.define('DD.view.Canvas' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.canvas',

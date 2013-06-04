@@ -19,8 +19,54 @@ Ext.define('DD.controller.Tools', {
     },
     
     onPanelRendered: function(panel) {
+        
         var self = this;
         this.application.on("PaperReady", function() {
+            
+            var proxy_tool;
+            with (paper)
+            {
+                proxy_tool = new Tool();
+            }
+            proxy_tool.app = self.application;
+            
+            proxy_tool.withinPlayfield = false;
+            proxy_tool.app.canvas.onmouseover=function(){
+               proxy_tool.withinPlayfield = true;
+            };
+            
+            proxy_tool.app.canvas.onmouseout=function(){
+                proxy_tool.withinPlayfield = false;
+            };
+            
+            proxy_tool.onMouseDown = function(event) {
+                console.log("onMouseDown");
+            }
+        
+            proxy_tool.onMouseDrag = function(event) {
+                console.log("onMouseDrag");
+            }
+            
+            proxy_tool.onMouseMove = function(event) {
+                if(this.withinPlayfield)
+                {
+                    this.app.socket.emit("user::move", event.point)
+                    this.serverOffscreenKnown = false;
+                }
+                else
+                {
+                    if(!this.serverOffscreenKnown)
+                    {
+                        this.app.socket.emit("user::move::offscreen")
+                        this.serverOffscreenKnown = true;
+                    }
+                }
+            }
+            
+            proxy_tool.onMouseUp = function(event) {
+                console.log("onMouseUp");
+            }
+            
             for (var i = 0; i < tool_creator.length; i++) {
                 var tmp = function(tool){
                     console.log(tool)
@@ -37,6 +83,8 @@ Ext.define('DD.controller.Tools', {
                 tmp(tool_creator[i](self.application.paper));
                 // I will never understand javascript scope.
             }
+            
+            proxy_tool.activate();
         })
     },
 });

@@ -104,7 +104,7 @@ createLayout = function()
                         activeItem: 0,
                         items: [
                             {
-                                xtype: 'fieldcontainer',
+                                xtype: 'users',
                                 title: 'Users',
                             },
                             {

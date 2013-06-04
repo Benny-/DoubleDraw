@@ -1,3 +1,4 @@
+
 Ext.define('DD.view.Tools' ,{
     extend: 'Ext.form.FieldContainer',
     alias: 'widget.tools',
