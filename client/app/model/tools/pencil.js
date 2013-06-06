@@ -1,23 +1,33 @@
 
-tool_creator.push( function(paper){
+var Pencil = paper.Tool.extend({
+    uuid : '382954a0-61c9-4009-9a95-637b21c00eff',
+    version : '0.0.0',
+    deprecated : false,
+    icon : null,
+    name : 'Pencil',
+    description : "Nothing can beat the mighty pencil",
     
-    with (paper)
-    {
-        var cutom_tool = new Tool();
-        var path = new Path();
-        path.strokeColor = 'black';
     
-        // Define a mousedown and mousedrag handler
-        cutom_tool.onMouseDown = function(event) {
-            path = new Path();
-            path.strokeColor = 'black';
-            path.add(event.point);
-        }
+    initialize: function Pencil() {
+        this.state = {};
+        paper.Tool.apply(this, arguments);
+        
+        this.on("mousedown", (this.onMouseDown));
+        this.on("mousedrag", (this.onMouseDrag));
+        // this.on("mouseup", (this.onMouseUp));
+        // this.on("keydown", (this.onKeyDown));
+        // this.on("keyup", (this.onKeyUp));
+    },
     
-        cutom_tool.onMouseDrag = function(event) {
-            path.add(event.point);
-        }
-        return cutom_tool;
-    }
-    
+    onMouseDown : function(event) {
+        this.state.path = new paper.Path();
+        this.state.path.strokeColor = 'black';
+        this.state.path.add(event.point);
+    },
+
+    onMouseDrag : function(event) {
+        this.state.path.add(event.point);
+    },
 });
+
+ToolClasses.push( Pencil );

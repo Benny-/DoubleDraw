@@ -48,6 +48,22 @@ Ext.application({
             }
         });
         
+        socket.on('user::tool::change', function (tool_change) {
+            app.fireEvent("user::tool::change", tool_change);
+        });
+        
+        socket.on('user::tool::onMouseDown', function (json_event) {
+            app.fireEvent("user::tool::onMouseDown", json_event);
+        });
+        
+        socket.on('user::tool::onMouseDrag', function (json_event) {
+            app.fireEvent("user::tool::onMouseDrag", json_event);
+        });
+        
+        socket.on('user::tool::onMouseUp', function (json_event) {
+            app.fireEvent("user::tool::onMouseUp", json_event);
+        });
+        
         socket.on('user::move', function (movement) {
             app.fireEvent("user::move", movement);
         });

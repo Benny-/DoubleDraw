@@ -1,5 +1,5 @@
 
-tool_creator.push( function(paper){
+tool_creators.push( function(paper){
     
     with (paper)
     {
