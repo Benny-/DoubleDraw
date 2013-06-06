@@ -21,7 +21,20 @@ createLayout = function()
                                 xtype: 'menu',                          
                                 items: [
                                     {
-                                        text: 'Save',
+                                        xtype: 'menuitem',  
+                                        text: 'Save all locally',
+                                        id: 'file_menu_save',
+                                    },
+                                    '-',
+                                    {
+                                        xtype: 'menuitem',  
+                                        text: 'Export all as SVG',
+                                        id: 'file_menu_export_svg',
+                                    },
+                                    {
+                                        xtype: 'menuitem',  
+                                        text: 'Export view as PNG',
+                                        id: 'file_menu_export_png',
                                     },
                                     '-',
                                     {

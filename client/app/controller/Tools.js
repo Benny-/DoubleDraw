@@ -40,17 +40,21 @@ Ext.define('DD.controller.Tools', {
             };
             
             proxy_tool.onMouseDown = function(event) {
-                console.log("onMouseDown");
+                console.log(event);
             }
         
             proxy_tool.onMouseDrag = function(event) {
-                console.log("onMouseDrag");
+                console.log(event);
+            }
+            
+            proxy_tool.onMouseUp = function(event) {
+                console.log(event);
             }
             
             proxy_tool.onMouseMove = function(event) {
                 if(this.withinPlayfield)
                 {
-                    this.app.socket.emit("user::move", event.point)
+                    this.app.socket.emit("user::move", {point : event.point} )
                     this.serverOffscreenKnown = false;
                 }
                 else

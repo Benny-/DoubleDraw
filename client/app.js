@@ -24,6 +24,7 @@ Ext.application({
         'Canvas',
         'Tools',
         'Users',
+        'Menu',
     ],
     launch: function() {
         

@@ -33,7 +33,7 @@ io.sockets.on('connection', function (socket) {
                 return room.substring(1);
             }
         });
-        return null; // This socket is not in any room.
+        return null; // This socket/user is not in any room.
     };
     
     socket.inRoom = function()
@@ -41,24 +41,43 @@ io.sockets.on('connection', function (socket) {
         return socket.getRoom() !== null;
     };
     
-    socket.on('user::tool::select', function (tool) {
+    socket.on('user::tool::onMouseDown', function (event) {
         // TODO: sanitize data from client.
+        event.user_id = socket.user_id;
+        if(socket.inRoom())
+            io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseDown', event );
     });
     
-    socket.on('user::tool::settings', function (tool) {
+    socket.on('user::tool::onMouseDrag', function (event) {
         // TODO: sanitize data from client.
+        event.user_id = socket.user_id;
+        if(socket.inRoom())
+            io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseDrag', event );
+    });
+    
+    socket.on('user::tool::onMouseUp', function (event) {
+        // TODO: sanitize data from client.
+        event.user_id = socket.user_id;
+        if(socket.inRoom())
+            io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseUp', event );
     });
     
     // user::move is not a essential component of the system. It is therefore a volatile action.
     socket.on('user::move', function (point) {
         // TODO: sanitize data from client.
         if(socket.inRoom())
-            io.sockets.volatile.in(socket.room).emit('user::move', {movements : point, user_id : socket.user.user_id} );
+            io.sockets.volatile.in(socket.getRoom()).emit('user::move', {point : point, user_id : socket.user.user_id} );
     });
     
     socket.on('user::move::offscreen', function () {
         if(socket.inRoom())
             io.sockets.in(socket.getRoom()).emit('user::move::offscreen', {user_id : socket.user.user_id} );
+    });
+    
+    socket.on('user::chat', function (text) {
+        // TODO: sanitize data from client.
+        if(socket.inRoom())
+            io.sockets.volatile.in(socket.getRoom()).emit('user::chat', text );
     });
     
     socket.on('room::enter', function(room)
@@ -82,6 +101,6 @@ io.sockets.on('connection', function (socket) {
     });
     
     socket.on('disconnect', function () {
-        io.sockets.in(socket.room).emit('room::user::leave', {user_id : socket.user.user_id} );
+        io.sockets.in(socket.getRoom()).emit('room::user::leave', {user_id : socket.user.user_id} );
     });
 });
