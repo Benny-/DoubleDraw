@@ -68,21 +68,21 @@ io.sockets.on('connection', function (socket) {
     
     socket.on('user::tool::onMouseDown', function (json_event) {
         // TODO: sanitize data from client.
-        json_event.user_id = socket.user_id;
+        json_event.user_id = socket.user.user_id;
         if(socket.inRoom())
             io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseDown', json_event );
     });
     
     socket.on('user::tool::onMouseDrag', function (json_event) {
         // TODO: sanitize data from client.
-        json_event.user_id = socket.user_id;
+        json_event.user_id = socket.user.user_id;
         if(socket.inRoom())
             io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseDrag', json_event );
     });
     
     socket.on('user::tool::onMouseUp', function (json_event) {
         // TODO: sanitize data from client.
-        json_event.user_id = socket.user_id;
+        json_event.user_id = socket.user.user_id;
         if(socket.inRoom())
             io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseUp', json_event );
     });
@@ -122,10 +122,14 @@ io.sockets.on('connection', function (socket) {
             users.push(another_user_socket.user);
         }
         socket.join(room);
-        socket.emit('room::entered', {room : room, users : users } );
+        socket.emit('room::entered',{
+                room : room,
+                users : users,
+                user : socket.user
+        });
     });
     
     socket.on('disconnect', function () {
-        io.sockets.in(socket.getRoom()).emit('room::user::leave', {user_id : socket.user.user_id} );
+        io.sockets.in(socket.getRoom()).emit('room::user::leave',{user_id : socket.user.user_id} );
     });
 });

@@ -5,10 +5,11 @@ Ext.define('DD.controller.Tools', {
         'Tools'
     ],
     
+    sharedDrawingContext : new SharedDrawingContext(),
+    
     init: function() {
         
         var controller = this;
-        
         
         this.control({
             'tools': {
@@ -21,15 +22,19 @@ Ext.define('DD.controller.Tools', {
         });
         
         this.application.on("room::entered", function(room_state) {
-            
+            controller.sharedDrawingContext.removeAllUsers();
+            for (var i = 0; i < room_state.users.length; i++) {
+                controller.sharedDrawingContext.addUser(room_state.users[i]);
+            }
+            controller.sharedDrawingContext.addUser(room_state.user);
         });
         
         this.application.on("room::user::leave", function(user) {
-            
+            controller.sharedDrawingContext.removeUser(user);
         });
         
         this.application.on("room::user::new", function(user) {
-            
+            controller.sharedDrawingContext.addUser(user);
         });
         
         this.application.on("user::tool::change", function(tool_change) {
@@ -37,15 +42,18 @@ Ext.define('DD.controller.Tools', {
         });
         
         this.application.on("user::tool::onMouseDown", function(json_event) {
-            console.log(json_event);
+            controller.sharedDrawingContext.addJSONEvent(json_event);
+            controller.application.paper.view.draw();
         });
         
         this.application.on("user::tool::onMouseDrag", function(json_event) {
-            console.log(json_event);
+            controller.sharedDrawingContext.addJSONEvent(json_event);
+            controller.application.paper.view.draw();
         });
         
         this.application.on("user::tool::onMouseUp", function(json_event) {
-            console.log(json_event);
+            controller.sharedDrawingContext.addJSONEvent(json_event);
+            controller.application.paper.view.draw();
         });
     },
     
@@ -76,9 +84,9 @@ Ext.define('DD.controller.Tools', {
             {
                 return {
                     type: event.type,
-                    point: event.point,
-                    lastPoint: event.lastPoint,
-                    downPoint: event.downPoint,
+                    point: { x: event.point.x, y: event.point.y},
+                    lastPoint: (event.lastPoint ? { x: event.lastPoint.x, y: event.lastPoint.y} : null),
+                    downPoint: event.downPoint ? { x: event.downPoint.x, y: event.downPoint.y} : null,
                     //middlePoint: event.middlePoint, // Causes stack overflow.
                     delta: event.delta,
                     count: event.count,
@@ -89,14 +97,17 @@ Ext.define('DD.controller.Tools', {
             }
             
             proxy_tool.onMouseDown = function(event) {
+                console.log(event)
                 this.app.socket.emit("user::tool::onMouseDown", this.eventToJSON(event) )
             }
         
             proxy_tool.onMouseDrag = function(event) {
+                console.log(event)
                 this.app.socket.emit("user::tool::onMouseDrag", this.eventToJSON(event) )
             }
             
             proxy_tool.onMouseUp = function(event) {
+                console.log(event)
                 this.app.socket.emit("user::tool::onMouseUp", this.eventToJSON(event) )
             }
             
@@ -117,23 +128,22 @@ Ext.define('DD.controller.Tools', {
             }
             
             for (var i = 0; i < ToolClasses.length; i++) {
-                var tmp = function(tool){
-                    console.log(tool)
+                controller.sharedDrawingContext.addToolClass(ToolClasses[i]);
+                var tmp = function(ToolClass){
                     panel.add(
                     Ext.create('Ext.Button', {
-                        text: tool.name,
-                        tooltip: tool.description,
+                        text: ToolClass.name,
+                        tooltip: ToolClass.description,
                         renderTo: Ext.getBody(),
                         handler: function() {
                             controller.application.socket.emit("user::tool::change",
                             {
-                                uuid : tool.uuid,
+                                uuid : ToolClass.uuid,
                             });
-                            tool.activate();
                         }
                     }));
                 };
-                tmp(new ToolClasses[i](controller.application.paper) );
+                tmp( ToolClasses[i] );
                 // I will never understand javascript scope.
             }
             
