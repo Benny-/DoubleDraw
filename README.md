@@ -59,8 +59,6 @@ If you dont't run this app in cloud9, you will need to replace process.env.PORT 
 - shared drawning
 - upload picture
 - Record/playback
-- export
-- save in paperjs format
 - save local palette
 - save widget layout
 - more tools

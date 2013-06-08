@@ -38,7 +38,7 @@ Ext.define('DD.controller.Tools', {
         });
         
         this.application.on("user::tool::change", function(tool_change) {
-            console.log(tool_change);
+            controller.sharedDrawingContext.userToolChange(tool_change);
         });
         
         this.application.on("user::tool::onMouseDown", function(json_event) {
@@ -97,17 +97,14 @@ Ext.define('DD.controller.Tools', {
             }
             
             proxy_tool.onMouseDown = function(event) {
-                console.log(event)
                 this.app.socket.emit("user::tool::onMouseDown", this.eventToJSON(event) )
             }
         
             proxy_tool.onMouseDrag = function(event) {
-                console.log(event)
                 this.app.socket.emit("user::tool::onMouseDrag", this.eventToJSON(event) )
             }
             
             proxy_tool.onMouseUp = function(event) {
-                console.log(event)
                 this.app.socket.emit("user::tool::onMouseUp", this.eventToJSON(event) )
             }
             
@@ -129,22 +126,23 @@ Ext.define('DD.controller.Tools', {
             
             for (var i = 0; i < ToolClasses.length; i++) {
                 controller.sharedDrawingContext.addToolClass(ToolClasses[i]);
-                var tmp = function(ToolClass){
-                    panel.add(
-                    Ext.create('Ext.Button', {
-                        text: ToolClass.name,
-                        tooltip: ToolClass.description,
-                        renderTo: Ext.getBody(),
-                        handler: function() {
-                            controller.application.socket.emit("user::tool::change",
-                            {
-                                uuid : ToolClass.uuid,
-                            });
-                        }
-                    }));
-                };
-                tmp( ToolClasses[i] );
-                // I will never understand javascript scope.
+                
+                var ToolProto = ToolClasses[i].prototype;
+                
+                var button = Ext.create('Ext.Button', {
+                    text: ToolProto.name,
+                    tooltip: ToolProto.description,
+                    tool_uuid: ToolProto.uuid,
+                    handler: function()
+                    {
+                        controller.application.socket.emit("user::tool::change",
+                        {
+                            uuid : this.tool_uuid,
+                            // TODO: Change proxy's tool minDistance, bmaxDistance and fixedDistance here?
+                        });
+                    }
+                });
+                panel.add(button);
             }
             
             proxy_tool.activate();

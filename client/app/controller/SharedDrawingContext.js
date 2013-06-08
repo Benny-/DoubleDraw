@@ -31,11 +31,16 @@ SharedDrawingContext = function(ToolClassesParam, usersArrayParam)
         }
     }
     
+    this.userToolChange = function(tool_change)
+    {
+        var user = users[tool_change.user_id];
+        user.tool = user.tools[tool_change.tool.uuid];
+    }
+    
     this.addJSONEvent = function(json_event)
     {
         var user = users[json_event.user_id];
-        var tool = user.tools['382954a0-61c9-4009-9a95-637b21c00eff'];
-        console.log(json_event)
+        var tool = user.tool;
         tool.fire(json_event.type, json_event);
     }
     
@@ -46,7 +51,7 @@ SharedDrawingContext = function(ToolClassesParam, usersArrayParam)
         for (var i = 0; i < user_ids.length; i++) {
             var user = users[user_ids[i]];
             var tool = new Tool();
-            user[tool.uuid] = tool;
+            user.tools[tool.uuid] = tool;
         }
     }
     
@@ -58,6 +63,7 @@ SharedDrawingContext = function(ToolClassesParam, usersArrayParam)
             var tool = new ToolClasses[i]();
             user.tools[tool.uuid] = tool;
         }
+        user.tool = user.tools[user.tool.uuid];
     }
     
     this.removeUser = function(user)
@@ -72,6 +78,11 @@ SharedDrawingContext = function(ToolClassesParam, usersArrayParam)
             var user = users[user_ids[i]];
             this.removeUser(user);
         }
+    }
+    
+    this.getUsers = function()
+    {
+        return users;
     }
     
     this.getToolClasses = function()

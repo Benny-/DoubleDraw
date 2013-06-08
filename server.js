@@ -9,20 +9,16 @@ var express = require('express')
                               // The one for the browser is in ./Client
                               // The one for nodejs is located in ./node_modules
 
+var User = require('./User.js');
+
 io.set('log level', 1);
 
 app.use(express.compress());
 app.use(express.static(__dirname + '/client'));
 server.listen(process.env.PORT, process.env.IP);
 
-// Every user gets a unique id.
-// This is used to replay every user's actions correctly on every client.
-// The server only passes this value to other clients.
-var next_user_id = 1;
-
 io.sockets.on('connection', function (socket) {
-    socket.user = {};
-    socket.user.user_id = next_user_id++;
+    socket.user = new User(socket);
     
     socket.getRoom = function()
     {
@@ -43,66 +39,63 @@ io.sockets.on('connection', function (socket) {
         return socket.getRoom() !== null;
     };
     
-    // Broadcast a message to all others in the same room.
+    // Broadcast a message to everyone in the room.
     socket.broadcastRoom = function(signal, data)
     {
-        io.sockets.clients(this.getRoom()).forEach(function(entry) {
-            if(entry != socket)
-                entry.emit(signal, data);
-        });
+        if(socket.inRoom())
+        {
+            io.sockets.volatile.in(socket.getRoom()).emit(signal, data);
+        }
     };
     
-    socket.volatileBroadcastRoom = function(signal, data)
+    // Broadcast a message to all OTHERS in the same room.
+    socket.volatileBroadcastRoomOthers = function(signal, data)
     {
-        io.sockets.volatile.clients(this.getRoom()).forEach(function(entry) {
-            if(entry != socket)
-                entry.emit(signal, data);
-        });
+        if(socket.inRoom())
+        {
+            io.sockets.volatile.clients(this.getRoom()).forEach(function(entry) {
+                if(entry != socket)
+                    entry.emit(signal, data);
+            });
+        }
     };
     
     socket.on('user::tool::change', function (tool) {
         // TODO: sanitize data from client.
-        if(socket.inRoom())
-            io.sockets.volatile.in(socket.getRoom()).emit('user::tool::change', { tool : tool, user_id : socket.user.user_id} );
+        socket.broadcastRoom('user::tool::change', { tool : tool, user_id : socket.user.user_id} );
     });
     
     socket.on('user::tool::onMouseDown', function (json_event) {
         // TODO: sanitize data from client.
         json_event.user_id = socket.user.user_id;
-        if(socket.inRoom())
-            io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseDown', json_event );
+        socket.broadcastRoom('user::tool::onMouseDown', json_event );
     });
     
     socket.on('user::tool::onMouseDrag', function (json_event) {
         // TODO: sanitize data from client.
         json_event.user_id = socket.user.user_id;
-        if(socket.inRoom())
-            io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseDrag', json_event );
+        socket.broadcastRoom('user::tool::onMouseDrag', json_event );
     });
     
     socket.on('user::tool::onMouseUp', function (json_event) {
         // TODO: sanitize data from client.
         json_event.user_id = socket.user.user_id;
-        if(socket.inRoom())
-            io.sockets.volatile.in(socket.getRoom()).emit('user::tool::onMouseUp', json_event );
+        socket.broadcastRoom('user::tool::onMouseUp', json_event );
     });
     
     // user::move is not a essential component of the system. It is therefore a volatile action.
     socket.on('user::move', function (point) {
         // TODO: sanitize data from client.
-        if(socket.inRoom())
-            socket.volatileBroadcastRoom('user::move', {point : point, user_id : socket.user.user_id} );
+        socket.volatileBroadcastRoomOthers('user::move', {point : point, user_id : socket.user.user_id} );
     });
     
     socket.on('user::move::offscreen', function () {
-        if(socket.inRoom())
-            io.sockets.in(socket.getRoom()).emit('user::move::offscreen', {user_id : socket.user.user_id} );
+        socket.broadcastRoom('user::move::offscreen', {user_id : socket.user.user_id} );
     });
     
     socket.on('user::chat', function (text) {
         // TODO: sanitize data from client.
-        if(socket.inRoom())
-            io.sockets.volatile.in(socket.getRoom()).emit('user::chat', text );
+        socket.broadcastRoom('user::chat', text );
     });
     
     socket.on('room::enter', function(room)
@@ -110,26 +103,25 @@ io.sockets.on('connection', function (socket) {
         // TODO: sanitize data from client.
         if(socket.inRoom())
         {
-            io.sockets.in(socket.getRoom()).emit('room::user::leave', {user_id : socket.user.user_id} );
+            socket.broadcastRoom('room::user::leave', {user_id : socket.user.user_id} );
             socket.leave(socket.getRoom());
         }
         
-        io.sockets.in(room).emit('room::user::new', {user_id : socket.user.user_id} );
+        io.sockets.in(room).emit('room::user::new', socket.user.exportJSON() );
         
         var users = [];
         for (var i = 0; i < io.sockets.clients(room).length; i++) {
-            var another_user_socket = io.sockets.clients(room)[i];
-            users.push(another_user_socket.user);
+            users.push(io.sockets.clients(room)[i].user.exportJSON());
         }
         socket.join(room);
         socket.emit('room::entered',{
                 room : room,
                 users : users,
-                user : socket.user
+                user : socket.user.exportJSON()
         });
     });
     
     socket.on('disconnect', function () {
-        io.sockets.in(socket.getRoom()).emit('room::user::leave',{user_id : socket.user.user_id} );
+        socket.broadcastRoom('room::user::leave', {user_id : socket.user.user_id} );
     });
 });
