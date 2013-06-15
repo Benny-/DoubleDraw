@@ -1,5 +1,5 @@
 
-var Pencil = paper.Tool.extend({
+var PencilDescription = new DD.model.tools.ToolDescription({
     uuid : '382954a0-61c9-4009-9a95-637b21c00eff',
     version : '0.0.0',
     deprecated : false,
@@ -7,20 +7,8 @@ var Pencil = paper.Tool.extend({
     name : 'Pencil',
     description : "Nothing can beat the mighty pencil",
     
-    
-    initialize: function Pencil() {
-        this.state = {};
-        paper.Tool.apply(this, arguments);
-        
-        this.on("mousedown", (this.onMouseDown));
-        this.on("mousedrag", (this.onMouseDrag));
-        // this.on("mouseup", (this.onMouseUp));
-        // this.on("keydown", (this.onKeyDown));
-        // this.on("keyup", (this.onKeyUp));
-    },
-    
     onMouseDown : function(event) {
-        this.state.path = new paper.Path();
+        this.state.path = new this.paper.Path();
         this.state.path.strokeColor = 'black';
         this.state.path.add(event.point);
     },
@@ -30,4 +18,4 @@ var Pencil = paper.Tool.extend({
     },
 });
 
-ToolClasses.push( Pencil );
+ToolDescriptions.push( PencilDescription );

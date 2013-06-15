@@ -26,7 +26,6 @@ Ext.define('DD.controller.Menu', {
     
     onSave : function(){
         var json_string = this.application.paper.project.exportJSON();
-        console.log(json_string)
         var blob = new Blob([json_string], {type: "application/json"});
         saveAs(blob, "image.paperjs.json");
     },

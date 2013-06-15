@@ -1,5 +1,5 @@
 
-var Clouds = paper.Tool.extend({
+var CloudsDescription = new DD.model.tools.ToolDescription({
     uuid : '1284d96b-41c0-44b9-b8fe-fffc2d78ee25',
     version : '0.0.0',
     deprecated : false,
@@ -8,19 +8,8 @@ var Clouds = paper.Tool.extend({
     description : "Can't draw clouds? Now you can.",
     minDistance : 30,
     
-    initialize: function Clouds() {
-        this.state = {};
-        paper.Tool.apply(this, arguments);
-        
-        this.on("mousedown", (this.onMouseDown));
-        this.on("mousedrag", (this.onMouseDrag));
-        // this.on("mouseup", (this.onMouseUp));
-        // this.on("keydown", (this.onKeyDown));
-        // this.on("keyup", (this.onKeyUp));
-    },
-    
     onMouseDown : function(event) {
-        this.state.path = new paper.Path();
+        this.state.path = new this.paper.Path();
         this.state.path.strokeColor = 'black';
         this.state.path.add(event.point);
     },
@@ -30,4 +19,4 @@ var Clouds = paper.Tool.extend({
     },
 });
 
-ToolClasses.push( Clouds );
+ToolDescriptions.push( CloudsDescription );

@@ -6,7 +6,9 @@
         "start": "node ./server.js"
     },
     "dependencies" : {
+        "extnode"       :   "4.1.0-beta",
         "socket.io"     :   "0.9.x",
+        "canvas"        :   "1.0.x",
         "paper"         :   "0.9.x",
         "express"       :   "3.2.x"
     },
