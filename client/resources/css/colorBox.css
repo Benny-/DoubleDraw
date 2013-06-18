@@ -1,0 +1,18 @@
+
+div#colorSelectionSecondary {
+    width   : 9pt;
+    height  : 9pt;
+}
+
+div.colorBox {
+    border-style        : solid;
+    border-width        : 1px;
+    width               : 12pt;
+    height              : 12pt;
+    opacity             : 0.5;
+    background-color    : #FF0000;
+}
+
+.colorBoxBackground {
+    background-image:url('/resources/images/jpicker/bar-opacity.png');
+}

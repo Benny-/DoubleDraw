@@ -7,8 +7,7 @@ Ext.define('DD.view.Users' ,{
     //store: 'usersStore',
     
     initComponent: function() {
-
-
+        
         this.columns = [
             {header: 'id',  dataIndex: 'user_id',},
             {header: 'Nickname',  dataIndex: 'nickname',},

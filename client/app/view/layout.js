@@ -134,9 +134,18 @@ createLayout = function()
                 
                 bbar: {
                     items: [
-                        'position values',
+                        {
+                            xtype: 'colorbox',
+                            id: 'colorSelectionPrimary',
+                        },
+                        {
+                            xtype: 'colorbox',
+                            id: 'colorSelectionSecondary',
+                        },
                         '-',
                         'colour values',
+                        '-',
+                        'position values',
                         '-',
                         'Connection state',
                     ]

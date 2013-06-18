@@ -24,7 +24,6 @@ Ext.define('DD.controller.Users', {
         
         this.application.on("room::user::leave", function(leaving_user) {
             var user = store.findRecord("user_id",leaving_user.user_id);
-            console.log(user)
             store.remove(user);
         });
         

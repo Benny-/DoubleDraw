@@ -7,6 +7,8 @@ Ext.define('DD.controller.Drawing', {
     views: [
         'Canvas',
         'Tools',
+        'ColorBox',
+        'ColorPicker',
     ],
     
     init: function() {

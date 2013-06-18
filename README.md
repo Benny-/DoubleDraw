@@ -20,6 +20,8 @@ The following dependecies are included in this repo and do not need to be downlo
 - https://github.com/eligrey/Blob.js
 - https://github.com/eligrey/canvas-toBlob.js
 - https://github.com/eligrey/FileSaver.js
+- http://www.digitalmagicpro.com/jPicker/
+- http://jquery.com/ (required) for a jPicker
 
 ### Cloud9
 

@@ -15,6 +15,13 @@ related gui's who use the datastore will show the newly added user. The drawing 
 drawing a cursor for the new user. ect...
 */
 
+// Init the color picker.
+$.fn.jPicker.defaults.images.clientPath='resources/images/jpicker/';
+
+Ext.override(Ext.Window, {
+    constrainHeader:true
+});
+
 Ext.application({
     name: 'DD', // DoubleDraw
     appFolder : 'app',
@@ -35,13 +42,17 @@ Ext.application({
         
         var app = this;
         
+        Ext.create('DD.view.ColorPicker', {
+            
+        }).show();
+        
         var socket = io.connect();
         this.socket = socket;
         socket.on('connect', function () {
             console.log("socket.io connection established");
             if(window.location.hash != '')
             {
-                console.log("Requesting to enter room");
+                console.log("Requesting to enter room "+window.location.hash);
                 socket.emit('room::enter', window.location.hash );
             }
             else
