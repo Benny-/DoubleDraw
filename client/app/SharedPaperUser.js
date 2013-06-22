@@ -17,33 +17,33 @@ Ext.define('DD.SharedPaperUser',{
     proxy_tool:null,
     
     constructor: function (paperScope, user_id, toolEventCallback) {
-        this.callParent( [paperScope] );
+        this.callParent( arguments );
         this.user_id = user_id;
         
         var SharedPaperUser = this;
-        this.proxy_tool = new paperScope.Tool();
+        this.proxyTool = new paperScope.Tool();
         
-        this.proxy_tool.onMouseDown = function(event) {
+        this.proxyTool.onMouseDown = function(event) {
             toolEventCallback( SharedPaperUser.exportToolEvent(event) );
         }
         
-        this.proxy_tool.onMouseUp = function(event) {
+        this.proxyTool.onMouseUp = function(event) {
             toolEventCallback( SharedPaperUser.exportToolEvent(event) );
         }
     
-        this.proxy_tool.onMouseDrag = function(event) {
+        this.proxyTool.onMouseDrag = function(event) {
             toolEventCallback( SharedPaperUser.exportToolEvent(event) );
         }
         
-        this.proxy_tool.onMouseMove = function(event) {
+        this.proxyTool.onMouseMove = function(event) {
             toolEventCallback( SharedPaperUser.exportToolEvent(event) );
         }
         
-        this.proxy_tool.onKeyDown = function(event) {
+        this.proxyTool.onKeyDown = function(event) {
             toolEventCallback( SharedPaperUser.exportToolEvent(event) );
         }
         
-        this.proxy_tool.onKeyUp = function(event) {
+        this.proxyTool.onKeyUp = function(event) {
             toolEventCallback( SharedPaperUser.exportToolEvent(event) );
         }
     },

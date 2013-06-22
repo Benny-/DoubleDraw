@@ -57,7 +57,7 @@ Ext.define('DD.SharedPaper',{
     
     removeUser: function(user_id)
     {
-        // TODO: Implement function. Remove user's tools from paperScope.
+        // TODO: Implement function.
     },
     
     destroy: function()
@@ -68,7 +68,7 @@ Ext.define('DD.SharedPaper',{
             this.removeUser(user);
         }
         
-        // TODO: Clear paperjs
+        // TODO: Clear paperjs here?
     },
     
     getUsers: function()

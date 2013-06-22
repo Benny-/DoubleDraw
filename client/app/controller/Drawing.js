@@ -3,6 +3,11 @@ Ext.define('DD.controller.Drawing', {
     extend: 'Ext.app.Controller',
     
     sharedPaperUser: null,
+    colorSelectionPrimary: null,
+    colorSelectionSecondary: null,
+    
+    primaryColor: null,
+    secondaryColor: null,
     
     views: [
         'Canvas',
@@ -12,11 +17,33 @@ Ext.define('DD.controller.Drawing', {
     ],
     
     init: function() {
+        
+        this.primaryColor = Ext.create("DD.model.Color",{
+            r:5,
+            g:5,
+            b:5,
+            a:0.8
+        });
+        this.secondaryColor = Ext.create("DD.model.Color",{
+            r:255,
+            g:255,
+            b:255,
+            a:0.8
+        });
+        
         this.control({
             'panel#canvasPanel': {
                 render: this.onPanelRendered,
-                resize: this.onPanelResize
-            }
+                resize: this.onPanelResize,
+            },
+            'colorbox#colorSelectionPrimary': {
+                render: this.onColorSelectionPrimaryRendered,
+                click: this.onColorSelectionPrimaryClick
+            },
+            'colorbox#colorSelectionSecondary': {
+                render: this.onColorSelectionSecondaryRendered,
+                click: this.onColorSelectionSecondaryClick
+            },
         });
     },
     
@@ -72,6 +99,24 @@ Ext.define('DD.controller.Drawing', {
         // This is not portable, the size of the decorations might change.
         // A additional reason this is unportable is if you zoom in.
         this.application.paper.view.setViewSize( {width:width-18, height:height-18} );
-    }
+    },
     
+    onColorSelectionPrimaryRendered: function(colorBox) {
+        colorBox.loadColor(this.primaryColor);
+    },
+    
+    onColorSelectionSecondaryRendered: function(colorBox) {
+        colorBox.loadColor(this.secondaryColor);
+    },
+    
+    onColorSelectionPrimaryClick: function() {
+        Ext.create('DD.view.ColorPicker', {
+            title: "Change primary drawing color",
+            color: this.primaryColor,
+        }).show();
+    },
+    
+    onColorSelectionSecondaryClick: function() {
+        this.primaryColor.swap(this.secondaryColor);
+    },
 });

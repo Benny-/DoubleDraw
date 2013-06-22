@@ -42,10 +42,6 @@ Ext.application({
         
         var app = this;
         
-        Ext.create('DD.view.ColorPicker', {
-            
-        }).show();
-        
         var socket = io.connect();
         this.socket = socket;
         socket.on('connect', function () {
