@@ -34,7 +34,6 @@ io.sockets.on('connection', function (socket) {
     
     singleton_SharedPaper.addToolDescription(ToolDescriptions[0]);
     singleton_SharedPaper.addToolDescription(ToolDescriptions[1]);
-    singleton_SharedPaper.addUser(socket.user);
     
     socket.getRoom = function()
     {

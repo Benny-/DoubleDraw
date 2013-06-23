@@ -18,6 +18,7 @@ Ext.define('DD.SharedPaper',{
     
     constructor: function (paperScope) {
         this.paperScope = paperScope;
+        this.callParent( arguments );
     },
     
     userToolChangeEvent: function(user_id, tool_change)

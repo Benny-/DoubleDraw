@@ -50,7 +50,7 @@ Ext.define('DD.SharedPaperUser',{
     
     addToolDescription: function(ToolDescription)
     {
-        this.callParent( [ToolDescription] );
+        this.callParent( arguments );
     },
     
 });

@@ -38,6 +38,7 @@ Ext.define('DD.model.tools.PaperTool',{
     },
     
     constructor: function (paperScope, toolDescription) {
+        this.callParent( arguments );
         this.paper = paperScope;
         this.toolDescription = toolDescription;
         this.initConfig(toolDescription.initialConfig);
