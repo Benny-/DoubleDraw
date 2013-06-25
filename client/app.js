@@ -1,8 +1,8 @@
 
 /*
 The following app-wide events can be generated:
-* user::tool::event     A event generated if some player performed a action using there tool
-* user::move::offscreen If a players cursor moved offscreen
+* user::drawing::tool::event     A event generated if some player performed a action using there tool
+* user::drawing::move::offscreen If a players cursor moved offscreen
 * room::user:new        If a new player enters the room
 * room:user:leave       If a player leaves the room
 * room::entered         Send to the player who enters a new room. This event contains the whol room state
@@ -36,6 +36,7 @@ Ext.application({
         'Users',
         'Menu',
     ],
+    
     launch: function() {
         
         createLayout(); // See app/view/layout.js
@@ -58,16 +59,24 @@ Ext.application({
             }
         });
         
-        socket.on('user::tool::change', function (toolChange) {
-            app.fireEvent("user::tool::change", toolChange);
+        socket.on('user::drawing::color', function (data) {
+            app.fireEvent("user::drawing::color", data);
         });
         
-        socket.on('user::tool::event', function (event) {
-            app.fireEvent("user::tool::event", event);
+        socket.on('user::drawing::selection', function (data) {
+            app.fireEvent("user::drawing::selection", data);
         });
         
-        socket.on('user::move::offscreen', function (user) {
-            app.fireEvent("user::move::offscreen", user);
+        socket.on('user::drawing::tool::change', function (toolChange) {
+            app.fireEvent("user::drawing::tool::change", toolChange);
+        });
+        
+        socket.on('user::drawing::tool::event', function (event) {
+            app.fireEvent("user::drawing::tool::event", event);
+        });
+        
+        socket.on('user::drawing::move::offscreen', function (user) {
+            app.fireEvent("user::drawing::move::offscreen", user);
         });
         
         socket.on('room::user::leave', function (user) {

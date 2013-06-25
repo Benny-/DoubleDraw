@@ -53,4 +53,9 @@ Ext.define('DD.SharedPaperUser',{
         this.callParent( arguments );
     },
     
+    setUser: function(user)
+    {
+        this.addUser(user);
+    },
+    
 });

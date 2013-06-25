@@ -15,7 +15,7 @@ Ext.define('DD.view.ColorBox' ,{
     
     initComponent: function() {
         this.addEvents({
-            "click" : true
+            "click" : true,
         });
         if(!this.color)
             this.color = Ext.create("DD.model.Color",{
@@ -51,6 +51,11 @@ Ext.define('DD.view.ColorBox' ,{
         this.color = color;
         this.update();
         this.color.on( 'change', this.update, this );
+    },
+    
+    destroy: function() {
+        this.color.removeListener( 'change', this.update, this);
+        this.callParent(arguments);
     },
     
 });

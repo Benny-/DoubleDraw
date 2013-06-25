@@ -9,6 +9,10 @@ Ext.define('DD.controller.Drawing', {
     primaryColor: null,
     secondaryColor: null,
     
+    model: [
+        'Color',
+    ],
+    
     views: [
         'Canvas',
         'Tools',
@@ -30,6 +34,13 @@ Ext.define('DD.controller.Drawing', {
             b:255,
             a:0.8
         });
+        
+        this.primaryColor.on(
+            'change',
+            function(){
+                this.application.socket.emit('user::drawing::color', this.primaryColor.export() );
+            },
+            this);
         
         this.control({
             'panel#canvasPanel': {
@@ -61,7 +72,7 @@ Ext.define('DD.controller.Drawing', {
                 controller.application.paper,
                 roomState.user.user_id,
                 function(event){
-                    controller.application.socket.emit("user::tool::event", event );
+                    controller.application.socket.emit("user::drawing::tool::event", event );
                 }
             );
             
@@ -71,7 +82,15 @@ Ext.define('DD.controller.Drawing', {
             for (var i = 0; i < roomState.users.length; i++) {
                 controller.sharedPaperUser.addUser(roomState.users[i]);
             }
-            controller.sharedPaperUser.addUser(roomState.user);
+            controller.sharedPaperUser.setUser(roomState.user);
+        });
+        
+        this.application.on("user::drawing::color", function(data) {
+            controller.sharedPaperUser.colorChange(data.user_id, data.color);
+        });
+        
+        this.application.on("user::drawing::selection", function(data) {
+            controller.sharedPaperUser.selectionChange(data.user_id, data.selection);
         });
         
         this.application.on("room::user::leave", function(user) {
@@ -82,11 +101,11 @@ Ext.define('DD.controller.Drawing', {
             controller.sharedPaperUser.addUser(user);
         });
         
-        this.application.on("user::tool::change", function(tool_change) {
+        this.application.on("user::drawing::tool::change", function(tool_change) {
             controller.sharedPaperUser.userToolChange(tool_change);
         });
         
-        this.application.on("user::tool::event", function(event) {
+        this.application.on("user::drawing::tool::event", function(event) {
             controller.sharedPaperUser.userToolEvent(event.user_id, event);
             controller.application.paper.view.draw();
         });

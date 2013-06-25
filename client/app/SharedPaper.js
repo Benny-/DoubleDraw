@@ -5,6 +5,7 @@ if( typeof exports !== 'undefined' )
     // The browser does not know anything about exports or require.
     var Ext = require('extnode');
     var PaperTool = require('./model/tools/PaperTool.js');
+    var UserDrawContext = require('./UserDrawContext.js');
 }
 
 /**
@@ -21,9 +22,21 @@ Ext.define('DD.SharedPaper',{
         this.callParent( arguments );
     },
     
+    colorChange: function(user_id, color)
+    {
+        var user = this.users[user_id];
+        user.setColor(color);
+    },
+    
+    selectionChange: function(user_id, selection)
+    {
+        var user = this.users[user_id];
+        user.setSelection(selection);
+    },
+    
     userToolChangeEvent: function(user_id, tool_change)
     {
-        var user = this.users[tool_change.user_id];
+        var user = this.users[user_id];
         user.tool = user.tools[tool_change.tool.uuid];
     },
     
@@ -40,17 +53,18 @@ Ext.define('DD.SharedPaper',{
         var user_ids = Object.keys(this.users);
         for (var i = 0; i < user_ids.length; i++) {
             var user = this.users[user_ids[i]];
-            var tool = new DD.model.tools.PaperTool(this.paperScope, ToolDescription);
+            var tool = new DD.model.tools.PaperTool(this.paperScope, ToolDescription, user);
             user.tools[tool.uuid] = tool;
         }
     },
     
     addUser: function(user)
     {
+        user = new DD.UserDrawContext(user);
         this.users[user.user_id] = user;
         user.tools = {}; // FIXME: I am throwing all tool.state's away.
         for (var i = 0; i < this.ToolDescriptions.length; i++) {
-            var tool = new DD.model.tools.PaperTool(this.paperScope, this.ToolDescriptions[i]);
+            var tool = new DD.model.tools.PaperTool(this.paperScope, this.ToolDescriptions[i], user);
             user.tools[tool.uuid] = tool;
         }
         user.tool = user.tools[user.tool.uuid];

@@ -67,4 +67,22 @@ Ext.define('DD.model.Color', {
         return "#" + componentToHex(this.get('r')) + componentToHex(this.get('g')) + componentToHex(this.get('b'));
     },
     
+    import: function(data) {
+        this.set('r', data.r );
+        this.set('g', data.g );
+        this.set('b', data.b );
+        this.set('a', data.a );
+        this.fireEvent("change");
+    },
+    
+    
+    export: function() {
+        return {
+            r: this.get('r'),
+            g: this.get('g'),
+            b: this.get('b'),
+            a: this.get('a'),
+        }
+    },
+    
 });

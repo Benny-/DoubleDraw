@@ -37,11 +37,12 @@ Ext.define('DD.model.tools.PaperTool',{
         onKeyUp     : function() {},
     },
     
-    constructor: function (paperScope, toolDescription) {
+    constructor: function (paperScope, toolDescription, userDrawContext) {
         this.callParent( arguments );
         this.paper = paperScope;
         this.toolDescription = toolDescription;
         this.initConfig(toolDescription.initialConfig);
+        this.user = userDrawContext;
         this.toolInit();
     },
     

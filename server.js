@@ -75,25 +75,35 @@ io.sockets.on('connection', function (socket) {
         }
     };
     
-    socket.on('user::tool::change', function (tool) {
+    socket.on('user::drawing::color', function (color) {
         // TODO: sanitize data from client.
-        socket.broadcastRoom('user::tool::change', { tool : tool, user_id : socket.user.user_id} );
+        socket.broadcastRoom('user::drawing::color', { user_id : socket.user.user_id, color:color } );
     });
     
-    socket.on('user::tool::event', function (toolevent) {
+    socket.on('user::drawing::selection', function (selection) {
+        // TODO: sanitize data from client.
+        socket.broadcastRoom('user::drawing::selection', { user_id : socket.user.user_id, selection:selection } );
+    });
+    
+    socket.on('user::drawing::tool::change', function (tool) {
+        // TODO: sanitize data from client.
+        socket.broadcastRoom('user::drawing::tool::change', { tool : tool, user_id : socket.user.user_id} );
+    });
+    
+    socket.on('user::drawing::tool::event', function (toolevent) {
         // TODO: sanitize data from client.
         
         toolevent.user_id = socket.user.user_id;
         singleton_SharedPaper.userToolEvent(toolevent.user_id, toolevent);
         if(toolevent.type == 'mousemove')
             // Movement is not a essential component of the system. It is therefore a volatile action.
-            socket.volatileBroadcastRoomOthers('user::tool::event', toolevent);
+            socket.volatileBroadcastRoomOthers('user::drawing::tool::event', toolevent);
         else
-            socket.broadcastRoom('user::tool::event', toolevent);
+            socket.broadcastRoom('user::drawing::tool::event', toolevent);
     });
     
-    socket.on('user::move::offscreen', function () {
-        socket.broadcastRoom('user::move::offscreen', {user_id : socket.user.user_id} );
+    socket.on('user::drawing::move::offscreen', function () {
+        socket.broadcastRoom('user::drawing::move::offscreen', {user_id : socket.user.user_id} );
     });
     
     socket.on('user::chat', function (text) {
