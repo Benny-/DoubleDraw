@@ -78,11 +78,13 @@ io.sockets.on('connection', function (socket) {
     socket.on('user::drawing::color', function (color) {
         // TODO: sanitize data from client.
         socket.broadcastRoom('user::drawing::color', { user_id : socket.user.user_id, color:color } );
+        singleton_SharedPaper.colorChange(socket.user.user_id, color);
     });
     
     socket.on('user::drawing::selection', function (selection) {
         // TODO: sanitize data from client.
         socket.broadcastRoom('user::drawing::selection', { user_id : socket.user.user_id, selection:selection } );
+        singleton_SharedPaper.selectionChange(socket.user.user_id, selection);
     });
     
     socket.on('user::drawing::tool::change', function (tool) {
@@ -94,12 +96,12 @@ io.sockets.on('connection', function (socket) {
         // TODO: sanitize data from client.
         
         toolevent.user_id = socket.user.user_id;
-        singleton_SharedPaper.userToolEvent(toolevent.user_id, toolevent);
         if(toolevent.type == 'mousemove')
             // Movement is not a essential component of the system. It is therefore a volatile action.
             socket.volatileBroadcastRoomOthers('user::drawing::tool::event', toolevent);
         else
             socket.broadcastRoom('user::drawing::tool::event', toolevent);
+        singleton_SharedPaper.userToolEvent(toolevent.user_id, toolevent);
     });
     
     socket.on('user::drawing::move::offscreen', function () {

@@ -46,7 +46,7 @@ Ext.define('DD.model.tools.PaperTool',{
         this.toolInit();
     },
     
-    fire: function(type, event){
+    fire: function(type, event) {
         if(type == 'mousedown')
             this.onMouseDown(event)
         if(type == 'mouseup')
@@ -60,6 +60,11 @@ Ext.define('DD.model.tools.PaperTool',{
         if(type == 'keyup')
             this.onKeyUp(event)
     },
+    
+    getColor: function() {
+        return this.user.getPaperColor();
+    },
+    
 });
 
 if( typeof exports !== 'undefined' )

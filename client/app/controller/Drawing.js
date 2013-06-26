@@ -55,6 +55,9 @@ Ext.define('DD.controller.Drawing', {
                 render: this.onColorSelectionSecondaryRendered,
                 click: this.onColorSelectionSecondaryClick
             },
+            'Tools': {
+                
+            },
         });
     },
     
