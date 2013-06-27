@@ -34,10 +34,10 @@ Ext.define('DD.SharedPaper',{
         user.setSelection(selection);
     },
     
-    userToolChangeEvent: function(user_id, tool_change)
+    userToolChange: function(user_id, tool)
     {
         var user = this.users[user_id];
-        user.tool = user.tools[tool_change.tool.uuid];
+        user.tool = user.tools[tool.uuid];
     },
     
     userToolEvent: function(user_id, tools_event)

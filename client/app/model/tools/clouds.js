@@ -10,7 +10,7 @@ var CloudsDescription = new DD.model.tools.ToolDescription({
     
     onMouseDown : function(event) {
         this.state.path = new this.paper.Path();
-        this.state.path.strokeColor = 'black';
+        this.state.path.strokeColor = this.getColor();
         this.state.path.add(event.point);
     },
 

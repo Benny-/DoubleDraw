@@ -7,6 +7,7 @@ var PencilDescription = new DD.model.tools.ToolDescription({
     name : 'Pencil',
     description : "Nothing can beat the mighty pencil",
     
+    
     onMouseDown : function(event) {
         this.state.path = new this.paper.Path();
         this.state.path.strokeColor = this.getColor();

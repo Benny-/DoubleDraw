@@ -67,8 +67,8 @@ Ext.application({
             app.fireEvent("user::drawing::selection", data);
         });
         
-        socket.on('user::drawing::tool::change', function (toolChange) {
-            app.fireEvent("user::drawing::tool::change", toolChange);
+        socket.on('user::drawing::tool::change', function (data) {
+            app.fireEvent("user::drawing::tool::change", data);
         });
         
         socket.on('user::drawing::tool::event', function (event) {

@@ -89,7 +89,8 @@ io.sockets.on('connection', function (socket) {
     
     socket.on('user::drawing::tool::change', function (tool) {
         // TODO: sanitize data from client.
-        socket.broadcastRoom('user::drawing::tool::change', { tool : tool, user_id : socket.user.user_id} );
+        socket.broadcastRoom('user::drawing::tool::change', { user_id : socket.user.user_id, tool : tool } );
+        singleton_SharedPaper.userToolChange(socket.user.user_id, tool);
     });
     
     socket.on('user::drawing::tool::event', function (toolevent) {

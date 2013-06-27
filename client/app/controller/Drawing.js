@@ -49,14 +49,14 @@ Ext.define('DD.controller.Drawing', {
             },
             'colorbox#colorSelectionPrimary': {
                 render: this.onColorSelectionPrimaryRendered,
-                click: this.onColorSelectionPrimaryClick
+                click: this.onColorSelectionPrimaryClick,
             },
             'colorbox#colorSelectionSecondary': {
                 render: this.onColorSelectionSecondaryRendered,
-                click: this.onColorSelectionSecondaryClick
+                click: this.onColorSelectionSecondaryClick,
             },
-            'Tools': {
-                
+            'tools': {
+                beforerender: this.toolsInit,
             },
         });
     },
@@ -104,8 +104,8 @@ Ext.define('DD.controller.Drawing', {
             controller.sharedPaperUser.addUser(user);
         });
         
-        this.application.on("user::drawing::tool::change", function(tool_change) {
-            controller.sharedPaperUser.userToolChange(tool_change);
+        this.application.on("user::drawing::tool::change", function(data) {
+            controller.sharedPaperUser.userToolChange(data.user_id, data.tool);
         });
         
         this.application.on("user::drawing::tool::event", function(event) {
@@ -141,4 +141,24 @@ Ext.define('DD.controller.Drawing', {
     onColorSelectionSecondaryClick: function() {
         this.primaryColor.swap(this.secondaryColor);
     },
+    
+    toolsInit: function( component, eOpts ) {
+        
+        var controller = this;
+        for (var i = 0; i < ToolDescriptions.length; i++) {
+            var toolDescription = ToolDescriptions[i];
+            var button = Ext.create('Ext.Button', {
+                text: toolDescription.name,
+                tooluuid: toolDescription.uuid, // Bam! Just slam the tool's uuid onto the button.
+                tooltip: toolDescription.description,
+                handler: function() {
+                    controller.application.socket.emit("user::drawing::tool::change", {
+                        uuid : this.tooluuid,
+                    });
+                }
+            });
+            component.add(button)
+        }
+    },
+    
 });
