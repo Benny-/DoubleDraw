@@ -79,8 +79,9 @@ Ext.define('DD.controller.Drawing', {
                 }
             );
             
-            controller.sharedPaperUser.addToolDescription(ToolDescriptions[0]);
-            controller.sharedPaperUser.addToolDescription(ToolDescriptions[1]);
+            for (var i = 0; i < ToolDescriptions.length; i++) {
+                controller.sharedPaperUser.addToolDescription(ToolDescriptions[i]);
+            }
             
             for (var i = 0; i < roomState.users.length; i++) {
                 controller.sharedPaperUser.addUser(roomState.users[i]);

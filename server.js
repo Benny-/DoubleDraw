@@ -16,6 +16,9 @@ var ToolDescription = require('./client/app/model/tools/ToolDescription.js');
 require('./client/app/model/tools/toolDescriptions.js');
 require('./client/app/model/tools/pencil.js');
 require('./client/app/model/tools/clouds.js');
+require('./client/app/model/tools/box.js');
+require('./client/app/model/tools/circle.js');
+require('./client/app/model/tools/ellipse.js');
 
 // TODO: Make a paperscope for every room.
 var singleton_canvas = new Canvas(200,200);
@@ -32,8 +35,9 @@ server.listen(process.env.PORT, process.env.IP);
 io.sockets.on('connection', function (socket) {
     socket.user = new User(socket);
     
-    singleton_SharedPaper.addToolDescription(ToolDescriptions[0]);
-    singleton_SharedPaper.addToolDescription(ToolDescriptions[1]);
+    for (var i = 0; i < ToolDescriptions.length; i++) {
+        singleton_SharedPaper.addToolDescription(ToolDescriptions[i]);
+    }
     
     socket.getRoom = function()
     {
