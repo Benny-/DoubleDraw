@@ -18,7 +18,6 @@ if( typeof exports !== 'undefined' )
 Ext.define('DD.model.tools.PaperTool',{
     paper: null,
     toolDescription: null,
-    state: {},
     
     config: {
         uuid        : 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
@@ -43,6 +42,7 @@ Ext.define('DD.model.tools.PaperTool',{
         this.toolDescription = toolDescription;
         this.initConfig(toolDescription.initialConfig);
         this.user = userDrawContext;
+        this.state = {};
         this.toolInit();
     },
     

@@ -40,11 +40,11 @@ Ext.define('DD.SharedPaper',{
         user.tool = user.tools[tool.uuid];
     },
     
-    userToolEvent: function(user_id, tools_event)
+    userToolEvent: function(user_id, toolEvent)
     {
         var user = this.users[user_id];
         var tool = user.tool;
-        tool.fire(tools_event.type, tools_event);
+        tool.fire(toolEvent.type, this.importToolEvent(toolEvent) );
     },
     
     addToolDescription: function(ToolDescription)
@@ -104,7 +104,7 @@ Ext.define('DD.SharedPaper',{
             lastPoint: (event.lastPoint ? { x: event.lastPoint.x, y: event.lastPoint.y} : null),
             downPoint: event.downPoint ? { x: event.downPoint.x, y: event.downPoint.y} : null,
             //middlePoint: event.middlePoint, // Causes stack overflow.
-            delta: event.delta,
+            delta: event.delta ? { x: event.delta.x, y: event.delta.y} : null,
             count: event.count,
             // item: {
             //     id : event.item.id,
@@ -114,7 +114,18 @@ Ext.define('DD.SharedPaper',{
     
     importToolEvent: function(event)
     {
-        return event;
+        return {
+            type: event.type,
+            point: new this.paperScope.Point(event.point),
+            lastPoint: event.lastPoint ? new this.paperScope.Point(event.lastPoint) : null,
+            downPoint: event.downPoint ? new this.paperScope.Point(event.downPoint) : null,
+            //middlePoint: event.middlePoint, // Causes stack overflow.
+            delta: new this.paperScope.Point(event.delta),
+            count: event.count,
+            // item: {
+            //     id : event.item.id,
+            // }
+        }
     },
 });
 

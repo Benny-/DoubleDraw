@@ -1,20 +1,29 @@
 
-tool_creators.push( function(paper){
+var BezierDescription = new DD.model.tools.ToolDescription({
+    uuid : '',
+    version : '0.0.0',
+    deprecated : false,
+    icon : null,
+    name : 'Bezier',
+    description : "The pencil is for those who don't understand vectors",
     
-    with (paper)
-    {
-    	var path;
-        var cutom_tool = new Tool();
-		var types = ['point', 'handleIn', 'handleOut'];
-		function findHandle(point) {
-			for (var i = 0, l = path.segments.length; i < l; i++) {
+    toolInit: function() {
+        this.state.currentSegment = null;
+        this.state.mode = null;
+        this.state.type = null;
+        this.types = ['point', 'handleIn', 'handleOut'];
+    },
+    
+    onMouseDown : function(event) {
+        function findHandle(point) {
+			for (var i = 0, l = this.state.path.segments.length; i < l; i++) {
 				for (var j = 0; j < 3; j++) {
-					var type = types[j];
-					var segment = path.segments[i];
+					var type = this.types[j];
+					var segment = this.state.path.segments[i];
 					var segmentPoint = type == 'point'
 							? segment.point
-							: segment.point + segment[type];
-					var distance = (point - segmentPoint).length;
+							: segment.point.add(segment[type]);
+					var distance = point.subtract(segmentPoint).length;
 					if (distance < 3) {
 						return {
 							type: type,
@@ -25,57 +34,70 @@ tool_creators.push( function(paper){
 			}
 			return null;
 		}
-
-		var currentSegment, mode, type;
-		cutom_tool.onMouseDown = function(event) {
-			if (currentSegment)
-				currentSegment.selected = false;
-			mode = type = currentSegment = null;
-
-			if (!path) {
-				path = new Path();
-				path.fillColor = {
-					hue: 360 * Math.random(),
-					saturation: 1,
-					brightness: 1,
-					alpha: 0.5
-				};
-			}
-
-			var result = findHandle(event.point);
-			if (result) {
-				currentSegment = result.segment;
-				type = result.type;
-				if (path.segments.length > 1 && result.type == 'point'
-						&& result.segment.index == 0) {
-					mode = 'close';
-					path.closed = true;
-					path.selected = false;
-					path = null;
-				}
-			}
-
-			if (mode != 'close') {
-				mode = currentSegment ? 'move' : 'add';
-				if (!currentSegment)
-					currentSegment = path.add(event.point);
-				currentSegment.selected = true;
-			}
-		}
-
-		cutom_tool.onMouseDrag = function(event) {
-			if (mode == 'move' && type == 'point') {
-				currentSegment.point = event.point;
-			} else if (mode != 'close') {
-				var delta = event.delta.clone();
-				if (type == 'handleOut' || mode == 'add')
-					delta = -delta;
-				currentSegment.handleIn += delta;
-				currentSegment.handleOut -= delta;
-			}
-		}
         
-        return cutom_tool;
-    }
+		if (this.state.currentSegment)
+			this.state.currentSegment.selected = false;
+		this.state.mode = this.state.type = this.state.currentSegment = null;
+
+		if (!this.state.path) {
+			this.state.path = new this.paper.Path();
+			this.state.path.fillColor = {
+				hue: 360 * Math.random(),
+				saturation: 1,
+				brightness: 1,
+				alpha: 0.5
+			};
+		}
+		var result = findHandle.call(this, event.point);
+		if (result) {
+			this.state.currentSegment = result.segment;
+			this.state.type = result.type;
+			if (this.state.path.segments.length > 1 && result.type == 'point'
+					&& result.segment.index == 0) {
+				this.state.mode = 'close';
+				this.state.path.closed = true;
+				this.state.path.selected = false;
+				this.state.path = null;
+			}
+		}
+
+		if (this.state.mode != 'close') {
+			this.state.mode = this.state.currentSegment ? 'move' : 'add';
+			if (!this.state.currentSegment)
+				this.state.currentSegment = this.state.path.add(event.point);
+			this.state.currentSegment.selected = true;
+		}
+    },
+
+    onMouseDrag : function(event) {
+		if (this.state.mode == 'move' && this.state.type == 'point') {
+			this.state.currentSegment.point = event.point;
+		} else if (this.state.mode != 'close') {
+			var delta = event.delta;
+			if (this.state.type == 'handleOut' || this.state.mode == 'add')
+			{
+                delta.x = -delta.x;
+                delta.y = -delta.y;
+			}
+            this.state.currentSegment.handleIn.x += delta.x;
+            this.state.currentSegment.handleIn.y += delta.y;
+            
+			this.state.currentSegment.handleOut.x -= delta.x;
+            this.state.currentSegment.handleOut.y -= delta.y;
+		}
+    },
+    
+    // onMouseDown : function(event) {
+    //     this.state.path = new this.paper.Path();
+    //     this.state.path.strokeColor = this.getColor();
+    //     this.state.path.add(event.point);
+    //     this.state.path.add(event.point);
+    // },
+
+    // onMouseDrag : function(event) {
+    //     this.state.path.lastSegment.point = new this.paper.Point(event.point);
+    // },
     
 });
+
+ToolDescriptions.push( BezierDescription );

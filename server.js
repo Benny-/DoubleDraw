@@ -19,6 +19,7 @@ require('./client/app/model/tools/clouds.js');
 require('./client/app/model/tools/box.js');
 require('./client/app/model/tools/circle.js');
 require('./client/app/model/tools/ellipse.js');
+require('./client/app/model/tools/bezier.js');
 
 // TODO: Make a paperscope for every room.
 var singleton_canvas = new Canvas(200,200);
