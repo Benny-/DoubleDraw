@@ -1,78 +1,60 @@
 
-tool_creators.push( function(paper){
+var WormFarmDescription = new DD.model.tools.ToolDescription({
+    uuid : 'dc1120a7-5ed3-4c93-8f9e-6971289b6a81',
+    version : '0.0.0',
+    deprecated : false,
+    icon : null,
+    name : 'WormFarm',
+    description : "Slimy!",
+	minDistance: 10,
+	maxDistance: 30,
     
-    with (paper)
-    {
-        var cutom_tool = new Tool();
+    onMouseDown : function(event) {
+        this.state.worm = new this.paper.Path();
+        this.state.worm.strokeColor = this.getColor();
+        this.state.worm.add(event.point, event.point);
+        this.state.worm.closed = true;
+    },
+    
+    onMouseDrag: function(event) {
+		// the vector in the direction that the mouse moved
+		var step = event.delta;
+
+        step.length = step.length / 2;
         
-    	var values  = {
-			minDistance: 10,
-			maxDistance: 30,
-			varyThickness: true
-		};
+		// the top point: the middle point + the step rotated by -90
+		// degrees
+		//   -----*
+		//   |
+		//   ------
+		var top = event.middlePoint.add(step.rotate(-90));
 
-		/////////////////////////////////////////////////////////////////////
-		// Mouse handling
+		// the bottom point: the middle point + the step rotated by 90
+		// degrees
+		//   ------
+		//   |
+		//   -----*
+		var bottom = event.middlePoint.add(step.rotate(90));
 
-		cutom_tool.minDistance = values.minDistance;
-		cutom_tool.maxDistance = values.maxDistance;
+		// add the top point to the end of the path
+		this.state.worm.add(top);
 
-		var worm;
+		// insert the bottom point after the first segment of the path
+        
+		this.state.worm.insert(1, bottom);
 
-		// Every time the user clicks the mouse to drag we create a path
-		// and when a user drags the mouse we add points to it
-		cutom_tool.onMouseDown = function(event) {
-			worm = new Path();
-            worm.fillColor = 'white';
-            worm.strokeColor = 'black';
-			worm.add(event.point, event.point);
-			worm.closed = true;
-		}
+		// make a new line path from top to bottom
+		var path = new this.paper.Path(top, bottom);
+        path.fillColor = 'white';
+        path.strokeColor = 'black';
+        
+        
+		// This is the point at the front of the worm:
+		this.state.worm.firstSegment.point = event.point;
 
-		cutom_tool.onMouseDrag = function(event) {
-			// the vector in the direction that the mouse moved
-			var step = event.delta;
-
-			// if the vary thickness checkbox is marked
-			// divide the length of the step vector by two:
-			if (values.varyThickness) {
-				step.length = step.length / 2;
-			} else {
-				// otherwise set the length of the step vector to half of
-				// minDistance
-				step.length = values.minDistance / 2;
-			}
-
-			// the top point: the middle point + the step rotated by -90
-			// degrees
-			//   -----*
-			//   |
-			//   ------
-			var top = event.middlePoint + step.rotate(-90);
-
-			// the bottom point: the middle point + the step rotated by 90
-			// degrees
-			//   ------
-			//   |
-			//   -----*
-			var bottom = event.middlePoint + step.rotate(90);
-
-			// add the top point to the end of the path
-			worm.add(top);
-
-			// insert the bottom point after the first segment of the path
-			worm.insert(1, bottom);
-
-			// make a new line path from top to bottom
-			new Path(top, bottom);
-
-			// This is the point at the front of the worm:
-			worm.firstSegment.point = event.point;
-
-			// smooth the segments of the path
-			worm.smooth();
-		}
-        return cutom_tool;
-    }
-    
+		// smooth the segments of the path
+		this.state.worm.smooth();
+	}
 });
+
+ToolDescriptions.push( WormFarmDescription );

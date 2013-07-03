@@ -98,18 +98,25 @@ Ext.define('DD.SharedPaper',{
     
     exportToolEvent: function(event)
     {
-        return {
+        var exported_event = {
             type: event.type,
             point: { x: event.point.x, y: event.point.y},
             lastPoint: (event.lastPoint ? { x: event.lastPoint.x, y: event.lastPoint.y} : null),
             downPoint: event.downPoint ? { x: event.downPoint.x, y: event.downPoint.y} : null,
-            //middlePoint: event.middlePoint, // Causes stack overflow.
+            // middlePoint: event.middlePoint ? { x: event.middlePoint.x, y: event.middlePoint.y} : null, // XXX: This line will kill the server
             delta: event.delta ? { x: event.delta.x, y: event.delta.y} : null,
             count: event.count,
             // item: {
             //     id : event.item.id,
             // }
         }
+        
+        // event.middlePoint should only be included if the event is a drag or mouseup.
+        // We can't simply check if event.middlePoint exist, as it causes a stack overflow (idk why).
+        if(event.type == 'mousedrag' || event.type == 'mouseup')
+            exported_event.middlePoint = { x: event.middlePoint.x, y: event.middlePoint.y};
+        
+        return exported_event;
     },
     
     importToolEvent: function(event)
@@ -119,7 +126,7 @@ Ext.define('DD.SharedPaper',{
             point: new this.paperScope.Point(event.point),
             lastPoint: event.lastPoint ? new this.paperScope.Point(event.lastPoint) : null,
             downPoint: event.downPoint ? new this.paperScope.Point(event.downPoint) : null,
-            //middlePoint: event.middlePoint, // Causes stack overflow.
+            middlePoint: event.middlePoint ? new this.paperScope.Point(event.middlePoint) : null,
             delta: new this.paperScope.Point(event.delta),
             count: event.count,
             // item: {
