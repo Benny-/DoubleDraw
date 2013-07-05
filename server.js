@@ -7,21 +7,21 @@ var express     = require('express')
   , Paper       = require('paper');  // Note: There are two paperjs variants.
                               // One for the browser and one for nodejs.
                               // Functionality they are - almost - the same.
-                              // The one for the browser is in ./Client
+                              // The one for the browser is in ./public
                               // The one for nodejs is located in ./node_modules
 
 var User = require('./User.js');
-var SharedPaper = require('./client/app/SharedPaper.js');
-var ToolDescription = require('./client/app/model/tools/ToolDescription.js');
-require('./client/app/model/tools/toolDescriptions.js');
-require('./client/app/model/tools/pencil.js');
-require('./client/app/model/tools/clouds.js');
-require('./client/app/model/tools/box.js');
-require('./client/app/model/tools/circle.js');
-require('./client/app/model/tools/ellipse.js');
-require('./client/app/model/tools/bezier.js');
-require('./client/app/model/tools/select.js');
-require('./client/app/model/tools/wormfarm.js');
+var SharedPaper = require('./public/app/SharedPaper.js');
+var ToolDescription = require('./public/app/model/tools/ToolDescription.js');
+require('./public/app/model/tools/toolDescriptions.js');
+require('./public/app/model/tools/pencil.js');
+require('./public/app/model/tools/clouds.js');
+require('./public/app/model/tools/box.js');
+require('./public/app/model/tools/circle.js');
+require('./public/app/model/tools/ellipse.js');
+require('./public/app/model/tools/bezier.js');
+require('./public/app/model/tools/select.js');
+require('./public/app/model/tools/wormfarm.js');
 
 // TODO: Make a paperscope for every room.
 var singleton_canvas = new Canvas(200,200);
@@ -32,7 +32,7 @@ var singleton_SharedPaper = new SharedPaper(singleton_paperscope);
 io.set('log level', 1);
 
 app.use(express.compress());
-app.use(express.static(__dirname + '/client'));
+app.use(express.static(__dirname + '/public'));
 server.listen(process.env.PORT, process.env.IP);
 
 io.sockets.on('connection', function (socket) {
