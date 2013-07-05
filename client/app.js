@@ -92,5 +92,9 @@ Ext.application({
             app.fireEvent("room::entered", roomState);
         });
         
+        socket.on('disconnect', function () {
+            console.log("Connection to the mothership lost");
+        });
+        
     }
 });

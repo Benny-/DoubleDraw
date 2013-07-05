@@ -36,10 +36,6 @@ createLayout = function()
                                         text: 'Export view as PNG',
                                         id: 'file_menu_export_png',
                                     },
-                                    '-',
-                                    {
-                                        text: 'Exit',
-                                    },
                                 ]                          
                             }
                         },
