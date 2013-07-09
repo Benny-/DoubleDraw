@@ -44,6 +44,19 @@ Ext.define('DD.SharedPaper',{
     {
         var user = this.users[user_id];
         var tool = user.tool;
+        if(this.paperScope.activate)
+        {
+            // XXX: activate() is required to change global paper scope on the server.
+            // It is not possible to do this on node using "paper = this.paperScope" as
+            // paper is private to the paper module.
+            // 
+            // activate() is not yet part of the official paperjs repo.
+            // The function looks like this in PaperScope.js:
+            // activate: function() { paper = this; },
+            //
+            // Remove these comments once it is part of the official repo.
+            this.paperScope.activate();
+        }
         tool.fire(toolEvent.type, this.importToolEvent(toolEvent) );
     },
     
@@ -94,6 +107,11 @@ Ext.define('DD.SharedPaper',{
     getToolDescriptions: function()
     {
         return this.ToolClasses;
+    },
+    
+    getPaperScope: function()
+    {
+        return this.paperScope;
     },
     
     exportToolEvent: function(event)

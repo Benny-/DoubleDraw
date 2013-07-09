@@ -65,6 +65,54 @@ Ext.define('DD.model.tools.PaperTool',{
         return this.user.getPaperColor();
     },
     
+    // Export complex objects to primitives so they can be send over the internets.
+    // Function is only used server-side.
+    exportState: function() {
+        var exported_state = {};
+        
+        var exportItem = function(item) {
+            // Function for exporting a paperjs item.
+            
+            // TODO: Implement function.
+        }
+        
+        var exportSegment = function(segment) {
+            // TODO: Implement function.
+        };
+        
+        var isPaperJsItem = function(possibleItem) {
+            var proto = Object.getPrototypeOf(possibleItem);
+            if (proto)
+            {
+                if (proto.constructor == this.paper.Item) {
+                    return true;
+                }
+                else
+                {
+                    return isPaperJsItem(proto);
+                }
+            }
+            return false;
+        };
+        
+        Object.keys(this.state).forEach( function(key)
+        {
+            if(Object.getPrototypeOf(this.state[key]).constructor == this.paper.Segment)
+                exported_state[key] = exportSegment(this.state[key]);
+            else if(isPaperJsItem(this.state[key]))
+                exported_state[key] = exportItem(this.state[key]);
+            else
+                exported_state[key] = this.state[key];
+        }, this);
+        
+        return exported_state;
+    },
+    
+    // Function is only used client-side.
+    importState: function() {
+        // TODO: Implement function.
+    },
+    
 });
 
 if( typeof exports !== 'undefined' )

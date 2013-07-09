@@ -3,7 +3,6 @@ var express     = require('express')
   , http        = require('http')
   , server      = http.createServer(app)
   , io          = require('socket.io').listen(server)
-  , Canvas      = require('canvas')
   , Paper       = require('paper');  // Note: There are two paperjs variants.
                               // One for the browser and one for nodejs.
                               // Functionality they are - almost - the same.
@@ -23,11 +22,7 @@ require('./public/app/model/tools/bezier.js');
 require('./public/app/model/tools/select.js');
 require('./public/app/model/tools/wormfarm.js');
 
-// TODO: Make a paperscope for every room.
-var singleton_canvas = new Canvas(200,200);
-var singleton_paperscope = new Paper.PaperScope();
-singleton_paperscope.setup(singleton_canvas);
-var singleton_SharedPaper = new SharedPaper(singleton_paperscope);
+var sharedPapers = {};
 
 io.set('log level', 1);
 
@@ -37,10 +32,6 @@ server.listen(process.env.PORT, process.env.IP);
 
 io.sockets.on('connection', function (socket) {
     socket.user = new User(socket);
-    
-    for (var i = 0; i < ToolDescriptions.length; i++) {
-        singleton_SharedPaper.addToolDescription(ToolDescriptions[i]);
-    }
     
     socket.getRoom = function()
     {
@@ -85,19 +76,19 @@ io.sockets.on('connection', function (socket) {
     socket.on('user::drawing::color', function (color) {
         // TODO: sanitize data from client.
         socket.broadcastRoom('user::drawing::color', { user_id : socket.user.user_id, color:color } );
-        singleton_SharedPaper.colorChange(socket.user.user_id, color);
+        sharedPapers[this.getRoom()].colorChange(socket.user.user_id, color);
     });
     
     socket.on('user::drawing::selection', function (selection) {
         // TODO: sanitize data from client.
         socket.broadcastRoom('user::drawing::selection', { user_id : socket.user.user_id, selection:selection } );
-        singleton_SharedPaper.selectionChange(socket.user.user_id, selection);
+        sharedPapers[this.getRoom()].selectionChange(socket.user.user_id, selection);
     });
     
     socket.on('user::drawing::tool::change', function (tool) {
         // TODO: sanitize data from client.
         socket.broadcastRoom('user::drawing::tool::change', { user_id : socket.user.user_id, tool : tool } );
-        singleton_SharedPaper.userToolChange(socket.user.user_id, tool);
+        sharedPapers[this.getRoom()].userToolChange(socket.user.user_id, tool);
     });
     
     socket.on('user::drawing::tool::event', function (toolevent) {
@@ -109,7 +100,7 @@ io.sockets.on('connection', function (socket) {
             socket.volatileBroadcastRoomOthers('user::drawing::tool::event', toolevent);
         else
             socket.broadcastRoom('user::drawing::tool::event', toolevent);
-        singleton_SharedPaper.userToolEvent(toolevent.user_id, toolevent);
+        sharedPapers[this.getRoom()].userToolEvent(toolevent.user_id, toolevent);
     });
     
     socket.on('user::drawing::move::offscreen', function () {
@@ -131,7 +122,26 @@ io.sockets.on('connection', function (socket) {
         }
         
         io.sockets.in(roomName).emit('room::user::new', socket.user.exportJSON() );
-        singleton_SharedPaper.addUser( socket.user )
+        
+        var sharedPaper;
+        if(!sharedPapers[roomName])
+        {
+            console.log("Creating new shared paper for room "+roomName)
+            var canvas              = new Paper.Canvas(200,200);
+            var paperscope          = new Paper.PaperScope();
+            paperscope.setup(canvas);
+            sharedPaper             = new SharedPaper(paperscope);
+            sharedPapers[roomName]  = sharedPaper;
+            for (var i = 0; i < ToolDescriptions.length; i++) {
+                sharedPaper.addToolDescription(ToolDescriptions[i]);
+            }
+        }
+        else
+        {
+            sharedPaper = sharedPapers[roomName];
+        }
+            
+        sharedPaper.addUser( socket.user )
         
         var users = [];
         for (var i = 0; i < io.sockets.clients(roomName).length; i++) {
@@ -139,14 +149,15 @@ io.sockets.on('connection', function (socket) {
         }
         socket.join(roomName);
         socket.emit('room::entered',{
-                roomName : roomName,
-                users : users,
-                user : socket.user.exportJSON(),
-                paper_project: singleton_paperscope.project.exportJSON(),
+                roomName        : roomName,
+                users           : users,
+                user            : socket.user.exportJSON(),
+                paper_project   : sharedPaper.getPaperScope().project.exportJSON(),
         });
     });
     
     socket.on('disconnect', function () {
         socket.broadcastRoom('room::user::leave', {user_id : socket.user.user_id} );
+        // Consider removing the sharedPaper if there are no more users in a particular room.
     });
 });

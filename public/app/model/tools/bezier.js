@@ -87,17 +87,6 @@ var BezierDescription = new DD.model.tools.ToolDescription({
 		}
     },
     
-    // onMouseDown : function(event) {
-    //     this.state.path = new this.paper.Path();
-    //     this.state.path.strokeColor = this.getColor();
-    //     this.state.path.add(event.point);
-    //     this.state.path.add(event.point);
-    // },
-
-    // onMouseDrag : function(event) {
-    //     this.state.path.lastSegment.point = new this.paper.Point(event.point);
-    // },
-    
 });
 
 ToolDescriptions.push( BezierDescription );
