@@ -9,7 +9,7 @@ The server-side is written in javascript and requires Nodejs and npm.
 
 ### Dependecies:
 
-- cairo-dev (sudo apt-get install cairo-dev)
+- cairo-dev (`sudo apt-get install cairo-dev`, `brew install cairo`)
 - extjs 4 - [sencha.com/products/extjs/download/](http://www.sencha.com/products/extjs/download/)
 
 Extract extjs and put the directory in ./client/

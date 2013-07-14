@@ -12,13 +12,12 @@
 Ext.define('DD.SharedPaperUser',{
     extend: 'DD.SharedPaper',
     
-    onToolEventCallback:null,
-    user_id:NaN,
-    proxy_tool:null,
+    onToolEventCallback : null,
+    user_id             : NaN,
+    proxy_tool          : null,
     
-    constructor: function (paperScope, user_id, toolEventCallback) {
+    constructor: function (paperScope, toolDescriptions, toolEventCallback) {
         this.callParent( arguments );
-        this.user_id = user_id;
         
         var SharedPaperUser = this;
         this.proxyTool = new paperScope.Tool();

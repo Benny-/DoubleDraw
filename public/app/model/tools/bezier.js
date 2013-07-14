@@ -1,6 +1,6 @@
 
 var BezierDescription = new DD.model.tools.ToolDescription({
-    uuid : '',
+    uuid : 'fdd849ed-5b6e-419f-ac39-c0137556aa65',
     version : '0.0.0',
     deprecated : false,
     icon : null,

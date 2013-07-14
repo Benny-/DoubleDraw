@@ -49,11 +49,11 @@ Ext.define('DD.controller.Drawing', {
             },
             'colorbox#colorSelectionPrimary': {
                 render: this.onColorSelectionPrimaryRendered,
-                click: this.onColorSelectionPrimaryClick,
+                click:  this.onColorSelectionPrimaryClick,
             },
             'colorbox#colorSelectionSecondary': {
                 render: this.onColorSelectionSecondaryRendered,
-                click: this.onColorSelectionSecondaryClick,
+                click:  this.onColorSelectionSecondaryClick,
             },
             'tools': {
                 beforerender: this.toolsInit,
@@ -67,34 +67,22 @@ Ext.define('DD.controller.Drawing', {
         
         var controller = this;
         this.application.on("room::entered", function(roomState) {
-            // TODO: Clear paper of any existing scribbles.
-            controller.application.paper.project.importJSON(roomState.paper_project);
-            controller.application.paper.view.draw();
+            
             controller.sharedPaperUser = new Ext.create(
                 'DD.SharedPaperUser',
                 controller.application.paper,
-                roomState.user.user_id,
+                ToolDescriptions,
                 function(event){
                     controller.application.socket.emit("user::drawing::tool::event", event );
                 }
             );
             
-            for (var i = 0; i < ToolDescriptions.length; i++) {
-                controller.sharedPaperUser.addToolDescription(ToolDescriptions[i]);
-            }
-            
-            for (var i = 0; i < roomState.users.length; i++) {
-                controller.sharedPaperUser.addUser(roomState.users[i]);
-            }
+            controller.sharedPaperUser.import (roomState.sharedPaper);
             controller.sharedPaperUser.setUser(roomState.user);
         });
         
         this.application.on("user::drawing::color", function(data) {
             controller.sharedPaperUser.colorChange(data.user_id, data.color);
-        });
-        
-        this.application.on("user::drawing::selection", function(data) {
-            controller.sharedPaperUser.selectionChange(data.user_id, data.selection);
         });
         
         this.application.on("room::user::leave", function(user) {
@@ -146,8 +134,7 @@ Ext.define('DD.controller.Drawing', {
     toolsInit: function( component, eOpts ) {
         
         var controller = this;
-        for (var i = 0; i < ToolDescriptions.length; i++) {
-            var toolDescription = ToolDescriptions[i];
+        ToolDescriptions.forEach( function(toolDescription) {
             var button = Ext.create('Ext.Button', {
                 text: toolDescription.name,
                 tooluuid: toolDescription.uuid, // Bam! Just slam the tool's uuid onto the button.
@@ -159,7 +146,7 @@ Ext.define('DD.controller.Drawing', {
                 }
             });
             component.add(button)
-        }
+        }, this);
     },
     
 });

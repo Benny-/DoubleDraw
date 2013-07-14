@@ -18,6 +18,7 @@ drawing a cursor for the new user. ect...
 // Init the color picker.
 $.fn.jPicker.defaults.images.clientPath='resources/images/jpicker/';
 
+// Make sure extjs windows can't move offscreen. That would be inconvenient.
 Ext.override(Ext.Window, {
     constrainHeader:true
 });
@@ -47,16 +48,17 @@ Ext.application({
         this.socket = socket;
         socket.on('connect', function () {
             console.log("socket.io connection established");
+            
+            var roomName = "#default";
+            var preferred_user = {
+                nickname: 'Anonymous'
+            };
+            
             if(window.location.hash != '')
-            {
-                console.log("Requesting to enter room "+window.location.hash);
-                socket.emit('room::enter', window.location.hash );
-            }
-            else
-            {
-                console.log("No room specified, joining #default.")
-                socket.emit('room::enter', "#default" );
-            }
+                roomName = window.location.hash;
+            
+            console.log("Requesting to enter room "+roomName);
+            socket.emit('room::enter', {roomName:roomName, preferred_user:preferred_user} );
         });
         
         socket.on('user::drawing::color', function (data) {
@@ -88,6 +90,7 @@ Ext.application({
         });
         
         socket.on('room::entered', function (roomState) {
+            console.log("Entered room: ", roomState.roomName, roomState);
             window.location.hash = roomState.roomName;
             app.fireEvent("room::entered", roomState);
         });

@@ -9,7 +9,8 @@ var express     = require('express')
                               // The one for the browser is in ./public
                               // The one for nodejs is located in ./node_modules
 
-var User = require('./User.js');
+var repl        = require("repl");
+
 var SharedPaper = require('./public/app/SharedPaper.js');
 var ToolDescription = require('./public/app/model/tools/ToolDescription.js');
 require('./public/app/model/tools/toolDescriptions.js');
@@ -30,8 +31,9 @@ app.use(express.compress());
 app.use(express.static(__dirname + '/public'));
 server.listen(process.env.PORT, process.env.IP);
 
+var next_user_id = 1;
 io.sockets.on('connection', function (socket) {
-    socket.user = new User(socket);
+    socket.user_id = next_user_id++;
     
     socket.getRoom = function()
     {
@@ -75,53 +77,63 @@ io.sockets.on('connection', function (socket) {
     
     socket.on('user::drawing::color', function (color) {
         // TODO: sanitize data from client.
-        socket.broadcastRoom('user::drawing::color', { user_id : socket.user.user_id, color:color } );
-        sharedPapers[this.getRoom()].colorChange(socket.user.user_id, color);
-    });
-    
-    socket.on('user::drawing::selection', function (selection) {
-        // TODO: sanitize data from client.
-        socket.broadcastRoom('user::drawing::selection', { user_id : socket.user.user_id, selection:selection } );
-        sharedPapers[this.getRoom()].selectionChange(socket.user.user_id, selection);
+        
+        if(this.inRoom())
+        {
+            socket.broadcastRoom('user::drawing::color', { user_id : socket.user_id, color:color } );
+            sharedPapers[this.getRoom()].colorChange(socket.user_id, color);
+        }
     });
     
     socket.on('user::drawing::tool::change', function (tool) {
         // TODO: sanitize data from client.
-        socket.broadcastRoom('user::drawing::tool::change', { user_id : socket.user.user_id, tool : tool } );
-        sharedPapers[this.getRoom()].userToolChange(socket.user.user_id, tool);
+        
+        if(this.inRoom())
+        {
+            socket.broadcastRoom('user::drawing::tool::change', { user_id : socket.user_id, tool : tool } );
+            sharedPapers[this.getRoom()].userToolChange(socket.user_id, tool);
+        }
     });
     
     socket.on('user::drawing::tool::event', function (toolevent) {
         // TODO: sanitize data from client.
         
-        toolevent.user_id = socket.user.user_id;
-        if(toolevent.type == 'mousemove')
-            // Movement is not a essential component of the system. It is therefore a volatile action.
-            socket.volatileBroadcastRoomOthers('user::drawing::tool::event', toolevent);
-        else
-            socket.broadcastRoom('user::drawing::tool::event', toolevent);
-        sharedPapers[this.getRoom()].userToolEvent(toolevent.user_id, toolevent);
+        if(this.inRoom())
+        {
+            toolevent.user_id = socket.user_id;
+            if(toolevent.type == 'mousemove')
+                // Movement is not a essential component of the system. It is therefore a volatile action.
+                socket.volatileBroadcastRoomOthers('user::drawing::tool::event', toolevent);
+            else
+                socket.broadcastRoom('user::drawing::tool::event', toolevent);
+            sharedPapers[this.getRoom()].userToolEvent(toolevent.user_id, toolevent);
+        }
     });
     
     socket.on('user::drawing::move::offscreen', function () {
-        socket.broadcastRoom('user::drawing::move::offscreen', {user_id : socket.user.user_id} );
+        if(this.inRoom())
+            socket.broadcastRoom('user::drawing::move::offscreen', {user_id : socket.user_id} );
     });
     
     socket.on('user::chat', function (text) {
         // TODO: sanitize data from client.
-        socket.broadcastRoom('user::chat', text );
+        if(this.inRoom())
+            socket.broadcastRoom('user::chat', text );
     });
     
-    socket.on('room::enter', function(roomName)
+    // preferred_user contains things like preferred nickname.
+    socket.on('room::enter', function(room_enter)
     {
+        var roomName = room_enter.roomName;
+        var preferred_user = room_enter.preferred_user;
+        
         // TODO: sanitize data from client.
         if(socket.inRoom())
         {
-            socket.broadcastRoom('room::user::leave', {user_id : socket.user.user_id} );
+            socket.broadcastRoom('room::user::leave', {user_id : socket.user_id} );
+            sharedPapers[socket.getRoom()].removeUser(socket.user_id);
             socket.leave(socket.getRoom());
         }
-        
-        io.sockets.in(roomName).emit('room::user::new', socket.user.exportJSON() );
         
         var sharedPaper;
         if(!sharedPapers[roomName])
@@ -130,34 +142,40 @@ io.sockets.on('connection', function (socket) {
             var canvas              = new Paper.Canvas(200,200);
             var paperscope          = new Paper.PaperScope();
             paperscope.setup(canvas);
-            sharedPaper             = new SharedPaper(paperscope);
-            sharedPapers[roomName]  = sharedPaper;
-            for (var i = 0; i < ToolDescriptions.length; i++) {
-                sharedPaper.addToolDescription(ToolDescriptions[i]);
-            }
+            sharedPaper = sharedPapers[roomName] = new SharedPaper(paperscope, ToolDescriptions);
         }
         else
         {
             sharedPaper = sharedPapers[roomName];
         }
-            
-        sharedPaper.addUser( socket.user )
         
-        var users = [];
-        for (var i = 0; i < io.sockets.clients(roomName).length; i++) {
-            users.push(io.sockets.clients(roomName)[i].user.exportJSON());
-        }
+        preferred_user.user_id = socket.user_id;
+        sharedPaper.addUser( preferred_user )
+        var userDrawContext = sharedPaper.getUser(socket.user_id);
+        io.sockets.in(roomName).emit('room::user::new', userDrawContext.export() );
+        
         socket.join(roomName);
         socket.emit('room::entered',{
                 roomName        : roomName,
-                users           : users,
-                user            : socket.user.exportJSON(),
-                paper_project   : sharedPaper.getPaperScope().project.exportJSON(),
+                user            : userDrawContext.export(),
+                sharedPaper     : sharedPaper.export(),
         });
     });
     
     socket.on('disconnect', function () {
-        socket.broadcastRoom('room::user::leave', {user_id : socket.user.user_id} );
+        if(this.inRoom())
+        {
+            socket.broadcastRoom('room::user::leave', {user_id : socket.user_id} );
+            sharedPapers[socket.getRoom()].removeUser(socket.user_id);
+        }
         // Consider removing the sharedPaper if there are no more users in a particular room.
     });
 });
+
+var local_console = repl.start({
+  prompt: "> ",
+  input: process.stdin,
+  output: process.stdout,
+});
+local_console.context.sharedPapers = sharedPapers;
+local_console.context.io = io;

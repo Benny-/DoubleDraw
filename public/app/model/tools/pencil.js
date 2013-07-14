@@ -9,6 +9,7 @@ var PencilDescription = new DD.model.tools.ToolDescription({
     
     
     onMouseDown : function(event) {
+        console.log(this.user.user_id, "Pencil ", this.state)
         this.state.path = new this.paper.Path();
         this.state.path.strokeColor = this.getColor();
         this.state.path.add(event.point);

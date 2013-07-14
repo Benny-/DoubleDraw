@@ -15,23 +15,18 @@ if( typeof exports !== 'undefined' )
 Ext.define('DD.SharedPaper',{
     paperScope : null,
     users: {}, // Map. keys are user_id's and the values are user objects.
-    ToolDescriptions: [],
+    toolDescriptions: {},
     
-    constructor: function (paperScope) {
-        this.paperScope = paperScope;
+    constructor: function (paperScope, toolDescriptions) {
         this.callParent( arguments );
+        this.paperScope = paperScope;
+        this.toolDescriptions = toolDescriptions.clone();
     },
     
     colorChange: function(user_id, color)
     {
         var user = this.users[user_id];
         user.setColor(color);
-    },
-    
-    selectionChange: function(user_id, selection)
-    {
-        var user = this.users[user_id];
-        user.setSelection(selection);
     },
     
     userToolChange: function(user_id, tool)
@@ -60,32 +55,26 @@ Ext.define('DD.SharedPaper',{
         tool.fire(toolEvent.type, this.importToolEvent(toolEvent) );
     },
     
-    addToolDescription: function(ToolDescription)
+    addToolDescription: function(toolDescription)
     {
-        this.ToolDescriptions.push(ToolDescription);
+        this.toolDescriptions.push(toolDescription);
+        
         var user_ids = Object.keys(this.users);
         for (var i = 0; i < user_ids.length; i++) {
             var user = this.users[user_ids[i]];
-            var tool = new DD.model.tools.PaperTool(this.paperScope, ToolDescription, user);
-            user.tools[tool.uuid] = tool;
+            user.addToolDescription(toolDescription, this.paperScope);
         }
     },
     
     addUser: function(user)
     {
-        user = new DD.UserDrawContext(user);
+        user = new DD.UserDrawContext(user, this.toolDescriptions, this.paperScope);
         this.users[user.user_id] = user;
-        user.tools = {}; // FIXME: I am throwing all tool.state's away.
-        for (var i = 0; i < this.ToolDescriptions.length; i++) {
-            var tool = new DD.model.tools.PaperTool(this.paperScope, this.ToolDescriptions[i], user);
-            user.tools[tool.uuid] = tool;
-        }
-        user.tool = user.tools[user.tool.uuid];
     },
     
     removeUser: function(user_id)
     {
-        // TODO: Implement function.
+        return delete this.users[user_id];
     },
     
     destroy: function()
@@ -99,6 +88,11 @@ Ext.define('DD.SharedPaper',{
         // TODO: Clear paperjs here?
     },
     
+    getUser: function(user_id)
+    {
+        return this.users[user_id];
+    },
+    
     getUsers: function()
     {
         return this.users;
@@ -106,7 +100,7 @@ Ext.define('DD.SharedPaper',{
     
     getToolDescriptions: function()
     {
-        return this.ToolClasses;
+        return this.toolDescriptions;
     },
     
     getPaperScope: function()
@@ -119,17 +113,17 @@ Ext.define('DD.SharedPaper',{
         var exported_event = {
             type: event.type,
             point: { x: event.point.x, y: event.point.y},
-            lastPoint: (event.lastPoint ? { x: event.lastPoint.x, y: event.lastPoint.y} : null),
-            downPoint: event.downPoint ? { x: event.downPoint.x, y: event.downPoint.y} : null,
-            // middlePoint: event.middlePoint ? { x: event.middlePoint.x, y: event.middlePoint.y} : null, // XXX: This line will kill the server
-            delta: event.delta ? { x: event.delta.x, y: event.delta.y} : null,
+            lastPoint: event.lastPoint      ?   { x: event.lastPoint.x, y: event.lastPoint.y} : null,
+            downPoint: event.downPoint      ?   { x: event.downPoint.x, y: event.downPoint.y} : null,
+            // middlePoint: event.middlePoint  ?   { x: event.middlePoint.x, y: event.middlePoint.y} : null, // XXX: This line will kill the server or client.
+            delta: event.delta              ?   { x: event.delta.x, y: event.delta.y} : null,
             count: event.count,
             // item: {
             //     id : event.item.id,
             // }
         }
         
-        // event.middlePoint should only be included if the event is a drag or mouseup.
+        // event.middlePoint should only be included if the event is a drag or mouseup. It goes horrible wrong otherwise, see above.
         // We can't simply check if event.middlePoint exist, as it causes a stack overflow (idk why).
         if(event.type == 'mousedrag' || event.type == 'mouseup')
             exported_event.middlePoint = { x: event.middlePoint.x, y: event.middlePoint.y};
@@ -152,6 +146,31 @@ Ext.define('DD.SharedPaper',{
             // }
         }
     },
+    
+    import: function(sharedPaper) {
+        this.paperScope.project.importJSON(sharedPaper.paperProject);
+        this.paperScope.project.layers[0].remove();
+        this.paperScope.view.draw();
+        for (var i = 0; i < sharedPaper.users.length; i++) {
+            this.addUser(sharedPaper.users[i]);
+        }
+    },
+    
+    export: function() {
+        var exported_sharedPaper = {
+            paperProject: this.paperScope.project.exportJSON(),
+            users: [],
+        };
+        
+        var user_ids = Object.keys(this.users);
+        for (var i = 0; i < user_ids.length; i++) {
+            var user = this.users[user_ids[i]];
+            exported_sharedPaper.users.push(user.export());
+        }
+        
+        return exported_sharedPaper;
+    },
+    
 });
 
 if( typeof exports !== 'undefined' )

@@ -10,14 +10,11 @@ Ext.define('DD.controller.Users', {
     init: function() {
         
         var store = Ext.getStore('Users');
-        this.application.on("room::entered", function(room_state) {
+        this.application.on("room::entered", function(roomState) {
             store.removeAll();
-            for (var i = 0; i < room_state.users.length; i++) {
-                var existing_user = room_state.users[i];
-                var user = Ext.create('DD.model.User', {
-                    user_id: existing_user.user_id,
-                    nickname: "Anon",
-                });
+            for (var i = 0; i < roomState.sharedPaper.users.length; i++) {
+                var existing_user = roomState.sharedPaper.users[i];
+                var user = Ext.create('DD.model.User', existing_user);
                 store.add(user);
             }
         });
@@ -28,10 +25,7 @@ Ext.define('DD.controller.Users', {
         });
         
         this.application.on("room::user::new", function(entering_user) {
-            var user = Ext.create('DD.model.User', {
-                user_id: entering_user.user_id,
-                nickname: "Anon",
-            });
+            var user = Ext.create('DD.model.User', entering_user);
             store.add(user);
         });
         
