@@ -2,11 +2,11 @@
 Ext.define('DD.model.Color', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'Name', type: 'string'},
-        {name: 'r', type: 'int'},
-        {name: 'g', type: 'int'},
-        {name: 'b', type: 'int'},
-        {name: 'a', type: 'float'},
+        {name: 'name', type: 'string'},
+        {name: 'r', type: 'int', defaultValue: 5},
+        {name: 'g', type: 'int', defaultValue: 5},
+        {name: 'b', type: 'int', defaultValue: 5},
+        {name: 'a', type: 'float', defaultValue: 0.8},
     ],
     belongsTo : 
     {
@@ -14,14 +14,16 @@ Ext.define('DD.model.Color', {
         model:'DD.model.Palette',
     },
     
-    constructor: function () {
+    constructor: function( config ) {
+        this.callParent( arguments );
         
         // The change event is fired if the color values have changed.
         // Any view should update its colors to match.
         this.addEvents({
             "change"    : true,
         });
-        this.callParent( arguments );
+        
+        this.initConfig( config );
     },
     
     // Swaps values of two DD.model.Color objects.

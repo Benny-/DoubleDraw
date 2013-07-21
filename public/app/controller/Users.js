@@ -2,7 +2,10 @@
 Ext.define('DD.controller.Users', {
     extend: 'Ext.app.Controller',
     
-    stores: ['Users'],
+    stores: [
+        'Users'
+    ],
+    
     views: [
         'Users'
     ],

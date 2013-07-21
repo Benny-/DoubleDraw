@@ -9,6 +9,10 @@ Ext.define('DD.controller.Drawing', {
     primaryColor: null,
     secondaryColor: null,
     
+    stores: [
+        'Palettes'
+    ],
+    
     model: [
         'Color',
     ],
@@ -16,6 +20,8 @@ Ext.define('DD.controller.Drawing', {
     views: [
         'Canvas',
         'Tools',
+        'Palettes',
+        'Colors',
         'ColorBox',
         'ColorPicker',
     ],
@@ -47,6 +53,7 @@ Ext.define('DD.controller.Drawing', {
                 render: this.onPanelRendered,
                 resize: this.onPanelResize,
             },
+            
             'colorbox#colorSelectionPrimary': {
                 render: this.onColorSelectionPrimaryRendered,
                 click:  this.onColorSelectionPrimaryClick,
@@ -55,8 +62,19 @@ Ext.define('DD.controller.Drawing', {
                 render: this.onColorSelectionSecondaryRendered,
                 click:  this.onColorSelectionSecondaryClick,
             },
+            
             'tools': {
                 beforerender: this.toolsInit,
+            },
+            
+            'button#add_palette': {
+                click:  this.onAddPalette,
+            },
+            'button#import_palette': {
+                click:  this.importPalette,
+            },
+            'button#reset_palettes': {
+                click:  this.resetPalettes,
             },
         });
     },
@@ -148,5 +166,23 @@ Ext.define('DD.controller.Drawing', {
             component.add(button)
         }, this);
     },
+    
+    onAddPalette: function() {
+        console.log("onAddPalette()");
+        
+        var color = Ext.create('DD.model.Color', {name:'Untitiled color'} );
+        var palette = Ext.create('DD.model.Palette', {name:'New palette'} );
+        palette.colors().add(color);
+        
+        Ext.getStore('Palettes').add(palette);
+    },
+    
+    importPalette: function() {
+        console.log("importPalette()");
+    },
+    
+    resetPalettes: function() {
+        console.log("resetPalettes()");
+    }
     
 });

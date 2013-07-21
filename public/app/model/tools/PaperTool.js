@@ -79,7 +79,6 @@ Ext.define('DD.model.tools.PaperTool',{
         Object.keys(exportedState).forEach( function(key)
         {
             var value = exportedState[key];
-            console.log(key, value)
             if( value == null || typeof value == 'undefined' || typeof value == 'number' || typeof value == 'string' || typeof value == 'boolean')
                 state[key] = value; // Primitive types can directly be exported
             else if(value[0] === 'item')
@@ -94,8 +93,6 @@ Ext.define('DD.model.tools.PaperTool',{
                 // We are directly converting a serialized form of a basic type to a real basic object using a constructor.
                 state[key] = new this.paper[value[0]](value[1], value[2], value[3], value[4], value[5], value[6], value[7], value[8], value[9], value[10], value[11], value[12]);
         }, this);
-        
-        console.log("Importing state:", exportedState, state)
         
         return state;
     },

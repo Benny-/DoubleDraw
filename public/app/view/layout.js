@@ -10,7 +10,6 @@ createLayout = function()
                 defaults: {
                     collapsible: true,
                     split: true,
-                    bodyPadding: 5
                 },
                 tbar: {
                     xtype: 'toolbar',
@@ -68,18 +67,15 @@ createLayout = function()
                         plain: true,
                         defaults: {
                             collapsible: false,
-                            bodyPadding: 10,
                             autoScroll: true
                         },
                         activeItem: 0,
                         items: [
                             {
                                 xtype: 'tools',
-                                title: 'Tools',
                             },
                             {
-                                xtype: 'fieldcontainer',
-                                title: 'Palettes',
+                                xtype: 'palettes',
                             },
                             {
                                 xtype: 'fieldcontainer',
@@ -93,8 +89,9 @@ createLayout = function()
                         collapsible: false,
                         region: 'center',
                         minWidth: 50,
+                        bodyPadding: 5,
                         minHeight: 50,
-                        html : '<canvas id="html5_canvas" width="0" height="0"><p>Canvas is not supported in your browser.</p></canvas>',
+                        html : '<canvas id="html5_canvas" width="0" height="0"><p>This program not supported in your browser.</p></canvas>',
                     },
                     {
                         xtype: 'tabpanel',
@@ -117,8 +114,7 @@ createLayout = function()
                                 title: 'Users',
                             },
                             {
-                                xtype: 'fieldcontainer',
-                                title: 'Colours',
+                                xtype: 'colors',
                             },
                             {
                                 xtype: 'fieldcontainer',

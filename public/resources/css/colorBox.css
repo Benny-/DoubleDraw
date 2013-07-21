@@ -5,8 +5,8 @@ div#colorSelectionSecondary {
 }
 
 div.colorBox {
-    width               : 12pt;
-    height              : 12pt;
+    min-width           : 12pt;
+    min-height          : 12pt;
 }
 
 .colorBoxBackground {

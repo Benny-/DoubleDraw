@@ -4,15 +4,12 @@ Ext.define('DD.view.Users' ,{
     alias: 'widget.users',
     
     store: 'Users',
-    //store: 'usersStore',
+    columns: [
+        {header: 'id',  dataIndex: 'user_id',},
+        {header: 'Nickname',  dataIndex: 'nickname',},
+    ],
     
     initComponent: function() {
-        
-        this.columns = [
-            {header: 'id',  dataIndex: 'user_id',},
-            {header: 'Nickname',  dataIndex: 'nickname',},
-        ];
-
         this.callParent(arguments);
     }
 });

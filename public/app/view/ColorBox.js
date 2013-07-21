@@ -14,16 +14,15 @@ Ext.define('DD.view.ColorBox' ,{
     innerColorBox: null,
     
     initComponent: function() {
+        if (this.delayedRenderTo) {
+            this.delayRender();
+        }
+        
         this.addEvents({
             "click" : true,
         });
         if(!this.color)
-            this.color = Ext.create("DD.model.Color",{
-                r:5,
-                g:5,
-                b:5,
-                a:1
-            });
+            this.color = Ext.create("DD.model.Color");
         this.html = '<div class="colorBoxBackground"> <div class="colorBox" id="innerColorBox-'+this.getId()+'"></div></div>';
         this.callParent(arguments);
     },
@@ -57,5 +56,22 @@ Ext.define('DD.view.ColorBox' ,{
         this.color.removeListener( 'change', this.update, this);
         this.callParent(arguments);
     },
+    
+    delayRender: function () {
+        Ext.TaskManager.start({
+            scope: this,
+            interval: 100,
+            run: function () {
+                var container = Ext.fly(this.delayedRenderTo);
+
+                if (container) {
+                    this.render(container);
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        });
+    }
     
 });
