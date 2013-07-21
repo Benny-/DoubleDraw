@@ -11,7 +11,7 @@ Ext.define('DD.view.Palette' ,{
     ],
     
     columns: [
-        {header: "Color",  sortable:false, renderer: function(value, meta, record) {
+        {header: "Color",  sortable:false, width:40, renderer: function(value, meta, record) {
                 var container_id = Ext.id(),
                     container = '<div id="' + container_id + '"></div>';
                 

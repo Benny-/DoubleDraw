@@ -76,6 +76,7 @@ createLayout = function()
                             },
                             {
                                 xtype: 'palettes',
+                                bodyPadding: 7,
                             },
                             {
                                 xtype: 'fieldcontainer',
@@ -115,6 +116,7 @@ createLayout = function()
                             },
                             {
                                 xtype: 'colors',
+                                bodyPadding: 7,
                             },
                             {
                                 xtype: 'fieldcontainer',

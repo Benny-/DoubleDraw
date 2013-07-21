@@ -18,6 +18,12 @@ Ext.define('DD.store.Palettes', {
         palette.colors().add(color);
         color = Ext.create('DD.model.Color', {name:'Untitiled color 3'} );
         palette.colors().add(color);
+        color = Ext.create('DD.model.Color', {name:'Untitiled color 4'} );
+        palette.colors().add(color);
+        color = Ext.create('DD.model.Color', {name:'Untitiled color 5'} );
+        palette.colors().add(color);
+        color = Ext.create('DD.model.Color', {name:'Untitiled color 6'} );
+        palette.colors().add(color);
         this.add(palette);
         
     },

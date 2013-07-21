@@ -4,7 +4,12 @@ Ext.define('DD.view.Palettes' ,{
     alias: 'widget.palettes',
     
     title: 'Palettes',
-            
+    layout: {
+        type: 'vbox',
+        align: 'stretch',
+        defaultMargins : '5'
+    },
+    
     initComponent: function() {
         
         this.tbar = [
@@ -30,9 +35,15 @@ Ext.define('DD.view.Palettes' ,{
             this.add(
                 Ext.create(
                     'DD.view.Palette',
-                    { palette:palette }
+                    {
+                        palette:palette,
+                        layout: 'fit',
+                    }
                 )
             );
         }, this);
+        
+        // this.add(Ext.create("Ext.Button", {title:"First"} ));
+        // this.add(Ext.create("Ext.Button", {title:"Second"} ));
     }
 });
