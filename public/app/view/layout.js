@@ -75,8 +75,41 @@ createLayout = function()
                                 xtype: 'tools',
                             },
                             {
+                                id: 'allPalettes',
                                 xtype: 'palettes',
-                                bodyPadding: 7,
+                                title: 'Palettes',
+                                editable: true,
+                                paletteViewTools:[
+                                    {
+                                        type:'pin',
+                                        tooltip: 'Pin palette to colors panel',
+                                    },
+                                    {
+                                        type:'plus',
+                                        tooltip: 'Add a new color',
+                                    },
+                                    {
+                                        type:'close',
+                                        tooltip: 'Delete this palette',
+                                    },
+                                ],
+                                tbar: [
+                                    {
+                                        text: 'Add',
+                                        tooltip: 'Add a new empty pallete',
+                                        id: 'add_palette'
+                                    }, 
+                                    {
+                                        text: 'Import',
+                                        tooltip: 'Import a existing pallete',
+                                        id: 'import_palette'
+                                    },
+                                    {
+                                        text: 'Reset',
+                                        tooltip: 'Destroy all palletes',
+                                        id: 'reset_palettes'
+                                    }
+                                ],
                             },
                             {
                                 xtype: 'fieldcontainer',
@@ -85,8 +118,8 @@ createLayout = function()
                         ]
                     },
                     {
-                        xtype: 'canvas',
                         id: 'canvasPanel',
+                        xtype: 'canvas',
                         collapsible: false,
                         region: 'center',
                         minWidth: 50,
@@ -105,7 +138,6 @@ createLayout = function()
                         plain: true,
                         defaults: {
                             collapsible: false,
-                            bodyPadding: 10,
                             autoScroll: true
                         },
                         activeItem: 0,
@@ -115,8 +147,19 @@ createLayout = function()
                                 title: 'Users',
                             },
                             {
-                                xtype: 'colors',
-                                bodyPadding: 7,
+                                // This view might be confusing. It contains a subset of Palettes.
+                                // To the users it will be shown as the "Colors" panel. However,
+                                // in the code we will refer to this panel as "activePalettes"
+                                id: 'activePalettes',
+                                xtype: 'palettes',
+                                title: 'Colors',
+                                store: 'ActivePalettes',
+                                paletteViewTools:[
+                                    {
+                                        type:'unpin',
+                                        tooltip: 'Unpin palette from the colors panel',
+                                    },
+                                ],
                             },
                             {
                                 xtype: 'fieldcontainer',
@@ -129,12 +172,12 @@ createLayout = function()
                 bbar: {
                     items: [
                         {
-                            xtype: 'colorbox',
                             id: 'colorSelectionPrimary',
+                            xtype: 'colorbox',
                         },
                         {
-                            xtype: 'colorbox',
                             id: 'colorSelectionSecondary',
+                            xtype: 'colorbox',
                         },
                         '-',
                         'colour values',

@@ -10,18 +10,14 @@ Ext.define('DD.controller.Drawing', {
     secondaryColor: null,
     
     stores: [
-        'Palettes'
-    ],
-    
-    model: [
-        'Color',
+        'Palettes',
+        'ActivePalettes',
     ],
     
     views: [
         'Canvas',
         'Tools',
         'Palettes',
-        'Colors',
         'ColorBox',
         'ColorPicker',
     ],
@@ -75,6 +71,36 @@ Ext.define('DD.controller.Drawing', {
             },
             'button#reset_palettes': {
                 click:  this.resetPalettes,
+            },
+            
+            'palettes#allPalettes tool[type=pin]': {
+                click:  this.pinPalette,
+            },
+            
+            'palettes#allPalettes tool[type=plus]': {
+                click:  this.paletteAddColor,
+            },
+            
+            'palettes#allPalettes tool[type=close]': {
+                click:  this.deletePalette,
+            },
+            
+            // Why am I using the editable match on colorBox instead of a parent match?
+            // Well, colorBox does not have a parent.
+            // Take a look in the DD.view.Palette class.
+            // The colorBox is added to the grid in a very odd way. extjs does not
+            // seem to support adding extjs components to cells in a grid. So I used
+            // a workaround. As a consequence, colorBox is not a direct child of grid.
+            'colorbox[editable=true]': {
+                click:  this.paletteColorBoxClickEdit,
+            },
+            
+            'colorbox[editable=false]': {
+                click:  this.paletteColorBoxClickUse,
+            },
+            
+            'palettes#activePalettes tool[type=unpin]': {
+                click:  this.unpinPalette,
             },
         });
     },
@@ -138,14 +164,14 @@ Ext.define('DD.controller.Drawing', {
         colorBox.loadColor(this.secondaryColor);
     },
     
-    onColorSelectionPrimaryClick: function() {
+    onColorSelectionPrimaryClick: function(colorBox) {
         Ext.create('DD.view.ColorPicker', {
             title: "Change primary drawing color",
             color: this.primaryColor,
         }).show();
     },
     
-    onColorSelectionSecondaryClick: function() {
+    onColorSelectionSecondaryClick: function(colorBox) {
         this.primaryColor.swap(this.secondaryColor);
     },
     
@@ -168,21 +194,77 @@ Ext.define('DD.controller.Drawing', {
     },
     
     onAddPalette: function() {
-        console.log("onAddPalette()");
-        
-        var color = Ext.create('DD.model.Color', {name:'Untitiled color'} );
+        var color = Ext.create('DD.model.Color');
+        color.save();
         var palette = Ext.create('DD.model.Palette', {name:'New palette'} );
+        palette.save();
+        
         palette.colors().add(color);
+        color.set("palette_id", palette.get("id"));
+        palette.colors().sync();
         
         Ext.getStore('Palettes').add(palette);
+        Ext.getStore('Palettes').sync();
     },
     
     importPalette: function() {
         console.log("importPalette()");
+        // TODO: Implement function.
+        // Import would allow one to import a palette in the 
     },
     
     resetPalettes: function() {
         console.log("resetPalettes()");
-    }
+        // TODO: Implement function.
+    },
+    
+    pinPalette: function (tool, event) {
+        var palette = tool.up('palette').palette;
+        
+        var ActivePalettes = Ext.getStore('ActivePalettes');
+        ActivePalettes.add(palette);
+        ActivePalettes.sync();
+    },
+    
+    paletteAddColor: function (tool, event) {
+        var palette = tool.up('palette').palette;
+        
+        var newColor = Ext.create("DD.model.Color");
+        newColor.save();
+        
+        palette.colors().add(newColor);
+        newColor.set("palette_id", palette.get("id"));
+        palette.colors().sync();
+    },
+    
+    deletePalette: function (tool, event) {
+        var palette = tool.up('palette').palette;
+        var store = tool.up('palettes').store;
+        
+        Ext.getStore(store).remove(palette);
+    },
+    
+    paletteColorBoxClickEdit: function(colorBox) {
+        var colorBox = Ext.create('DD.view.ColorPicker', {
+            title: "" + colorBox.color.get("name"),
+            color: colorBox.color,
+        });
+        colorBox.on("commit", function() {
+            colorBox.color.save();
+        });
+        colorBox.show();
+    },
+    
+    paletteColorBoxClickUse: function(colorBox) {
+        this.primaryColor.import(colorBox.color.export());
+    },
+    
+    unpinPalette: function (tool, event) {
+        var palette = tool.up('palette').palette;
+        
+        var ActivePalettes = Ext.getStore('ActivePalettes');
+        ActivePalettes.remove(palette);
+        ActivePalettes.sync();
+    },
     
 });

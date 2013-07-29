@@ -3,47 +3,59 @@ Ext.define('DD.view.Palettes' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.palettes',
     
-    title: 'Palettes',
     layout: {
         type: 'vbox',
         align: 'stretch',
-        defaultMargins : '5'
+        defaultMargins : '3'
+    },
+    bodyPadding: 3,
+    
+    config: {
+        store: 'Palettes',
+        paletteViewTools: [],
+        editable: false,
+    },
+    
+    addPaletteView: function(palette) {
+        this.add(
+            Ext.create(
+                'DD.view.Palette',
+                {
+                    palette: palette,
+                    tools: this.paletteViewTools,
+                    layout: 'fit',
+                    editable: this.editable,
+                }
+            )
+        );
+    },
+    
+    createPaletteViews: function () {
+        this.removeAll(true);
+        
+        Ext.getStore(this.store).data.each(function(palette, index, length) {
+            this.addPaletteView(palette);
+        }, this);
+    },
+    
+    constructor: function( config ) {
+        this.callParent( arguments );
+        this.initConfig( config );
     },
     
     initComponent: function() {
-        
-        this.tbar = [
-            {
-                text: 'Add',
-                tooltip: 'Add a new empty pallete',
-                id: 'add_palette'
-            }, 
-            {
-                text: 'Import',
-                tooltip: 'Import a existing pallete',
-                id: 'import_palette'
-            },
-            {
-                text: 'Reset',
-                tooltip: 'Destroy all palletes',
-                id: 'reset_palettes'
-            }
-        ],
         this.callParent(arguments);
         
-        Ext.getStore('Palettes').data.each(function(palette, index, length) {
-            this.add(
-                Ext.create(
-                    'DD.view.Palette',
-                    {
-                        palette:palette,
-                        layout: 'fit',
-                    }
-                )
-            );
+        Ext.getStore(this.store).on("add", function(store, records, index, eOpts) {
+            records.forEach(function(palette) {
+                this.addPaletteView(palette);
+            }, this);
         }, this);
         
-        // this.add(Ext.create("Ext.Button", {title:"First"} ));
-        // this.add(Ext.create("Ext.Button", {title:"Second"} ));
+        Ext.getStore(this.store).on("bulkremove", function(store, record, index, isMove, eOpts) {
+            this.createPaletteViews();
+        }, this);
+        
+        this.createPaletteViews();
     }
 });

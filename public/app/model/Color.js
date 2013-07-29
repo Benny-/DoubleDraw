@@ -1,17 +1,26 @@
 
 Ext.define('DD.model.Color', {
     extend: 'Ext.data.Model',
+    
     fields: [
-        {name: 'name', type: 'string'},
+        {name: 'id', type: 'int'},
+        {name: 'palette_id', type: 'int'},
+        {name: 'name', type: 'string', defaultValue: "Untitiled color"},
         {name: 'r', type: 'int', defaultValue: 5},
         {name: 'g', type: 'int', defaultValue: 5},
         {name: 'b', type: 'int', defaultValue: 5},
         {name: 'a', type: 'float', defaultValue: 0.8},
     ],
+    
     belongsTo : 
     {
         name:'palette',
         model:'DD.model.Palette',
+    },
+    
+    proxy: {
+        type: 'localstorage',
+        id  : 'all-colors',
     },
     
     constructor: function( config ) {

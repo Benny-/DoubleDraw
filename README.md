@@ -53,20 +53,21 @@ ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
 ### Running
 
-Do `npm install` to install all Nodejs dependecies. Do 'npm start' to run the server.
+Do `npm install` to install all Nodejs dependecies. Do `npm start` to run the server.
 
 If you dont't run this app in cloud9, you will need to replace process.env.PORT in server.js by a port number. Most likely 80 or 8080. The second parameter (process.env.IP) can be removed.
 
-## TODO:
+## Roadmap
+
 - chat
 - user management
 - shared drawning
 - upload picture
 - Record/playback
-- save local palette
 - save widget layout
 - more tools
 - selection
+- Operational transformation
 
 ## License
 
