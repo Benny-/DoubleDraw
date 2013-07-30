@@ -68,10 +68,9 @@ If you dont't run this app in cloud9, you will need to replace process.env.PORT 
 - More tools
 - Selection
 - Operational transformation
-- Color names? http://chir.ag/projects/ntc/
 
 ## License
 
 All code is released under WTFPL.
 
-This program uses GPLv3 code (extjs) and MIT licensed code.
+This program uses GPLv3 code (extjs), MIT licensed code and Creative Commons 2.5 licensed code (ntc.js Chirag Mehta, 4 Sep. 2007).

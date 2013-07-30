@@ -16,6 +16,7 @@ Ext.define('DD.view.Palette' ,{
         {
             header: "Color",
             sortable:false,
+            hideable: false,
             width:40,
             renderer: function(value, meta, record) {
                 var container_id = Ext.id(),
@@ -38,6 +39,46 @@ Ext.define('DD.view.Palette' ,{
             //     xtype: 'textfield',
             //     allowBlank: true
             // },
+        },
+        {
+            header: "Red",
+            dataIndex: 'r',
+            width:40,
+            hidden:true,
+        },
+        {
+            header: "Green",
+            dataIndex: 'g',
+            width:40,
+            hidden:true,
+        },
+        {
+            header: "Blue",
+            dataIndex: 'b',
+            width:40,
+            hidden:true,
+        },
+        {
+            header: "Alpha",
+            dataIndex: 'a',
+            width:40,
+            hidden:true,
+        },
+        {
+            header: "Hex",
+            dataIndex: 'a',
+            hidden:true,
+            renderer: function(value, meta, record) {
+                return record.toHex();
+            },
+        },
+        {
+            header: "Descriptive name",
+            sortable:true,
+            hidden:true,
+            renderer: function(value, meta, record) {
+                return ntc.name(record.toHex())[1];
+            },
         },
     ],
     

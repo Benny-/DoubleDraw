@@ -95,6 +95,9 @@ Ext.define('DD.controller.Drawing', {
                 click:  this.paletteColorBoxClickEdit,
             },
             
+            // XXX: This match should match all the colorboxes in palettes#activePalettes.
+            // This is not a fool-proof match (see comment above). It might match future colorboxes in other elements.
+            // But for now we can live with it.
             'colorbox[editable=false]': {
                 click:  this.paletteColorBoxClickUse,
             },
@@ -208,14 +211,13 @@ Ext.define('DD.controller.Drawing', {
     },
     
     importPalette: function() {
-        console.log("importPalette()");
-        // TODO: Implement function.
+        console.log("importPalette()", "TODO: Implement function.");
         // Import would allow one to import a palette in the 
     },
     
     resetPalettes: function() {
-        console.log("resetPalettes()");
-        // TODO: Implement function.
+        console.log("resetPalettes()", "TODO: Implement function.");
+        // Should remove all colors and put some default palettes in it.
     },
     
     pinPalette: function (tool, event) {
@@ -239,6 +241,15 @@ Ext.define('DD.controller.Drawing', {
         palette.colors().add(newColor);
         newColor.set("palette_id", palette.get("id"));
         palette.colors().sync();
+        
+        var colorPicker = Ext.create('DD.view.ColorPicker', {
+            title: "New color for palette "+palette.get("name"),
+            color: newColor,
+        });
+        colorPicker.on("commit", function() {
+            this.color.save();
+        });
+        colorPicker.show();
     },
     
     deletePalette: function (tool, event) {
@@ -251,18 +262,18 @@ Ext.define('DD.controller.Drawing', {
     },
     
     paletteColorBoxClickEdit: function(colorBox) {
-        var colorBox = Ext.create('DD.view.ColorPicker', {
+        var colorPicker = Ext.create('DD.view.ColorPicker', {
             title: "" + colorBox.color.get("name"),
             color: colorBox.color,
         });
-        colorBox.on("commit", function() {
+        colorPicker.on("commit", function() {
             colorBox.color.save();
         });
-        colorBox.show();
+        colorPicker.show();
     },
     
     paletteColorBoxClickUse: function(colorBox) {
-        this.primaryColor.import(colorBox.color.export());
+        this.primaryColor.loadOther(colorBox.color);
     },
     
     unpinPalette: function (tool, event) {

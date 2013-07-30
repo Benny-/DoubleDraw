@@ -7,13 +7,13 @@ if( typeof exports !== 'undefined' )
 }
 
 /**
- * The PaperTool is kinda like the tool class in PaperJS. Except they are not.
+ * The PaperTool is kinda like the tool class in PaperJS. Except it is not.
  * 
  * There exist no PaperJS tools for NodeJS. It would make no sense as a server
  * can't provide mouse or keyboard input.
  * 
  * But we still need something to process the events from all the clients and
- * reconstruct vector image. Thats is this class's responsebility.
+ * reconstruct vector image. Thats is this class's responsibility.
  **/
 Ext.define('DD.model.tools.PaperTool',{
     paper: null,

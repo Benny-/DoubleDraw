@@ -7,7 +7,6 @@ Ext.define('DD.view.ColorPicker' ,{
         'Color'
     ],
     
-    closeAction     : 'cancel',
     height          : 335, // TODO: Figure out if Ext.window.Window can automagically resize to fit the jPicker
     width           : 560,
     
@@ -18,6 +17,10 @@ Ext.define('DD.view.ColorPicker' ,{
     listeners: {
         render: function(c) {
             var ColorPicker = this;
+            this.initial_r = this.color.get('r');
+            this.initial_g = this.color.get('g');
+            this.initial_b = this.color.get('b');
+            this.initial_a = this.color.get('a');
             $('#InlinejPicker-'+this.getId()+'').jPicker(
                 {
                     window:
@@ -74,6 +77,11 @@ Ext.define('DD.view.ColorPicker' ,{
         this.html = '<div id="InlinejPicker-'+this.getId()+'"></div>';
         
         this.callParent(arguments);
+    },
+    
+    close: function() {
+        this.color.setRGBA(this.initial_r, this.initial_g, this.initial_b, this.initial_a);
+        this.fireEvent('cancel', this.initial_r, this.initial_g, this.initial_b, this.initial_a );
     },
     
     destroy: function() {

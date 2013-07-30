@@ -59,6 +59,22 @@ Ext.define('DD.model.Color', {
         other.fireEvent("change");
     },
     
+    loadOther: function(other) {
+        this.set("r", other.get("r"));
+        this.set("g", other.get("g"));
+        this.set("b", other.get("b"));
+        this.set("a", other.get("a"));
+        this.fireEvent("change");
+    },
+    
+    setRGBA: function(r,g,b,a) {
+        this.set("r", r);
+        this.set("g", g);
+        this.set("b", b);
+        this.set("a", a);
+        this.fireEvent("change");
+    },
+    
     loadjPickerColor: function(jPickerColor) {
         this.set('r', jPickerColor.val('r'));
         this.set('g', jPickerColor.val('g'));
@@ -85,7 +101,6 @@ Ext.define('DD.model.Color', {
         this.set('a', data.a );
         this.fireEvent("change");
     },
-    
     
     export: function() {
         return {
