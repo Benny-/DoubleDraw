@@ -17,10 +17,6 @@ Ext.define('DD.view.ColorPicker' ,{
     listeners: {
         render: function(c) {
             var ColorPicker = this;
-            this.initial_r = this.color.get('r');
-            this.initial_g = this.color.get('g');
-            this.initial_b = this.color.get('b');
-            this.initial_a = this.color.get('a');
             $('#InlinejPicker-'+this.getId()+'').jPicker(
                 {
                     window:
@@ -80,25 +76,33 @@ Ext.define('DD.view.ColorPicker' ,{
     },
     
     close: function() {
-        this.color.setRGBA(this.initial_r, this.initial_g, this.initial_b, this.initial_a);
-        this.fireEvent('cancel', this.initial_r, this.initial_g, this.initial_b, this.initial_a );
+        var jPicker = this.getJpicker();
+        this.color.setRGBA(jPicker.color.current.val("r"), jPicker.color.current.val("g"), jPicker.color.current.val("b"), jPicker.color.current.val("a"));
+        this.fireEvent('cancel', jPicker.color.current.val("r"), jPicker.color.current.val("g"), jPicker.color.current.val("b") );
     },
     
-    destroy: function() {
-        var destroyed = false;
+    getJpicker: function() {
         for (var i=0; i<$.jPicker.List.length; i++)
         {
             if ($.jPicker.List[i].id == ('InlinejPicker-'+this.getId()) )
             {
-                $.jPicker.List[i].destroy();
-                destroyed = true;
-                break;
+                return $.jPicker.List[i];
             }
         }
-        
-        // TODO: Use some kind of facy assert reporting thingy.
-        if(!destroyed)
+        return void 0;
+    },
+    
+    destroy: function() {
+        var jPicker = this.getJpicker();
+        if(jPicker)
+        {
+            jPicker.destroy();
+        }
+        else
+        {
+            // TODO: Use some kind of facy assert reporting thingy.
             console.log("Assert failed: InlinejPicker not destroyed on window close")
+        }
         
         this.callParent(arguments);
     },
