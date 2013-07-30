@@ -31,9 +31,7 @@ Ext.define('DD.store.ActivePalettes', {
             id = parseInt(id);
             if(id)
             {
-                console.log("forEach", ids.length, id, Ext.getStore('Palettes'), id);
                 var palette = Ext.getStore('Palettes').getById(parseInt(id));
-                console.log("Adding palette:",palette);
                 this.add(palette);
             }
 

@@ -45,7 +45,7 @@ unxz -c ./cairo-1.12.14.tar.xz | tar xv
 cd ./cairo-1.12.14
 ./configure --prefix ~/custom_installs/ && make && make install
 
-# Somedude at cairo messed up and you need to run this to unmess it:
+# Somebody at cairo messed up and you need to run this to unmess it:
 ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
 # You can now perform "npm install"
@@ -53,21 +53,22 @@ ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
 ### Running
 
-Do `npm install` to install all Nodejs dependecies. Do `npm start` to run the server.
+Perform `npm install` to install all Nodejs dependecies, this needs to be done once. Perform `npm start` to run the server.
 
-If you dont't run this app in cloud9, you will need to replace process.env.PORT in server.js by a port number. Most likely 80 or 8080. The second parameter (process.env.IP) can be removed.
+If you dont't run this app in cloud9, you will need to replace process.env.PORT in server.js by a port number. The second parameter (process.env.IP) can be removed.
 
 ## Roadmap
 
-- chat
-- user management
-- shared drawning
-- upload picture
+- Chat
+- User management
+- Shared drawning
+- Upload picture
 - Record/playback
-- save widget layout
-- more tools
-- selection
+- Save widget layout
+- More tools
+- Selection
 - Operational transformation
+- Color names? http://chir.ag/projects/ntc/
 
 ## License
 

@@ -222,8 +222,12 @@ Ext.define('DD.controller.Drawing', {
         var palette = tool.up('palette').palette;
         
         var ActivePalettes = Ext.getStore('ActivePalettes');
-        ActivePalettes.add(palette);
-        ActivePalettes.sync();
+        
+        if(!ActivePalettes.getById(palette.get("id"))) // Do not pin if it is already pinned.
+        {
+            ActivePalettes.add(palette);
+            ActivePalettes.sync();
+        }
     },
     
     paletteAddColor: function (tool, event) {
@@ -239,9 +243,11 @@ Ext.define('DD.controller.Drawing', {
     
     deletePalette: function (tool, event) {
         var palette = tool.up('palette').palette;
-        var store = tool.up('palettes').store;
         
-        Ext.getStore(store).remove(palette);
+        // TODO: Consider showing a confirmation screen.
+        
+        Ext.getStore('Palettes').remove(palette);
+        Ext.getStore('ActivePalettes').remove(palette);
     },
     
     paletteColorBoxClickEdit: function(colorBox) {

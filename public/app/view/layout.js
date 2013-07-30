@@ -78,6 +78,7 @@ createLayout = function()
                                 id: 'allPalettes',
                                 xtype: 'palettes',
                                 title: 'Palettes',
+                                store: 'Palettes',
                                 editable: true,
                                 paletteViewTools:[
                                     {
