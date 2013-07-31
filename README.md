@@ -35,6 +35,9 @@ wget http://cairographics.org/releases/pixman-0.30.0.tar.gz
 tar xvzf ./pixman-0.30.0.tar.gz
 cd pixman-0.30.0
 ./configure --prefix ~/custom_installs/ && make && make install
+cd;
+rm -rf pixman-0.30.0/
+rm pixman-0.30.0.tar.gz
 
 # Append the following line to your ~/.bashrc file and restart bash (run 'exit').
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(echo ~/custom_installs/lib/pkgconfig)";
@@ -44,11 +47,14 @@ wget http://cairographics.org/releases/cairo-1.12.14.tar.xz
 unxz -c ./cairo-1.12.14.tar.xz | tar xv
 cd ./cairo-1.12.14
 ./configure --prefix ~/custom_installs/ && make && make install
+cd;
+rm -rf cairo-1.12.14/
+rm cairo-1.12.14.tar.xz
 
 # Somebody at cairo messed up and you need to run this to unmess it:
 ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
-# You can now perform "npm install"
+# You can now perform "npm install". Make sure you do it in the correct directory.
 ```
 
 ### Running
@@ -71,6 +77,6 @@ If you dont't run this app in cloud9, you will need to replace process.env.PORT 
 
 ## License
 
-All code is released under WTFPL.
+All written code is released under WTFPL.
 
 This program uses GPLv3 code (extjs), MIT licensed code and Creative Commons 2.5 licensed code (ntc.js Chirag Mehta, 4 Sep. 2007).
