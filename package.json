@@ -2,9 +2,23 @@
     "name" : "doubledraw",
     "version": "0.0.0",
     "license": "WTFPL",
+    "author": "Benny",
+    "description": "a collaberative vector drawning program",
     "scripts": {
         "start": "node ./server.js"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Benny-/DoubleDraw.git",
+    },
+    "keywords": [
+        "drawn",
+        "drawning",
+        "vector",
+        "Collaborate",
+        "Collaboration",
+        "paperjs"
+    ],
     "dependencies" : {
         "extnode"       :   "4.1.0-beta",
         "socket.io"     :   "0.9.x",
