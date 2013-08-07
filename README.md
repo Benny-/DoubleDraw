@@ -53,7 +53,7 @@ cd;
 rm -rf cairo-1.12.14/
 rm cairo-1.12.14.tar.xz
 
-# I'm not sure why. But the include directories are not set correctly on this version of cairo.
+# The include directories are not set correctly on this version of cairo.
 # This is one way to fix it:
 ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
