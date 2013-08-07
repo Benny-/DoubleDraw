@@ -112,7 +112,7 @@ Ext.define('DD.SharedPaper',{
     {
         var exported_event = {
             type: event.type,
-            point: { x: event.point.x, y: event.point.y},
+            point    : event.point          ?   { x: event.point.x, y: event.point.y}         : null,
             lastPoint: event.lastPoint      ?   { x: event.lastPoint.x, y: event.lastPoint.y} : null,
             downPoint: event.downPoint      ?   { x: event.downPoint.x, y: event.downPoint.y} : null,
             // middlePoint: event.middlePoint  ?   { x: event.middlePoint.x, y: event.middlePoint.y} : null, // XXX: This line will kill the server or client.

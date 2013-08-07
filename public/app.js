@@ -65,6 +65,10 @@ Ext.application({
             socket.emit('room::enter', {roomName:roomName, preferred_user:preferred_user} );
         });
         
+        socket.on('user::chat', function (message) {
+            app.fireEvent("user::chat", message);
+        });
+        
         socket.on('user::drawing::color', function (data) {
             app.fireEvent("user::drawing::color", data);
         });

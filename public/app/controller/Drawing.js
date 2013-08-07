@@ -39,7 +39,7 @@ Ext.define('DD.controller.Drawing', {
         
         this.primaryColor.on(
             'change',
-            function(){
+            function() {
                 this.application.socket.emit('user::drawing::color', this.primaryColor.export() );
             },
             this);

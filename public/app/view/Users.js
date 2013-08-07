@@ -5,8 +5,17 @@ Ext.define('DD.view.Users' ,{
     
     store: 'Users',
     columns: [
-        {header: 'id',  dataIndex: 'user_id',},
-        {header: 'Nickname',  dataIndex: 'nickname',},
+        {
+            header: 'id',
+            dataIndex: 'user_id',
+            width: 40,
+        },
+        {
+            header: 'Nickname',
+            dataIndex: 'nickname',
+            renderer: 'htmlEncode',
+            flex: 1,
+        },
     ],
     
     initComponent: function() {

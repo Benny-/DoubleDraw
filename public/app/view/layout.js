@@ -113,8 +113,18 @@ createLayout = function()
                                 ],
                             },
                             {
-                                xtype: 'fieldcontainer',
-                                title: 'Chat',
+                                xtype: 'chat',
+                                id: 'main_chat',
+                                bbar: [
+                                    {
+                                        xtype: 'textfield',
+                                        width: '100%',
+                                        name: 'chat',
+                                        fieldLabel: 'Chat',
+                                        hideLabel: 'true',
+                                        emptyText: 'Type here to chat',
+                                    },
+                                ],
                             },
                         ]
                     },
@@ -163,7 +173,7 @@ createLayout = function()
                                 ],
                             },
                             {
-                                xtype: 'fieldcontainer',
+                                xtype: 'panel',
                                 title: 'Layers',
                             },
                         ]

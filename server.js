@@ -31,6 +31,8 @@ app.use(express.compress());
 app.use(express.static(__dirname + '/public'));
 server.listen(process.env.PORT, process.env.IP);
 
+console.log("Server is running on http://"+server.address().address+":"+server.address().port)
+
 var next_user_id = 1;
 io.sockets.on('connection', function (socket) {
     socket.user_id = next_user_id++;
@@ -115,10 +117,16 @@ io.sockets.on('connection', function (socket) {
             socket.broadcastRoom('user::drawing::move::offscreen', {user_id : socket.user_id} );
     });
     
-    socket.on('user::chat', function (text) {
+    socket.on('user::chat', function (message) {
         // TODO: sanitize data from client.
+        
         if(this.inRoom())
-            socket.broadcastRoom('user::chat', text );
+        {
+            message.processedDate = new Date();
+            message.user_id = socket.user_id;
+            message.nickname = sharedPapers[socket.getRoom()].getUser(socket.user_id).nickname;
+            socket.broadcastRoom('user::chat', message );
+        }
     });
     
     // preferred_user contains things like preferred nickname.
@@ -178,4 +186,7 @@ var local_console = repl.start({
   output: process.stdout,
 });
 local_console.context.sharedPapers = sharedPapers;
+local_console.context.server = server;
+local_console.context.app = app;
 local_console.context.io = io;
+
