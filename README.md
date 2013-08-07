@@ -5,16 +5,16 @@ DoubleDraw allows multiple people to work collaboratively on a vector drawing.
 
 ## Installing and running
 
-The server-side is written in javascript and requires Nodejs and npm.
+The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org/) and npm (npm comes with NodeJs). NodeJs version 0.8.9 was used for development.
 
 ### Dependecies:
 
-- cairo-dev (`sudo apt-get install cairo-dev`, `brew install cairo`)
+- cairo-dev (`sudo apt-get install cairo-dev`, `brew install cairo`, see below for installation on cloud9)
 - extjs 4 - [sencha.com/products/extjs/download/](http://www.sencha.com/products/extjs/download/)
 
-Extract extjs and put the directory in ./public/
+Extract extjs.zip and move the directory inside it to `./public/extjs/`
 
-The following dependecies are included in this repo and do not need to be downloaded:
+The following dependencies are included in this repo and do not need to be downloaded:
 
 - http://paperjs.org/
 - https://github.com/eligrey/Blob.js
@@ -23,9 +23,11 @@ The following dependecies are included in this repo and do not need to be downlo
 - http://www.digitalmagicpro.com/jPicker/
 - http://jquery.com/ required for jPicker
 
+`npm install` for all other external dependencies.
+
 ### Cloud9
 
-You might need to compile pixman and cairo if you run the software on cloud9:
+You might need to compile pixman and cairo to run DoubleDraw on cloud9:
 
 ```bash
 mkdir ~/custom_installs
@@ -51,7 +53,8 @@ cd;
 rm -rf cairo-1.12.14/
 rm cairo-1.12.14.tar.xz
 
-# Somebody at cairo messed up and you need to run this to unmess it:
+# I'm not sure why. But the include directories are not set correctly on this version of cairo.
+# This is one way to fix it:
 ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
 # You can now perform "npm install". Make sure you do it in the correct directory.
@@ -59,12 +62,14 @@ ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
 ### Running
 
-Perform `npm install` to install all Nodejs dependecies, this needs to be done once. Perform `npm start` to run the server.
+```bash
+npm start
+```
 
 ## Roadmap
 
 - User management
-- Shared drawning
+- Shared drawing
 - Upload picture
 - Record/playback
 - Save widget layout
@@ -74,6 +79,7 @@ Perform `npm install` to install all Nodejs dependecies, this needs to be done o
 
 ## License
 
-All written code is released under WTFPL.
+All written code is released under [WTFPL](http://www.wtfpl.net/).
 
 This program uses GPLv3 code (extjs), MIT licensed code and Creative Commons 2.5 licensed code (ntc.js Chirag Mehta, 4 Sep. 2007).
+
