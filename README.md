@@ -9,8 +9,7 @@ The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org
 
 ### Dependecies:
 
-- cairo-dev (`sudo apt-get install cairo-dev`, `brew install cairo`, see below for installation on cloud9)
-- extjs 4 - [sencha.com/products/extjs/download/](http://www.sencha.com/products/extjs/download/)
+- cairo-dev (`sudo apt-get install libcairo2-dev`, `brew install cairo`, see below for installation on cloud9)
 
 Extract extjs.zip and move the directory inside it to `./public/extjs/`
 
@@ -22,6 +21,7 @@ The following dependencies are included in this repo and do not need to be downl
 - https://github.com/eligrey/FileSaver.js
 - http://www.digitalmagicpro.com/jPicker/
 - http://jquery.com/ required for jPicker
+- http://www.sencha.com/products/extjs Uses the public CDN
 
 `npm install` for all other external dependencies.
 
