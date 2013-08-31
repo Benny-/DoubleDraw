@@ -13,12 +13,12 @@ if( typeof exports !== 'undefined' )
  * It is this class's responsebility to ensure it can.
  **/
 Ext.define('DD.SharedPaper',{
-    paperScope : null,
-    users: {}, // Map. keys are user_id's and the values are user objects.
-    toolDescriptions: {},
     
     constructor: function (paperScope, toolDescriptions) {
         this.callParent( arguments );
+        
+        this.users = {}; // Map. keys are user_id's and the values are user objects.
+        this.toolDescriptions = {};
         this.paperScope = paperScope;
         this.toolDescriptions = toolDescriptions.clone();
     },

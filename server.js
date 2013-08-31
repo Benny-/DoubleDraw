@@ -146,7 +146,7 @@ io.sockets.on('connection', function (socket) {
         var sharedPaper;
         if(!sharedPapers[roomName])
         {
-            console.log("Creating new shared paper for room "+roomName)
+            console.log("Creating new shared paper for room", roomName)
             var canvas              = new Paper.Canvas(200,200);
             var paperscope          = new Paper.PaperScope();
             paperscope.setup(canvas);
