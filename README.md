@@ -11,8 +11,6 @@ The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org
 
 - cairo-dev (`sudo apt-get install libcairo2-dev`, `brew install cairo`, see below for installation on cloud9)
 
-Extract extjs.zip and move the directory inside it to `./public/extjs/`
-
 The following dependencies are included in this repo and do not need to be downloaded:
 
 - http://paperjs.org/
