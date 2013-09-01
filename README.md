@@ -1,7 +1,7 @@
 DoubleDraw
 =============
 
-DoubleDraw allows multiple people to work collaboratively on a vector drawing.
+DoubleDraw allows multiple people to work collaboratively on a vector drawing. A possible outdated or unstable example may or not run [here](http://dd.bennyjacobs.nl:5100/).
 
 ## Installing and running
 
@@ -79,7 +79,7 @@ npm start
 
 For bugs and feature requests you should make a [ticket](https://github.com/Benny-/DoubleDraw/issues). Please check if there issent already a ticket open.
 
-For questions you can send a email or join in on irc: room `#DoubleDraw` on `irc.freenode.net`. For convenience you can join using [webchat](https://webchat.freenode.net/?channels=DoubleDraw).
+For questions you can send a email or join on irc: room `#DoubleDraw` on `irc.freenode.net`. For convenience you can join using [webchat](https://webchat.freenode.net/?channels=DoubleDraw).
 
 ## License
 
