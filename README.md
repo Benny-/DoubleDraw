@@ -5,7 +5,7 @@ DoubleDraw allows multiple people to work collaboratively on a vector drawing.
 
 ## Installing and running
 
-The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org/) and npm (npm comes with NodeJs). NodeJs version 0.8.9 was used for development.
+The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org/) and npm (npm comes with NodeJs).
 
 ### Dependecies:
 
@@ -19,7 +19,7 @@ The following dependencies are included in this repo and do not need to be downl
 - https://github.com/eligrey/FileSaver.js
 - http://www.digitalmagicpro.com/jPicker/
 - http://jquery.com/ required for jPicker
-- http://www.sencha.com/products/extjs Uses the public CDN
+- http://www.sencha.com/products/extjs (The public CDN is used)
 
 `npm install` for all other external dependencies.
 
@@ -67,13 +67,19 @@ npm start
 ## Roadmap
 
 - User management
-- Shared drawing
+- Layers
 - Upload picture
 - Record/playback
 - Save widget layout
 - More tools
 - Selection
 - Operational transformation
+
+## Contact
+
+For bugs and feature requests you should make a [ticket](https://github.com/Benny-/DoubleDraw/issues). Please check if there issent already a ticket open.
+
+For questions you can send a email or join in on irc: room `#DoubleDraw` on `irc.freenode.net`. For convenience you can join using [webchat](https://webchat.freenode.net/?channels=DoubleDraw).
 
 ## License
 

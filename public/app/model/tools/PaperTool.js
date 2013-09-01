@@ -61,6 +61,16 @@ Ext.define('DD.model.tools.PaperTool',{
             this.onKeyDown(event)
         if(type == 'keyup')
             this.onKeyUp(event)
+        
+        /*
+         * Code for importing and exporting items is only used when a new user joins a room.
+         * Uncommenting the following lines will execute the import/export code on every tool event,
+         * making it easier to debug in the browser.
+         */
+        // var exportedState = this.exportState();
+        // this.state = {};
+        // this.state = this.importState(exportedState);
+        // console.log("exportedState", exportedState, "importedState", this.state, event);
     },
     
     getColor: function() {
@@ -76,6 +86,14 @@ Ext.define('DD.model.tools.PaperTool',{
             return this.paper.project.layers[0].children[exportedItem[1]];
         }
         
+        var importSegment = function(exportedSegment)
+        {
+        	console.log(exportedSegment);
+        	var path = importItem(exportedSegment[2]);
+        	var segment = path.segments[exportedSegment[1]];
+        	return segment;
+        }
+        
         Object.keys(exportedState).forEach( function(key)
         {
             var value = exportedState[key];
@@ -84,13 +102,14 @@ Ext.define('DD.model.tools.PaperTool',{
             else if(value[0] === 'item')
                 state[key] = importItem.call(this, value);
             else if(value[0] === 'segment')
-                state[key] = null; // TODO: import segment from serialized form.
+                state[key] = importSegment.call(this, value);
             else
                 // What is going on here?
                 // Well..
-                // Basic types can be created like this: new paper.Point(3, 6)
                 // Basic types are serialized like this: ["Point",3,6]
-                // We are directly converting a serialized form of a basic type to a real basic object using a constructor.
+                // Basic types can be created like this: new paper.Point(3, 6)
+                // We are directly converting a serialized form of a basic type to a real basic object
+                // by picking a different constructor during runtime.
                 state[key] = new this.paper[value[0]](value[1], value[2], value[3], value[4], value[5], value[6], value[7], value[8], value[9], value[10], value[11], value[12]);
         }, this);
         
@@ -127,8 +146,7 @@ Ext.define('DD.model.tools.PaperTool',{
         }
         
         var exportSegment = function(segment) {
-            // TODO: Implement function.
-            return 'EXPORTED_SEGMENT_HERE'
+            return ['segment', segment.index, exportItem.call(this, segment.path) ];
         };
         
         var isPaperJsItem = function(possibleItem) {
