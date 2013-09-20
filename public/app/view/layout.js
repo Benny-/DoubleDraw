@@ -180,7 +180,12 @@ createLayout = function()
                                         text: 'Refresh',
                                         tooltip: 'This program can not update the tree on its own yet. Hit this button to update the tree',
                                         id: 'refreshLayers'
-                                    }, 
+                                    },
+                                    {
+                                        text: 'Add',
+                                        tooltip: 'Append a new layer',
+                                        id: 'appendLayer'
+                                    },
                                 ],
                             },
                         ]

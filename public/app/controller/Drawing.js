@@ -111,6 +111,10 @@ Ext.define('DD.controller.Drawing', {
             '#refreshLayers': {
                 click:  this.refreshLayers,
             },
+            
+            '#appendLayer': {
+                click:  this.appendLayer,
+            },
         });
     },
     
@@ -297,9 +301,13 @@ Ext.define('DD.controller.Drawing', {
    		var layers = this.sharedPaperUser.getPaperScope().projects[0].layers;
 		for (var i = 0; i < layers.length; i++) {
 			var layer = layers[i];
-			var layerNode = Ext.create("DD.model.PaperItem", {item:layer} )
+			var layerNode = Ext.create("DD.model.PaperItem", {item:layer, children:[] } )
 			root.appendChild(layerNode);
 		}
+    },
+    
+    appendLayer: function() {
+        console.log("appendLayer()", "TODO: Implement function.");
     },
     
 });
