@@ -25,7 +25,7 @@ The following dependencies are included in this repo and do not need to be downl
 
 ### Cloud9
 
-You might need to compile pixman and cairo to run DoubleDraw on cloud9:
+You might need to compile pixman and cairo to run DoubleDraw on [cloud9](https://c9.io/):
 
 ```bash
 mkdir ~/custom_installs

@@ -12,6 +12,7 @@ Ext.define('DD.controller.Drawing', {
     stores: [
         'Palettes',
         'ActivePalettes',
+        'PaperItems',
     ],
     
     views: [
@@ -20,6 +21,7 @@ Ext.define('DD.controller.Drawing', {
         'Palettes',
         'ColorBox',
         'ColorPicker',
+        'Layers',
     ],
     
     init: function() {
@@ -104,6 +106,10 @@ Ext.define('DD.controller.Drawing', {
             
             'palettes#activePalettes tool[type=unpin]': {
                 click:  this.unpinPalette,
+            },
+            
+            '#refreshLayers': {
+                click:  this.refreshLayers,
             },
         });
     },
@@ -282,6 +288,18 @@ Ext.define('DD.controller.Drawing', {
         var ActivePalettes = Ext.getStore('ActivePalettes');
         ActivePalettes.remove(palette);
         ActivePalettes.sync();
+    },
+    
+    refreshLayers: function () {
+   		root = Ext.getStore('PaperItems').getRootNode();
+   		root.removeAll();
+   		
+   		var layers = this.sharedPaperUser.getPaperScope().projects[0].layers;
+		for (var i = 0; i < layers.length; i++) {
+			var layer = layers[i];
+			var layerNode = Ext.create("DD.model.PaperItem", {item:layer} )
+			root.appendChild(layerNode);
+		}
     },
     
 });
