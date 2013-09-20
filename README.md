@@ -72,8 +72,9 @@ npm start
 - Record/playback
 - Save widget layout
 - More tools
-- Selection
+- Selection (deleting and moving drawings)
 - Operational transformation
+- Icons in user interface
 
 ## Contact
 
