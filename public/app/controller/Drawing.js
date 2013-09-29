@@ -133,6 +133,7 @@ Ext.define('DD.controller.Drawing', {
                     controller.application.socket.emit("user::drawing::tool::event", event );
                 }
             );
+            controller.application.sharedPaperUser = controller.sharedPaperUser;
             
             controller.sharedPaperUser.import (roomState.sharedPaper);
             controller.sharedPaperUser.setUser(roomState.user);
@@ -156,7 +157,6 @@ Ext.define('DD.controller.Drawing', {
         
         this.application.on("user::drawing::tool::event", function(event) {
             controller.sharedPaperUser.userToolEvent(event.user_id, event);
-            controller.application.paper.view.draw();
         });
     },
     

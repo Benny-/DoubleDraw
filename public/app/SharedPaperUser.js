@@ -47,6 +47,12 @@ Ext.define('DD.SharedPaperUser',{
         }
     },
     
+    userToolEvent: function(event)
+    {
+        this.callParent( arguments );
+        this.paperScope.view.draw();
+    },
+    
     addToolDescription: function(ToolDescription)
     {
         this.callParent( arguments );

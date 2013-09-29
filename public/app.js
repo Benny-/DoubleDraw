@@ -33,6 +33,7 @@ Ext.application({
 
     canvas : null,
     paper : new paper.PaperScope(),
+    sharedPaperUser : null,
     socket : null,
     roomname : '',
 

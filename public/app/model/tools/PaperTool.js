@@ -4,6 +4,7 @@ if( typeof exports !== 'undefined' )
     // This code is shared between server and browser.
     // The browser does not know anything about exports or require.
     var Ext = require('extnode');
+    var paper = require('paper');
 }
 
 /**
@@ -36,12 +37,11 @@ Ext.define('DD.model.tools.PaperTool',{
         onKeyUp     : function() {},
     },
     
-    constructor: function (paperScope, toolDescription, userDrawContext, state) {
+    constructor: function (UserDrawContext, toolDescription, state) {
         this.callParent( arguments );
-        this.paper = paperScope;
         this.toolDescription = toolDescription;
         this.initConfig(toolDescription.initialConfig);
-        this.user = userDrawContext;
+        this.userDrawContext = UserDrawContext;
         this.state = {};
         this.toolInit();
         if(state)
@@ -74,16 +74,21 @@ Ext.define('DD.model.tools.PaperTool',{
     },
     
     getColor: function() {
-        return this.user.getPaperColor();
+        return this.userDrawContext.getPaperColor();
+    },
+    
+    getSharedProject: function() {
+        return this.userDrawContext.getSharedPaper().getSharedProject();
     },
     
     importState: function(exportedState) {
         var state = {};
+        var project = this.getSharedProject();
         
         var importItem = function(exportedItem)
         {
             // See the exportItem() function down below.
-            return this.paper.project.layers[0].children[exportedItem[1]];
+            return project.layers[0].children[exportedItem[1]];
         }
         
         var importSegment = function(exportedSegment)
@@ -110,7 +115,7 @@ Ext.define('DD.model.tools.PaperTool',{
                 // Basic types can be created like this: new paper.Point(3, 6)
                 // We are directly converting a serialized form of a basic type to a real basic object
                 // by picking a different constructor during runtime.
-                state[key] = new this.paper[value[0]](value[1], value[2], value[3], value[4], value[5], value[6], value[7], value[8], value[9], value[10], value[11], value[12]);
+                state[key] = new paper[value[0]](value[1], value[2], value[3], value[4], value[5], value[6], value[7], value[8], value[9], value[10], value[11], value[12]);
         }, this);
         
         return state;
@@ -120,6 +125,7 @@ Ext.define('DD.model.tools.PaperTool',{
     // Function is only used server-side.
     exportState: function() {
         var exported_state = {};
+        var project = this.getSharedProject();
         
         var exportItem = function(item) {
             // Function for exporting a paperjs item.
@@ -130,9 +136,9 @@ Ext.define('DD.model.tools.PaperTool',{
             // - it assumes a single layer
             // - it assumes the item is a direct child of the layer
             // - it assumes the item exist
-            for(var i = 0; i<this.paper.project.layers[0].children.length; i++)
+            for(var i = 0; i<project.layers[0].children.length; i++)
             {
-                var possibleMatch = this.paper.project.layers[0].children[i];
+                var possibleMatch = project.layers[0].children[i];
                 if(possibleMatch == item)
                 {
                     exportedItem = ['item', i];
@@ -153,7 +159,7 @@ Ext.define('DD.model.tools.PaperTool',{
             var proto = Object.getPrototypeOf(possibleItem);
             if (proto)
             {
-                if (proto.constructor == this.paper.Item) {
+                if (proto.constructor == paper.Item) {
                     return true;
                 }
                 else
@@ -169,15 +175,15 @@ Ext.define('DD.model.tools.PaperTool',{
             var value = this.state[key];
             if( value == null || typeof value == 'undefined' || typeof value == 'number' || typeof value == 'string' || typeof value == 'boolean')
                 exported_state[key] = value; // Primitive types can directly be exported
-            else if(Object.getPrototypeOf(value).constructor == this.paper.Segment)
+            else if(Object.getPrototypeOf(value).constructor == paper.Segment)
                 exported_state[key] = exportSegment.call(this, value);
             else if(isPaperJsItem.call(this, value))
                 exported_state[key] = exportItem.call(this, value);
-            else if(Object.getPrototypeOf(value).constructor == this.paper.Point)
+            else if(Object.getPrototypeOf(value).constructor == paper.Point)
                 exported_state[key] = value.toJSON();
-            else if(Object.getPrototypeOf(value).constructor == this.paper.Size)
+            else if(Object.getPrototypeOf(value).constructor == paper.Size)
                 exported_state[key] = value.toJSON();
-            else if(Object.getPrototypeOf(value).constructor == this.paper.Rectangle)
+            else if(Object.getPrototypeOf(value).constructor == paper.Rectangle)
                 exported_state[key] = value.toJSON();
             else
                 throw new Error("Can't export value: " + value);

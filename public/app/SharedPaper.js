@@ -68,7 +68,7 @@ Ext.define('DD.SharedPaper',{
     
     addUser: function(user)
     {
-        user = new DD.UserDrawContext(user, this.toolDescriptions, this.paperScope);
+        user = new DD.UserDrawContext(user, this.toolDescriptions, this);
         this.users[user.user_id] = user;
     },
     
@@ -86,6 +86,11 @@ Ext.define('DD.SharedPaper',{
         }
         
         // TODO: Clear paperjs here?
+    },
+    
+    getSharedProject: function()
+    {
+        return this.paperScope.projects[0];
     },
     
     getUser: function(user_id)

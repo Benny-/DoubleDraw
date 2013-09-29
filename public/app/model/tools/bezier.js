@@ -1,4 +1,11 @@
 
+if( typeof exports !== 'undefined' )
+{
+    // This code is shared between server and browser.
+    // The browser does not know anything about exports or require.
+    var paper = require('paper');
+}
+
 var BezierDescription = new DD.model.tools.ToolDescription({
     uuid : 'fdd849ed-5b6e-419f-ac39-c0137556aa65',
     version : '0.0.0',
@@ -40,7 +47,7 @@ var BezierDescription = new DD.model.tools.ToolDescription({
 		this.state.mode = this.state.type = this.state.currentSegment = null;
 
 		if (!this.state.path) {
-			this.state.path = new this.paper.Path();
+			this.state.path = new paper.Path();
 			this.state.path.fillColor = {
 				hue: 360 * Math.random(),
 				saturation: 1,

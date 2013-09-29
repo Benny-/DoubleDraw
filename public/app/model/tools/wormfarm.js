@@ -1,4 +1,11 @@
 
+if( typeof exports !== 'undefined' )
+{
+    // This code is shared between server and browser.
+    // The browser does not know anything about exports or require.
+    var paper = require('paper');
+}
+
 var WormFarmDescription = new DD.model.tools.ToolDescription({
     uuid : 'dc1120a7-5ed3-4c93-8f9e-6971289b6a81',
     version : '0.0.0',
@@ -10,7 +17,7 @@ var WormFarmDescription = new DD.model.tools.ToolDescription({
 	maxDistance: 30,
     
     onMouseDown : function(event) {
-        this.state.worm = new this.paper.Path();
+        this.state.worm = new paper.Path();
         this.state.worm.strokeColor = this.getColor();
         this.state.worm.add(event.point, event.point);
         this.state.worm.closed = true;
@@ -44,7 +51,7 @@ var WormFarmDescription = new DD.model.tools.ToolDescription({
 		this.state.worm.insert(1, bottom);
 
 		// make a new line path from top to bottom
-		var path = new this.paper.Path(top, bottom);
+		var path = new paper.Path(top, bottom);
         path.fillColor = 'white';
         path.strokeColor = 'black';
         

@@ -25,7 +25,7 @@ Ext.define('DD.controller.Menu', {
     },
     
     onSave : function(){
-        var json_string = this.application.paper.project.exportJSON();
+        var json_string = this.application.sharedPaperUser.getSharedProject().exportJSON();
         var blob = new Blob([json_string], {type: "application/json"});
         saveAs(blob, "image.paperjs.json");
     },
@@ -33,13 +33,13 @@ Ext.define('DD.controller.Menu', {
     // TODO: Check why exported svg can't be viewed in some image viewers.
     onExportSVG : function(){
         var serializer= new XMLSerializer();
-        var svg = this.application.paper.project.exportSVG();
+        var svg = this.application.sharedPaperUser.getSharedProject().exportSVG();
         var svg_string = serializer.serializeToString(svg);
         var blob = new Blob([svg_string], {type: "image/svg+xml;charset=" + svg.characterSet});
         saveAs(blob, "image.svg");
         
         // var blobbuilder = new BlobBuilder();
-        // var svg = this.application.paper.project.exportSVG();
+        // var svg = this.application.sharedPaperUser.getSharedProject().exportSVG();
         // blobbuilder.append(svg);
         // var blob = blobbuilder.getBlob("image/svg+xml;charset=" + svg.characterSet);
         // saveAs(blob,"image.svg");

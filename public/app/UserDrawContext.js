@@ -24,21 +24,22 @@ Ext.define('DD.UserDrawContext',{
         },
     },
     
-    constructor: function (config, toolDescriptions, paperScope) {
+    constructor: function (config, toolDescriptions, SharedPaper) {
         this.callParent( arguments );
+        this.sharedPaper = SharedPaper;
         this.initConfig( config );
         this.tools = {};
         
         if(config.tools)
         {
             // This execution path is only taken on the client
-            this.import(config.tools, toolDescriptions, paperScope);
+            this.import(config.tools, toolDescriptions);
         }
         else
         {
             // This execution path is only taken on the server if a new player joins the fray.
             toolDescriptions.forEach( function(toolDescription) {
-                this.addToolDescription(toolDescription, paperScope);
+                this.addToolDescription(toolDescription);
             }, this);
         }
         
@@ -60,18 +61,19 @@ Ext.define('DD.UserDrawContext',{
         return new paper.Color(this.color.r/255, this.color.g/255, this.color.b/255, this.color.a);
     },
     
-    addToolDescription: function(toolDescription, paperScope) {
-        var tool = new DD.model.tools.PaperTool(paperScope, toolDescription, this);
+    getSharedPaper: function()
+    {
+    	return this.sharedPaper;
+    },
+    
+    addToolDescription: function(toolDescription) {
+        var tool = new DD.model.tools.PaperTool(this, toolDescription);
         this.tools[tool.uuid] = tool;
     },
     
-    importPaperTool: function(tool, toolDescriptions, paperScope) {
-        
-    },
-    
-    import: function(tools, toolDescriptions, paperScope) {
+    import: function(tools, toolDescriptions) {
         tools.forEach( function(tool) {
-            this.tools[tool.uuid] = new DD.model.tools.PaperTool(paperScope, toolDescriptions.get(tool.uuid, tool.version), this, tool.state);
+            this.tools[tool.uuid] = new DD.model.tools.PaperTool(this, toolDescriptions.get(tool.uuid, tool.version), tool.state);
         }, this);
     },
     

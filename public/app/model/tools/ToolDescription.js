@@ -5,7 +5,11 @@ if( typeof exports !== 'undefined' )
     var Ext = require('extnode');
 }
 
+/*
+ * Related class: DD.model.tools.PaperTool
+ */
 Ext.define('DD.model.tools.ToolDescription',{
+
     config: {
         uuid        : 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
         version     : '0.0.0',
@@ -14,7 +18,12 @@ Ext.define('DD.model.tools.ToolDescription',{
         name        : 'Unknown',
         description : "no description",
         
-        toolInit    : function() {},
+        // The following events can be generated.
+        // During the events you can execute the following functions:
+        // this.getColor(); // This returns the user's primary color in paperjs format.
+        // this.getSharedProject(); // Get the paperjs project.
+        // All variables between events should be stored in this.state.
+        toolInit    : function() {}, // toolInit is executed once at the start of every session.
         onMouseDown : function() {},
         onMouseUp   : function() {},
         onMouseDrag : function() {},
@@ -22,6 +31,7 @@ Ext.define('DD.model.tools.ToolDescription',{
         onKeyDown   : function() {},
         onKeyUp     : function() {},
     },
+    
     constructor: function(config) {
         this.initConfig(config);
     },
