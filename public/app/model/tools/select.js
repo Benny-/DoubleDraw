@@ -14,10 +14,39 @@ var SelectDescription = new DD.model.tools.ToolDescription({
     name : 'Select',
     description : "Could be used for transformations",
     
-    
     onMouseDown : function(event) {
-        console.log( "onMouseDown()", "TODO: Implement function." );
-        console.log( this.getSharedProject() );
+    	hitresults = this.getSharedProject()
+    					.hitTest(
+    						event.point,
+							{
+								fill: true,
+								stroke: true,
+								segments: true,
+								tolerance: true,
+							});
+    	
+    	if(hitresults)
+    	{
+    		hitresults.item.selected = true;
+    		this.state.item = hitresults.item;
+    		this.state.orginalPosition = hitresults.item.position
+    		this.state.orginalPoint = event.point;
+    	}
+    },
+    
+    onMouseDrag : function(event) {
+    	if(this.state.item)
+    	{
+    		this.state.item.position = this.state.orginalPosition.subtract(this.state.orginalPoint.subtract(event.point));
+    	}
+    },
+    
+    onMouseUp : function(event) {
+    	if(this.state.item)
+    	{
+    		this.state.item.selected = false;
+    		this.state.item = null;
+    	}
     },
 });
 
