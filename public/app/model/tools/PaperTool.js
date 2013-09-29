@@ -175,15 +175,15 @@ Ext.define('DD.model.tools.PaperTool',{
             var value = this.state[key];
             if( value == null || typeof value == 'undefined' || typeof value == 'number' || typeof value == 'string' || typeof value == 'boolean')
                 exported_state[key] = value; // Primitive types can directly be exported
-            else if(Object.getPrototypeOf(value).constructor == paper.Segment)
+            else if(value._class == 'Segment')
                 exported_state[key] = exportSegment.call(this, value);
             else if(isPaperJsItem.call(this, value))
                 exported_state[key] = exportItem.call(this, value);
-            else if(Object.getPrototypeOf(value).constructor == paper.Point)
+            else if(value._class == 'Point')
                 exported_state[key] = value.toJSON();
-            else if(Object.getPrototypeOf(value).constructor == paper.Size)
+            else if(value._class == 'Size')
                 exported_state[key] = value.toJSON();
-            else if(Object.getPrototypeOf(value).constructor == paper.Rectangle)
+            else if(value._class == 'Rectangle')
                 exported_state[key] = value.toJSON();
             else
                 throw new Error("Can't export "+key+": " + value);
