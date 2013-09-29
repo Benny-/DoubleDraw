@@ -186,7 +186,7 @@ Ext.define('DD.model.tools.PaperTool',{
             else if(Object.getPrototypeOf(value).constructor == paper.Rectangle)
                 exported_state[key] = value.toJSON();
             else
-                throw new Error("Can't export value: " + value);
+                throw new Error("Can't export "+key+": " + value);
         }, this);
         
         return exported_state;

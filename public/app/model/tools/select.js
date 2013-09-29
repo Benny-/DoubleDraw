@@ -29,7 +29,16 @@ var SelectDescription = new DD.model.tools.ToolDescription({
     	{
     		hitresults.item.selected = true;
     		this.state.item = hitresults.item;
-    		this.state.orginalPosition = hitresults.item.position
+    		// XXX: Clone is required on the following line.
+    		// A paperjs item's position might not be a actual Point object.
+    		// This is a bug. A bug which seems to be fixed if you use paperjs 0.9.9 or later.
+    		// But for some reason it is not fixed on nodejs's paper version.
+    		// By explicitly cloning the fake Point object it becomes a real Point object, thereby sidestepping the whole issue.
+    		// The following was used to trigger the bug:
+    		// - user 1 enters room.
+    		// - user 1 draws something and moves the item using the select tool.
+    		// - user 2 enters room (The server crashes at this point as it tries to expect the fake point object).
+    		this.state.orginalPosition = hitresults.item.position.clone();
     		this.state.orginalPoint = event.point;
     	}
     },
