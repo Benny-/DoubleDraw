@@ -21,6 +21,7 @@ var WormFarmDescription = new DD.model.tools.ToolDescription({
         this.state.worm.strokeColor = this.getColor();
         this.state.worm.add(event.point, event.point);
         this.state.worm.closed = true;
+        this.state.wormGroup = new paper.Group(this.state.worm);
     },
     
     onMouseDrag: function(event) {
@@ -54,7 +55,7 @@ var WormFarmDescription = new DD.model.tools.ToolDescription({
 		var path = new paper.Path(top, bottom);
         path.fillColor = 'white';
         path.strokeColor = 'black';
-        
+        this.state.wormGroup.addChild(path);
         
 		// This is the point at the front of the worm:
 		this.state.worm.firstSegment.point = event.point;
