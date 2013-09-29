@@ -67,6 +67,7 @@ npm start
 ## Roadmap
 
 - User management
+- User's cursors visible
 - Layers
 - Upload picture
 - Record/playback
