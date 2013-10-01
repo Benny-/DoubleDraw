@@ -119,44 +119,47 @@ Ext.define('DD.controller.Drawing', {
     },
     
     onPanelRendered: function(panel) {
+        var me = this;
         this.application.canvas = document.getElementById('html5_canvas');
         this.application.paper.setup('html5_canvas');
         
-        var controller = this;
         this.application.on("room::entered", function(roomState) {
-            
-            controller.sharedPaperUser = new Ext.create(
+            me.sharedPaperUser = new Ext.create(
                 'DD.SharedPaperUser',
-                controller.application.paper,
+                me.application.paper,
                 ToolDescriptions,
                 function(event){
-                    controller.application.socket.emit("user::drawing::tool::event", event );
+                    me.application.socket.emit("user::drawing::tool::event", event );
                 }
             );
-            controller.application.sharedPaperUser = controller.sharedPaperUser;
+            me.application.sharedPaperUser = me.sharedPaperUser;
             
-            controller.sharedPaperUser.import (roomState.sharedPaper);
-            controller.sharedPaperUser.setUser(roomState.user);
+            me.sharedPaperUser.import (roomState.sharedPaper);
+            me.sharedPaperUser.setUser(roomState.user);
+            me.application.paper.view.draw();
         });
         
         this.application.on("user::drawing::color", function(data) {
-            controller.sharedPaperUser.colorChange(data.user_id, data.color);
+            me.sharedPaperUser.colorChange(data.user_id, data.color);
         });
         
         this.application.on("room::user::leave", function(user) {
-            controller.sharedPaperUser.removeUser(user);
+            me.sharedPaperUser.removeUser(user.user_id);
+            me.application.paper.view.draw();
         });
         
         this.application.on("room::user::new", function(user) {
-            controller.sharedPaperUser.addUser(user);
+            me.sharedPaperUser.addUser(user);
+            me.application.paper.view.draw();
         });
         
         this.application.on("user::drawing::tool::change", function(data) {
-            controller.sharedPaperUser.userToolChange(data.user_id, data.tool);
+            me.sharedPaperUser.userToolChange(data.user_id, data.tool);
         });
         
         this.application.on("user::drawing::tool::event", function(event) {
-            controller.sharedPaperUser.userToolEvent(event.user_id, event);
+            me.sharedPaperUser.userToolEvent(event.user_id, event);
+            me.application.paper.view.draw();
         });
     },
     
@@ -298,7 +301,7 @@ Ext.define('DD.controller.Drawing', {
    		root = Ext.getStore('PaperItems').getRootNode();
    		root.removeAll();
    		
-   		var layers = this.sharedPaperUser.getPaperScope().projects[0].layers;
+   		var layers = this.sharedPaperUser.getSharedProject().layers;
 		for (var i = 0; i < layers.length; i++) {
 			var layer = layers[i];
 			var layerNode = Ext.create("DD.model.PaperItem", {item:layer, children:[] } )

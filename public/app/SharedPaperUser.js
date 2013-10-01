@@ -1,7 +1,19 @@
 
+if( typeof exports !== 'undefined' )
+{
+    // This code is shared between server and browser.
+    // The browser does not know anything about exports or require.
+    var paper = require('paper');
+}
+
 /**
+ * This class does NOT represent a single user but rather a SharedPaper on
+ * the user's (client) computer.
+ *
  * This class is only run on the client side. While SharedPaper (the parent class)
  * is shared on both sides.
+ * 
+ * This class has two responsebilities. Transmit ToolEvents and draw other user's cursors.
  * 
  * SharedPaperUser has a proxy tool which generates ToolEvents from user input.
  * The inputs are send to the central server. The server distribute all events
@@ -12,45 +24,38 @@
 Ext.define('DD.SharedPaperUser',{
     extend: 'DD.SharedPaper',
     
-    onToolEventCallback : null,
-    user_id             : NaN,
-    proxy_tool          : null,
-    
     constructor: function (paperScope, toolDescriptions, toolEventCallback) {
+        var me = this;
         this.callParent( arguments );
         
-        var SharedPaperUser = this;
+        this.proxyTool = null;
+        this.user = null;
+        
         this.proxyTool = new paperScope.Tool();
         
         this.proxyTool.onMouseDown = function(event) {
-            toolEventCallback( SharedPaperUser.exportToolEvent(event) );
+            toolEventCallback( me.exportToolEvent(event) );
         }
         
         this.proxyTool.onMouseUp = function(event) {
-            toolEventCallback( SharedPaperUser.exportToolEvent(event) );
+            toolEventCallback( me.exportToolEvent(event) );
         }
     
         this.proxyTool.onMouseDrag = function(event) {
-            toolEventCallback( SharedPaperUser.exportToolEvent(event) );
+            toolEventCallback( me.exportToolEvent(event) );
         }
         
         this.proxyTool.onMouseMove = function(event) {
-            toolEventCallback( SharedPaperUser.exportToolEvent(event) );
+            toolEventCallback( me.exportToolEvent(event) );
         }
         
         this.proxyTool.onKeyDown = function(event) {
-            toolEventCallback( SharedPaperUser.exportToolEvent(event) );
+            toolEventCallback( me.exportToolEvent(event) );
         }
         
         this.proxyTool.onKeyUp = function(event) {
-            toolEventCallback( SharedPaperUser.exportToolEvent(event) );
+            toolEventCallback( me.exportToolEvent(event) );
         }
-    },
-    
-    userToolEvent: function(event)
-    {
-        this.callParent( arguments );
-        this.paperScope.view.draw();
     },
     
     addToolDescription: function(ToolDescription)
@@ -58,9 +63,55 @@ Ext.define('DD.SharedPaperUser',{
         this.callParent( arguments );
     },
     
+    addUser: function(user)
+    {
+        console.log("Adding user: ", user)
+        this.callParent( arguments );
+        
+        var orginalLayer = this.getSharedProject().activeLayer; // This line might not be needed in the future.
+        // It might not be needed if events always activate the correct layer.
+        var guiLayer = this.getSharedProject().layers[0];
+        
+        guiLayer.activate();
+        var cursor = new this.paperScope.Path.Circle(new paper.Point(80, 50), 3);
+        cursor.name = 'u' + user.user_id;
+        cursor.strokeColor = 'black';
+        cursor.visible = true;
+        orginalLayer.activate();
+    },
+    
+    removeUser: function(user_id)
+    {
+        this.callParent( arguments );
+        var guiLayer = this.getSharedProject().layers[0];
+        guiLayer.children['u'+user_id].remove();
+    },
+    
+    updateCursor: function(user_id, importedToolEvent)
+    {
+        var guiLayer = this.getSharedProject().layers[0];
+        guiLayer.children['u'+user_id].position = importedToolEvent.point;
+    },
+    
+    userToolEvent: function(user_id, toolEvent)
+    {
+        var importedToolEvent = this.callParent( arguments );
+        if(importedToolEvent.point)
+        {
+            this.updateCursor(user_id, importedToolEvent);
+        }
+    },
+    
+    /**
+     * SetUser should only be called once the user was added using addUser(user).
+     */
     setUser: function(user)
     {
-        this.addUser(user);
+        this.user = this.getUser(user.user_id);
+        var guiLayer = this.getSharedProject().layers[0];
+        guiLayer.children['u'+user.user_id].visible = false;
+        return this.user;
     },
     
 });
+

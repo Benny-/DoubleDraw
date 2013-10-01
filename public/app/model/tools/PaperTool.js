@@ -88,7 +88,7 @@ Ext.define('DD.model.tools.PaperTool',{
         var importItem = function(exportedItem)
         {
             // See the exportItem() function down below.
-            return project.layers[0].children[exportedItem[1]];
+            return project.layers[exportedItem[1]].children[exportedItem[2]];
         }
         
         var importSegment = function(exportedSegment)
@@ -132,18 +132,21 @@ Ext.define('DD.model.tools.PaperTool',{
             
             var exportedItem;
             
-            // This implementation has several flaws:
-            // - it assumes a single layer
-            // - it assumes the item is a direct child of the layer
+            // This implementation has a flaw:
+            // - it assumes the item is in the top layer
             // - it assumes the item exist
-            for(var i = 0; i<project.layers[0].children.length; i++)
+            for(var l = 0; l<project.layers.length; l++)
             {
-                var possibleMatch = project.layers[0].children[i];
-                if(possibleMatch == item)
+                for(var i = 0; i<project.layers[l].children.length; i++)
                 {
-                    exportedItem = ['item', i];
+                    var possibleMatch = project.layers[l].children[i];
+                    if(possibleMatch == item)
+                    {
+                        exportedItem = ['item',l, i];
+                    }
                 }
-            }
+            } 
+
             
             if(!exportedItem)
                 console.warn("Item not found: ", item);
@@ -159,7 +162,7 @@ Ext.define('DD.model.tools.PaperTool',{
             var proto = Object.getPrototypeOf(possibleItem);
             if (proto)
             {
-                if (proto.constructor == paper.Item) {
+                if (proto._class == 'Item') {
                     return true;
                 }
                 else

@@ -21,6 +21,19 @@ Ext.define('DD.SharedPaper',{
         this.toolDescriptions = {};
         this.paperScope = paperScope;
         this.toolDescriptions = toolDescriptions.clone();
+        
+        {
+            // Ensure we have two layers.
+            this.paperScope.activate();
+            new paperScope.Layer();
+            new paperScope.Layer();
+            for(var i = 2; i<paperScope.project.layers.length; i++)
+            {
+                paperScope.project.layers[i].remove();
+            }
+            paperScope.project.layers[0].removeChildren();
+            paperScope.project.layers[1].removeChildren();
+        }
     },
     
     colorChange: function(user_id, color)
@@ -127,8 +140,15 @@ Ext.define('DD.SharedPaper',{
     },
     
     import: function(sharedPaper) {
-        this.paperScope.project.importJSON(sharedPaper.paperProject);
-        this.paperScope.project.layers[0].remove();
+    
+        // Remove all layers.
+        for(var i = 0; i<this.getSharedProject().layers.length; i++)
+        {
+            this.getSharedProject().layers[i].remove();
+        }
+        
+        this.getSharedProject().importJSON(sharedPaper.paperProject);
+        this.getSharedProject().layers[0].remove();
         this.paperScope.view.draw();
         for (var i = 0; i < sharedPaper.users.length; i++) {
             this.addUser(sharedPaper.users[i]);
