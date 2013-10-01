@@ -39,20 +39,10 @@ Ext.define('DD.SharedPaper',{
     {
         var user = this.users[user_id];
         var tool = user.tool;
-        if(this.paperScope.activate)
-        {
-            // XXX: activate() is required to change global paper scope on the server.
-            // It is not possible to do this on node using "paper = this.paperScope" as
-            // paper is private to the paper module.
-            // 
-            // activate() is not yet part of the official paperjs repo.
-            // The function looks like this in PaperScope.js:
-            // activate: function() { paper = this; },
-            //
-            // Remove these comments once it is part of the official repo.
-            this.paperScope.activate();
-        }
-        tool.fire(toolEvent.type, this.importToolEvent(toolEvent) );
+        this.paperScope.activate(); // Note: Activating this paperScope is actually only required on NodeJS, as only the server side program uses multiple paper-scopes.
+        var importedToolEvent = this.importToolEvent(toolEvent);
+        tool.fire(toolEvent.type, importedToolEvent );
+        return importedToolEvent;
     },
     
     addToolDescription: function(toolDescription)
@@ -77,20 +67,9 @@ Ext.define('DD.SharedPaper',{
         return delete this.users[user_id];
     },
     
-    destroy: function()
-    {
-        var user_ids = Object.keys(this.users);
-        for (var i = 0; i < user_ids.length; i++) {
-            var user = this.users[user_ids[i]];
-            this.removeUser(user);
-        }
-        
-        // TODO: Clear paperjs here?
-    },
-    
     getSharedProject: function()
     {
-        return this.paperScope.projects[0];
+        return this.paperScope.project;
     },
     
     getUser: function(user_id)
@@ -120,18 +99,13 @@ Ext.define('DD.SharedPaper',{
             point    : event.point          ?   { x: event.point.x, y: event.point.y}         : null,
             lastPoint: event.lastPoint      ?   { x: event.lastPoint.x, y: event.lastPoint.y} : null,
             downPoint: event.downPoint      ?   { x: event.downPoint.x, y: event.downPoint.y} : null,
-            // middlePoint: event.middlePoint  ?   { x: event.middlePoint.x, y: event.middlePoint.y} : null, // XXX: This line will kill the server or client.
+            middlePoint: event.middlePoint  ?   { x: event.middlePoint.x, y: event.middlePoint.y} : null,
             delta: event.delta              ?   { x: event.delta.x, y: event.delta.y} : null,
             count: event.count,
             // item: {
             //     id : event.item.id,
             // }
         }
-        
-        // event.middlePoint should only be included if the event is a drag or mouseup. It goes horrible wrong otherwise, see above.
-        // We can't simply check if event.middlePoint exist, as it causes a stack overflow (idk why).
-        if(event.type == 'mousedrag' || event.type == 'mouseup')
-            exported_event.middlePoint = { x: event.middlePoint.x, y: event.middlePoint.y};
         
         return exported_event;
     },
