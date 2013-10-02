@@ -72,6 +72,7 @@ npm start
 - Upload picture
 - Record/playback
 - Save widget layout
+- Ensure consistent canvas (checksums)
 - More tools
 - Selection (deleting and moving drawings)
 - Operational transformation

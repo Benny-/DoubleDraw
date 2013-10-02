@@ -65,7 +65,6 @@ Ext.define('DD.SharedPaperUser',{
     
     addUser: function(user)
     {
-        console.log("Adding user: ", user)
         this.callParent( arguments );
         
         var orginalLayer = this.getSharedProject().activeLayer; // This line might not be needed in the future.
@@ -76,7 +75,7 @@ Ext.define('DD.SharedPaperUser',{
         var cursor = new this.paperScope.Path.Circle(new paper.Point(80, 50), 3);
         cursor.name = 'u' + user.user_id;
         cursor.strokeColor = 'black';
-        cursor.visible = true;
+        cursor.visible = false;
         orginalLayer.activate();
     },
     
@@ -90,20 +89,29 @@ Ext.define('DD.SharedPaperUser',{
     updateCursor: function(user_id, importedToolEvent)
     {
         var guiLayer = this.getSharedProject().layers[0];
-        guiLayer.children['u'+user_id].position = importedToolEvent.point;
+        var cursor = guiLayer.children['u'+user_id];
+        cursor.position = importedToolEvent.point;
+        cursor.visible = true;
     },
     
     userToolEvent: function(user_id, toolEvent)
     {
         var importedToolEvent = this.callParent( arguments );
-        if(importedToolEvent.point)
+        if(importedToolEvent.point && this.user.user_id != user_id)
         {
             this.updateCursor(user_id, importedToolEvent);
         }
     },
     
+    offscreen: function(user_id)
+    {
+        var guiLayer = this.getSharedProject().layers[0];
+        var cursor = guiLayer.children['u'+user_id];
+        cursor.visible = false;
+    },
+    
     /**
-     * SetUser should only be called once the user was added using addUser(user).
+     * SetUser should be called once the user was added using addUser(user).
      */
     setUser: function(user)
     {

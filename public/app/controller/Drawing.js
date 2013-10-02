@@ -8,6 +8,7 @@ Ext.define('DD.controller.Drawing', {
     
     primaryColor: null,
     secondaryColor: null,
+    mouseOverCanvas: false,
     
     stores: [
         'Palettes',
@@ -47,9 +48,11 @@ Ext.define('DD.controller.Drawing', {
             this);
         
         this.control({
-            'panel#canvasPanel': {
+            'canvas#canvasPanel': {
                 render: this.onPanelRendered,
                 resize: this.onPanelResize,
+                canvasMouseEnter: this.canvasMouseEnter,
+                canvasMouseLeave: this.canvasMouseLeave,
             },
             
             'colorbox#colorSelectionPrimary': {
@@ -118,6 +121,14 @@ Ext.define('DD.controller.Drawing', {
         });
     },
     
+    canvasMouseEnter: function() {
+        this.mouseOverCanvas = true;
+    },
+    
+    canvasMouseLeave: function() {
+        this.mouseOverCanvas = false;
+    },
+    
     onPanelRendered: function(panel) {
         var me = this;
         this.application.canvas = document.getElementById('html5_canvas');
@@ -129,7 +140,31 @@ Ext.define('DD.controller.Drawing', {
                 me.application.paper,
                 ToolDescriptions,
                 function(event){
-                    me.application.socket.emit("user::drawing::tool::event", event );
+                    var cursorVisibleForOther = true;
+                    
+                    // We do not need to send our mousemove events.
+                    // They are not essential for a consistent shared canvas.
+                    // They will only be used to draw the cursors.
+                    if(event.type == 'mousemove')
+                    {
+                        if(me.mouseOverCanvas)
+                        {
+                            cursorVisibleForOther = true;
+                            me.application.socket.emit("user::drawing::tool::event", event );
+                        }
+                        else if(cursorVisibleForOther)
+                        {
+                            // This event will hide our cursor on the other's computer.
+                            // The boolean cursorVisibleForOther ensures we do not send unnecessary user::drawing::move::offscreen events.
+                            cursorVisibleForOther = false;
+                            me.application.socket.emit("user::drawing::move::offscreen");
+                        }
+                    }
+                    else
+                    {
+                        // All other event types however are essential for a consistent canvas and should always be send.
+                        me.application.socket.emit("user::drawing::tool::event", event );
+                    }
                 }
             );
             me.application.sharedPaperUser = me.sharedPaperUser;
@@ -159,6 +194,11 @@ Ext.define('DD.controller.Drawing', {
         
         this.application.on("user::drawing::tool::event", function(event) {
             me.sharedPaperUser.userToolEvent(event.user_id, event);
+            me.application.paper.view.draw();
+        });
+        
+        this.application.on("user::drawing::move::offscreen", function(user) {
+            me.sharedPaperUser.offscreen(user.user_id);
             me.application.paper.view.draw();
         });
     },
