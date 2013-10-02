@@ -142,7 +142,7 @@ createLayout = function()
                         minWidth: 50,
                         bodyPadding: 5,
                         minHeight: 50,
-                        html : '<canvas id="html5_canvas" width="0" height="0" oncontextmenu="return false;"><p>This program not supported in your browser.</p></canvas>',
+                        html : '<canvas id="html5_canvas" width="0" height="0" oncontextmenu="return false;"><p>This program is not supported in your browser.</p></canvas>',
                     },
                     {
                         xtype: 'tabpanel',

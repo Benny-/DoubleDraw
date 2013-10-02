@@ -107,7 +107,7 @@ Ext.define('DD.SharedPaper',{
     
     exportToolEvent: function(event)
     {
-        var exported_event = {
+        return {
             type: event.type,
             point    : event.point          ?   { x: event.point.x, y: event.point.y}         : null,
             lastPoint: event.lastPoint      ?   { x: event.lastPoint.x, y: event.lastPoint.y} : null,
@@ -115,12 +115,11 @@ Ext.define('DD.SharedPaper',{
             middlePoint: event.middlePoint  ?   { x: event.middlePoint.x, y: event.middlePoint.y} : null,
             delta: event.delta              ?   { x: event.delta.x, y: event.delta.y} : null,
             count: event.count,
+            event: { which:event.event.which }
             // item: {
             //     id : event.item.id,
             // }
         }
-        
-        return exported_event;
     },
     
     importToolEvent: function(event)
@@ -133,6 +132,7 @@ Ext.define('DD.SharedPaper',{
             middlePoint: event.middlePoint ? new this.paperScope.Point(event.middlePoint) : null,
             delta: new this.paperScope.Point(event.delta),
             count: event.count,
+            event: event.event,
             // item: {
             //     id : event.item.id,
             // }

@@ -60,11 +60,13 @@ ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 
 ### Running
 
+Start the server:
+
 ```bash
 npm start
 ```
 
-Access the server using any modern browser.
+Access the server using any modern browser:
 
 - IE9 (or better)
 - Firefox

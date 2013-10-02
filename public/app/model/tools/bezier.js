@@ -21,7 +21,8 @@ var BezierDescription = new DD.model.tools.ToolDescription({
         this.types = ['point', 'handleIn', 'handleOut'];
     },
     
-    onMouseDown : function(event) {
+    onMouseDown : function(event)
+    {
         function findHandle(point) {
 			for (var i = 0, l = this.state.path.segments.length; i < l; i++) {
 				for (var j = 0; j < 3; j++) {
@@ -67,7 +68,19 @@ var BezierDescription = new DD.model.tools.ToolDescription({
 				this.state.path = null;
 			}
 		}
-
+		
+        if(event.event.which == 3) // Right mousebutton pressed.
+        {
+			this.state.mode = 'close';
+			this.state.path.selected = false;
+			
+			// Remove the path if it consist of only one point.
+            if(this.state.path.segments.length == 1)
+                this.state.path.remove();
+            
+			this.state.path = null;
+        }
+		
 		if (this.state.mode != 'close') {
 			this.state.mode = this.state.currentSegment ? 'move' : 'add';
 			if (!this.state.currentSegment)
