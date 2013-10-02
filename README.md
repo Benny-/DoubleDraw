@@ -64,6 +64,13 @@ ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
 npm start
 ```
 
+Access the server using any modern browser.
+
+- IE9 (or better)
+- Firefox
+- Chromium
+- Opera
+
 ## Roadmap
 
 - User management

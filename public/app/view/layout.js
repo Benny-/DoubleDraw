@@ -15,9 +15,10 @@ createLayout = function()
                     xtype: 'toolbar',
                     items: [
                         {
-                            text: 'File',                      
+                            text: 'File',
+                            xtype: 'button',
                             menu: {
-                                xtype: 'menu',                          
+                                xtype: 'menu',
                                 items: [
                                     {
                                         xtype: 'menuitem',  
@@ -35,22 +36,25 @@ createLayout = function()
                                         text: 'Export view as PNG',
                                         id: 'file_menu_export_png',
                                     },
-                                ]                          
+                                ]
                             }
                         },
                         {
-                            text: 'Help',                      
+                            text: 'Help',
+                            xtype: 'button',
                             menu: {
-                                xtype: 'menu',                          
+                                xtype: 'menu',
                                 items: [
                                     {
                                         text: 'Manual',
+                                        disabled: true,
                                     },
                                     '-',
                                     {
                                         text: 'About',
+                                        disabled: true,
                                     },
-                                ]                          
+                                ]
                             }
                         },
                     ]
@@ -102,11 +106,13 @@ createLayout = function()
                                     }, 
                                     {
                                         text: 'Import',
+                                        disabled: true,
                                         tooltip: 'Import a existing pallete',
                                         id: 'import_palette'
                                     },
                                     {
                                         text: 'Reset',
+                                        disabled: true,
                                         tooltip: 'Destroy all palletes',
                                         id: 'reset_palettes'
                                     }
@@ -183,6 +189,7 @@ createLayout = function()
                                     },
                                     {
                                         text: 'Add',
+                                        disabled: true,
                                         tooltip: 'Append a new layer',
                                         id: 'appendLayer'
                                     },
