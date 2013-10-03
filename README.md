@@ -13,7 +13,7 @@ The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org
 
 The following dependencies are included in this repo and do not need to be downloaded:
 
-- http://paperjs.org/
+- http://paperjs.org/about/
 - https://github.com/eligrey/Blob.js
 - https://github.com/eligrey/canvas-toBlob.js
 - https://github.com/eligrey/FileSaver.js
@@ -86,6 +86,22 @@ Access the server using any modern browser:
 - Selection (deleting and moving drawings)
 - Operational transformation
 - Icons in user interface
+
+## Code
+
+This chapter is mainly for reading the code and hacking.
+
+[Paper.js](http://paperjs.org/about/) is an open source vector graphics scripting framework that runs on top of the HTML5 Canvas. When we draw using paper.js we will refer to it as drawing on the "paper".
+
+The clients send mouse inputs (click/drag/release) events to the server. The server redistributes the events to all (including the sender) clients. The events are processed on all parties by a tool which knows what transformations (create path, edit, ect..) it should apply to the paper. All clients process the same events in the same order, this ensures a consistent paper. The server contains a paper too, this is serialized and send if a new user joins a room. A consequence of this setup is the round trip before any of your inputs show any effect on your paper.
+
+The folder "public" contains all the client related code and resources. It is organized according to [extjs MVC](http://docs.sencha.com/extjs/#!/guide/application_architecture) structure.
+
+The server is rather simply and is actually a small portion of the total code base. It has two purposes, to re-transmit all events and to process those events using a tool on a local paper. The following code is shared between the server and the client for processing events and drawing on the local paper:
+
+- public/app/SharedPaper.js
+- public/app/UserDrawContext.js
+- public/app/model/tools/*
 
 ## Contact
 
