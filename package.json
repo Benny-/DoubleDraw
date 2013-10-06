@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "license": "WTFPL",
     "author": "Benny",
-    "description": "a collaberative vector drawning program",
+    "description": "a collaberative vector drawing program",
     "scripts": {
         "start": "node ./server.js"
     },
@@ -12,8 +12,8 @@
         "url": "https://github.com/Benny-/DoubleDraw.git"
     },
     "keywords": [
-        "drawn",
-        "drawning",
+        "draw",
+        "drawing",
         "vector",
         "Collaborate",
         "Collaboration",
