@@ -190,6 +190,7 @@ Ext.define('DD.controller.Drawing', {
         
         this.application.on("user::drawing::tool::change", function(data) {
             me.sharedPaperUser.userToolChange(data.user_id, data.tool);
+            me.application.paper.view.draw();
         });
         
         this.application.on("user::drawing::tool::event", function(event) {

@@ -29,6 +29,7 @@ Ext.define('DD.UserDrawContext',{
         this.sharedPaper = SharedPaper;
         this.initConfig( config );
         this.tools = {};
+        this.selection = [];
         
         if(config.tools)
         {
@@ -61,9 +62,9 @@ Ext.define('DD.UserDrawContext',{
         return new paper.Color(this.color.r/255, this.color.g/255, this.color.b/255, this.color.a);
     },
     
-    getSharedPaper: function()
+    getSharedProject: function()
     {
-    	return this.sharedPaper;
+        return this.sharedPaper.getSharedProject();
     },
     
     addToolDescription: function(toolDescription) {

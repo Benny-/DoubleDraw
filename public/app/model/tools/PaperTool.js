@@ -29,12 +29,14 @@ Ext.define('DD.model.tools.PaperTool',{
         description : "no description",
         
         toolInit    : function() {},
-        onMouseDown : function() {},
-        onMouseUp   : function() {},
-        onMouseDrag : function() {},
-        onMouseMove : function() {},
-        onKeyDown   : function() {},
-        onKeyUp     : function() {},
+        toolUse     : function() {},
+        toolChange  : function() {},
+        onMouseDown : function(event) {},
+        onMouseUp   : function(event) {},
+        onMouseDrag : function(event) {},
+        onMouseMove : function(event) {},
+        onKeyDown   : function(event) {},
+        onKeyUp     : function(event) {},
     },
     
     constructor: function (UserDrawContext, toolDescription, state) {
@@ -78,7 +80,7 @@ Ext.define('DD.model.tools.PaperTool',{
     },
     
     getSharedProject: function() {
-        return this.userDrawContext.getSharedPaper().getSharedProject();
+        return this.userDrawContext.getSharedProject();
     },
     
     importState: function(exportedState) {

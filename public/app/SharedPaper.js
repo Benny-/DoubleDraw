@@ -24,6 +24,7 @@ Ext.define('DD.SharedPaper',{
         
         {
             // Ensure we have two layers.
+            // One layer is used for the UI and the others will be used for the drawing.
             this.paperScope.activate();
             new paperScope.Layer();
             new paperScope.Layer();
@@ -45,7 +46,12 @@ Ext.define('DD.SharedPaper',{
     userToolChange: function(user_id, tool)
     {
         var user = this.users[user_id];
-        user.tool = user.tools[tool.uuid];
+        var newTool = user.tools[tool.uuid];
+        if(!newTool)
+            throw new Error("User used a unknown tool:", tool.uuid);
+        user.tool.toolChange();
+        user.tool = newTool;
+        user.tool.toolUse();
     },
     
     userToolEvent: function(user_id, toolEvent)

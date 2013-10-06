@@ -12,7 +12,7 @@ var SelectDescription = new DD.model.tools.ToolDescription({
     deprecated : false,
     icon : null,
     name : 'Select',
-    description : "Could be used for transformations",
+    description : "Select and move objects",
     
     onMouseDown : function(event) {
     	hitresults = this.getSharedProject()
