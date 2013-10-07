@@ -53,16 +53,19 @@ Ext.define('DD.model.tools.PaperTool',{
     fire: function(type, event) {
         if(type == 'mousedown')
             this.onMouseDown(event)
-        if(type == 'mouseup')
+        else if(type == 'mouseup')
             this.onMouseUp(event)
-        if(type == 'mousedrag')
+        else if(type == 'mousedrag')
             this.onMouseDrag(event)
-        if(type == 'mousemove')
+        else if(type == 'mousemove')
             this.onMouseMove(event)
-        if(type == 'keydown')
+        else if(type == 'keydown')
             this.onKeyDown(event)
-        if(type == 'keyup')
+        else if(type == 'keyup')
             this.onKeyUp(event)
+        else {
+            throw new Error("Unknown event");
+        }
         
         /*
          * Code for importing and exporting items is only used when a new user joins a room.
@@ -134,7 +137,7 @@ Ext.define('DD.model.tools.PaperTool',{
             
             var exportedItem;
             
-            // This implementation has a flaw:
+            // This implementation has flaws:
             // - it assumes the item is in the top layer
             // - it assumes the item exist
             for(var l = 0; l<project.layers.length; l++)
@@ -147,8 +150,7 @@ Ext.define('DD.model.tools.PaperTool',{
                         exportedItem = ['item',l, i];
                     }
                 }
-            } 
-
+            }
             
             if(!exportedItem)
                 console.warn("Item not found: ", item);
@@ -184,7 +186,7 @@ Ext.define('DD.model.tools.PaperTool',{
                 exported_state[key] = exportSegment.call(this, value);
             else if(isPaperJsItem.call(this, value))
                 exported_state[key] = exportItem.call(this, value);
-            else if(value._class == 'Point')
+            else if(value._class == 'Point') // Basic paperjs items can be directly converted to json. They have no relation to another paperjs object in the same paperscope (XXX: Not entirely true).
                 exported_state[key] = value.toJSON();
             else if(value._class == 'Size')
                 exported_state[key] = value.toJSON();
