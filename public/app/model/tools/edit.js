@@ -38,8 +38,8 @@ var EditDescription = new DD.model.tools.ToolDescription({
 					var type = types[j];
 					var segmentPoint = (type == 'point')
 							? segment.point
-							: segment.point + segment[type];
-					var distance = ( point.subtract(segmentPoint) ).length;
+							: segment.point.add(segment[type]);
+					var distance = point.subtract(segmentPoint).length;
 					if (distance < 3) {
 						return {
 							type: type,
@@ -136,7 +136,7 @@ var EditDescription = new DD.model.tools.ToolDescription({
 		        // This block of code is stolen from inkscape.
 		        // http://bazaar.launchpad.net/~inkscape.dev/inkscape/trunk/view/head:/src/ui/tool/curve-drag-point.cpp#L66
 		        
-                // Magic Bezier Drag Equations follow!
+                // Magic Bezier Drag Equations follows!
                 // "weight" describes how the influence of the drag should be distributed
                 // among the handles; 0 = front handle only, 1 = back handle only.
                 var weight, t = this.state.currentCurveLocation.parameter;
@@ -149,20 +149,21 @@ var EditDescription = new DD.model.tools.ToolDescription({
                 var offset0 = delta.multiply( ((1-weight)/(3*t*(1-t)*(1-t))) );
                 var offset1 = delta.multiply( (weight/(3*t*t*(1-t))) );
                 
-                this.state.currentCurveLocation.curve.segment1.handleOut = this.state.currentCurveLocation.curve.handle1.add( offset0 );
-                this.state.currentCurveLocation.curve.segment1.handleIn = this.state.currentCurveLocation.curve.segment1.handleIn.subtract( offset0 ); // Remove this line for sharp corners.
+                var curve = this.state.currentCurveLocation.curve;
+                curve.segment1.handleOut = curve.segment1.handleOut.add( offset0 );
+                curve.segment1.handleIn  = curve.segment1.handleIn.subtract( offset0 ); // Remove this line for sharp corners.
                 
-                this.state.currentCurveLocation.curve.segment2.handleIn = this.state.currentCurveLocation.curve.handle2.add( offset1 );
-                this.state.currentCurveLocation.curve.segment2.handleOut = this.state.currentCurveLocation.curve.segment2.handleOut.subtract( offset1 ); // Remove this line for sharp corners.
+                curve.segment2.handleIn  = curve.segment2.handleIn.add( offset1 );
+                curve.segment2.handleOut = curve.segment2.handleOut.subtract( offset1 ); // Remove this line for sharp corners.
 		    }
 		    else
 		    {
 		        // type is 'handleOut' or 'handleIn'
 			    var delta = event.delta.clone();
 			    if (this.state.type == 'handleOut')
-				    delta = -delta;
-			    this.state.currentSegment.handleIn += delta;
-			    this.state.currentSegment.handleOut -= delta;
+				    delta = delta.subtract(delta).subtract(delta);
+			    this.state.currentSegment.handleIn  = this.state.currentSegment.handleIn.add(delta);
+			    this.state.currentSegment.handleOut = this.state.currentSegment.handleOut.subtract(delta);
 		    }
 	    }
     },

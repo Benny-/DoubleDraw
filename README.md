@@ -107,7 +107,7 @@ The server is rather simply and is actually a small portion of the total code ba
 
 For bugs and feature requests you should make a [ticket](https://github.com/Benny-/DoubleDraw/issues). Please check if there issent already a ticket open.
 
-For questions you can send a email or join on irc: room `#DoubleDraw` on `irc.freenode.net`. For convenience you can join using [webchat](https://webchat.freenode.net/?channels=DoubleDraw).
+For questions or offering help of any kind (programming, graphics, testers, advice) you can send a email or join on irc: room `#DoubleDraw` on `irc.freenode.net`. For convenience you can join using [webchat](https://webchat.freenode.net/?channels=DoubleDraw).
 
 ## License
 

@@ -98,10 +98,25 @@ Ext.define('DD.model.tools.PaperTool',{
         
         var importSegment = function(exportedSegment)
         {
-        	console.log(exportedSegment);
         	var path = importItem(exportedSegment[2]);
         	var segment = path.segments[exportedSegment[1]];
         	return segment;
+        }
+        
+        var importCurve = function(exportedCurve)
+        {
+        	var path = importItem(exportedCurve[2]);
+        	var curve = path.curves[exportedCurve[1]];
+        	return curve;
+        }
+        
+        var importCurveLocation = function(exportedCurveLocation)
+        {
+        	var curve = importCurve(exportedCurveLocation[1]);
+        	var parameter = exportedCurveLocation[2];
+        	var exportedPoint = exportedCurveLocation[3];
+        	var point = new paper.Point(exportedPoint[0], exportedPoint[1]);
+        	return new paper.CurveLocation(curve, parameter, point);
         }
         
         Object.keys(exportedState).forEach( function(key)
@@ -113,6 +128,10 @@ Ext.define('DD.model.tools.PaperTool',{
                 state[key] = importItem.call(this, value);
             else if(value[0] === 'segment')
                 state[key] = importSegment.call(this, value);
+            else if(value[0] === 'Curve')
+                state[key] = importCurve.call(this, value);
+            else if(value[0] === 'CurveLocation')
+                state[key] = importCurveLocation.call(this, value);
             else
                 // What is going on here?
                 // Well..
@@ -162,6 +181,17 @@ Ext.define('DD.model.tools.PaperTool',{
             return ['segment', segment.index, exportItem.call(this, segment.path) ];
         };
         
+        var exportCurve = function(curve)
+        {
+            return ['Curve', curve.index, exportItem.call(this, curve.path) ];
+        };
+        
+        var exportCurveLocation = function(curveLocation)
+        {
+            var exportedCurveLocation = ['CurveLocation', exportCurve.call(this, curveLocation.curve), curveLocation.parameter, curveLocation.point.toJSON() ];
+            return exportedCurveLocation;
+        };
+        
         var isPaperJsItem = function(possibleItem) {
             var proto = Object.getPrototypeOf(possibleItem);
             if (proto)
@@ -184,6 +214,10 @@ Ext.define('DD.model.tools.PaperTool',{
                 exported_state[key] = value; // Primitive types can directly be exported
             else if(value._class == 'Segment')
                 exported_state[key] = exportSegment.call(this, value);
+            else if(value._class == 'Curve')
+                exported_state[key] = exportCurve.call(this, value);
+            else if(value._class == 'CurveLocation')
+                exported_state[key] = exportCurveLocation.call(this, value);
             else if(isPaperJsItem.call(this, value))
                 exported_state[key] = exportItem.call(this, value);
             else if(value._class == 'Point') // Basic paperjs items can be directly converted to json. They have no relation to another paperjs object in the same paperscope (XXX: Not entirely true).
