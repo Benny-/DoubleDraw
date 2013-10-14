@@ -4,6 +4,7 @@ if( typeof exports !== 'undefined' )
     // This code is shared between server and browser.
     // The browser does not know anything about exports or require.
     var Ext = require('extnode');
+    var paper = require('paper');
     var PaperTool = require('./model/tools/PaperTool.js');
     var UserDrawContext = require('./UserDrawContext.js');
 }
@@ -109,6 +110,139 @@ Ext.define('DD.SharedPaper',{
     getPaperScope: function()
     {
         return this.paperScope;
+    },
+    
+    paperSerializers: {
+        item: {
+            export: function(item) {
+                var exportedItem;
+                var project = this.getSharedProject();
+                
+                // This implementation has flaws:
+                // - it assumes the item is in the top layer
+                // - it assumes the item exist
+                for(var l = 0; l<project.layers.length; l++)
+                {
+                    for(var i = 0; i<project.layers[l].children.length; i++)
+                    {
+                        var possibleMatch = project.layers[l].children[i];
+                        if(possibleMatch == item)
+                        {
+                            exportedItem = ['item',l, i];
+                        }
+                    }
+                }
+                
+                if(!exportedItem)
+                {
+                    console.warn("Item not found: ", item);
+                    throw new Error("Item not found");
+                }
+                
+                return exportedItem;
+            },
+            import: function(exportedItem) {
+                return this.getSharedProject().layers[exportedItem[1]].children[exportedItem[2]];
+            },
+        },
+        segment: {
+            export: function(segment)
+            {
+                return ['Segment', segment.index, this.paperSerializers.item.export.call(this, segment.path) ];
+            },
+            import: function(exportedSegment)
+            {
+                var path = this.paperSerializers.item.import.call(this, exportedSegment[2]);
+            	var segment = path.segments[exportedSegment[1]];
+            	return segment;
+            },
+        },
+        curve: {
+            export: function(curve)
+            {
+                return ['Curve', curve.index, this.paperSerializers.item.export.call(this, curve.path) ];
+            },
+            import: function(exportedCurve)
+            {
+                var path = this.paperSerializers.item.import.call(this, exportedCurve[2]);
+            	var curve = path.curves[exportedCurve[1]];
+            	return curve;
+            },
+        },
+        curveLocation: {
+            export: function(curveLocation)
+            {
+                return ['CurveLocation', this.paperSerializers.curve.export.call(this, curveLocation.curve), curveLocation.parameter, curveLocation.point.toJSON() ];
+            },
+            import: function(exportedCurveLocation)
+            {
+                var curve = this.paperSerializers.curve.import.call(this, exportedCurveLocation[1]);
+            	var parameter = exportedCurveLocation[2];
+            	var exportedPoint = exportedCurveLocation[3];
+            	var point = new paper.Point(exportedPoint[0], exportedPoint[1]);
+            	return new paper.CurveLocation(curve, parameter, point);
+            },
+        },
+    },
+    
+    exportPaperThing: function(paperThing)
+    {
+        var isPaperJsItem = function(possibleItem) {
+            var proto = Object.getPrototypeOf(possibleItem);
+            if (proto)
+            {
+                if (proto._class == 'Item') {
+                    return true;
+                }
+                else
+                {
+                    return isPaperJsItem.call(this, proto);
+                }
+            }
+            return false;
+        };
+        
+        if( paperThing == null || typeof paperThing == 'undefined' || typeof paperThing == 'number' || typeof paperThing == 'string' || typeof paperThing == 'boolean')
+            return paperThing; // Primitive types can directly be exported
+        else if(paperThing._class == 'Segment')
+            return this.paperSerializers.segment.export.call(this, paperThing);
+        else if(paperThing._class == 'Curve')
+            return this.paperSerializers.curve.export.call(this, paperThing);
+        else if(paperThing._class == 'CurveLocation')
+            return this.paperSerializers.curveLocation.export.call(this, paperThing);
+        else if(isPaperJsItem.call(this, paperThing))
+            return this.paperSerializers.item.export.call(this, paperThing);
+        else if(paperThing._class == 'Point') // Basic paperjs items can be directly converted to json. They have no relation to another paperjs object in the same paperscope (XXX: Not entirely true).
+            return paperThing.toJSON();
+        else if(paperThing._class == 'Size')
+            return paperThing.toJSON();
+        else if(paperThing._class == 'Rectangle')
+            return paperThing.toJSON();
+        else
+            throw new Error("Can't export "+key+": " + paperThing);
+    },
+    
+    importPaperThing: function(exportedPaperThing)
+    {
+        var value = exportedPaperThing;
+        if( value == null || typeof value == 'undefined' || typeof value == 'number' || typeof value == 'string' || typeof value == 'boolean')
+            return value; // Primitive types can directly be exported
+        else if(value[0] === 'item')
+            return this.paperSerializers.item.import.call(this, value);
+        else if(value[0] === 'Segment')
+            return this.paperSerializers.segment.import.call(this, value);
+        else if(value[0] === 'Curve')
+            return this.paperSerializers.curve.import.call(this, value);
+        else if(value[0] === 'CurveLocation')
+            return this.paperSerializers.curveLocation.import.call(this, value);
+        else
+            // What is going on here?
+            // Well..
+            // Basic types are serialized like this: ["Point",3,6]
+            // Basic types can be created like this: new paper.Point(3, 6)
+            // We are directly converting a serialized form of a basic type to a real basic object
+            // by picking a different constructor during runtime.
+            return new paper[value[0]](value[1], value[2], value[3], value[4], value[5], value[6], value[7], value[8], value[9], value[10], value[11], value[12]);
     },
     
     exportToolEvent: function(event)

@@ -4,7 +4,6 @@ if( typeof exports !== 'undefined' )
     // This code is shared between server and browser.
     // The browser does not know anything about exports or require.
     var Ext = require('extnode');
-    var paper = require('paper');
 }
 
 /**
@@ -72,9 +71,9 @@ Ext.define('DD.model.tools.PaperTool',{
          * Uncommenting the following lines will execute the import/export code on every tool event,
          * making it easier to debug in the browser.
          */
-        // var exportedState = this.exportState();
-        // this.state = {};
-        // this.state = this.importState(exportedState);
+        var exportedState = this.exportState();
+        this.state = {};
+        this.state = this.importState(exportedState);
         // console.log("exportedState", exportedState, "importedState", this.state, event);
     },
     
@@ -88,146 +87,21 @@ Ext.define('DD.model.tools.PaperTool',{
     
     importState: function(exportedState) {
         var state = {};
-        var project = this.getSharedProject();
-        
-        var importItem = function(exportedItem)
-        {
-            // See the exportItem() function down below.
-            return project.layers[exportedItem[1]].children[exportedItem[2]];
-        }
-        
-        var importSegment = function(exportedSegment)
-        {
-        	var path = importItem(exportedSegment[2]);
-        	var segment = path.segments[exportedSegment[1]];
-        	return segment;
-        }
-        
-        var importCurve = function(exportedCurve)
-        {
-        	var path = importItem(exportedCurve[2]);
-        	var curve = path.curves[exportedCurve[1]];
-        	return curve;
-        }
-        
-        var importCurveLocation = function(exportedCurveLocation)
-        {
-        	var curve = importCurve(exportedCurveLocation[1]);
-        	var parameter = exportedCurveLocation[2];
-        	var exportedPoint = exportedCurveLocation[3];
-        	var point = new paper.Point(exportedPoint[0], exportedPoint[1]);
-        	return new paper.CurveLocation(curve, parameter, point);
-        }
-        
         Object.keys(exportedState).forEach( function(key)
         {
             var value = exportedState[key];
-            if( value == null || typeof value == 'undefined' || typeof value == 'number' || typeof value == 'string' || typeof value == 'boolean')
-                state[key] = value; // Primitive types can directly be exported
-            else if(value[0] === 'item')
-                state[key] = importItem.call(this, value);
-            else if(value[0] === 'segment')
-                state[key] = importSegment.call(this, value);
-            else if(value[0] === 'Curve')
-                state[key] = importCurve.call(this, value);
-            else if(value[0] === 'CurveLocation')
-                state[key] = importCurveLocation.call(this, value);
-            else
-                // What is going on here?
-                // Well..
-                // Basic types are serialized like this: ["Point",3,6]
-                // Basic types can be created like this: new paper.Point(3, 6)
-                // We are directly converting a serialized form of a basic type to a real basic object
-                // by picking a different constructor during runtime.
-                state[key] = new paper[value[0]](value[1], value[2], value[3], value[4], value[5], value[6], value[7], value[8], value[9], value[10], value[11], value[12]);
+            state[key] = this.userDrawContext.getSharedPaper().importPaperThing(value);
         }, this);
         
         return state;
     },
     
-    // Export complex objects to primitives so they can be send over the internets.
-    // Function is only used server-side.
     exportState: function() {
         var exported_state = {};
-        var project = this.getSharedProject();
-        
-        var exportItem = function(item) {
-            // Function for exporting a paperjs item.
-            
-            var exportedItem;
-            
-            // This implementation has flaws:
-            // - it assumes the item is in the top layer
-            // - it assumes the item exist
-            for(var l = 0; l<project.layers.length; l++)
-            {
-                for(var i = 0; i<project.layers[l].children.length; i++)
-                {
-                    var possibleMatch = project.layers[l].children[i];
-                    if(possibleMatch == item)
-                    {
-                        exportedItem = ['item',l, i];
-                    }
-                }
-            }
-            
-            if(!exportedItem)
-                console.warn("Item not found: ", item);
-            
-            return exportedItem;
-        }
-        
-        var exportSegment = function(segment) {
-            return ['segment', segment.index, exportItem.call(this, segment.path) ];
-        };
-        
-        var exportCurve = function(curve)
-        {
-            return ['Curve', curve.index, exportItem.call(this, curve.path) ];
-        };
-        
-        var exportCurveLocation = function(curveLocation)
-        {
-            var exportedCurveLocation = ['CurveLocation', exportCurve.call(this, curveLocation.curve), curveLocation.parameter, curveLocation.point.toJSON() ];
-            return exportedCurveLocation;
-        };
-        
-        var isPaperJsItem = function(possibleItem) {
-            var proto = Object.getPrototypeOf(possibleItem);
-            if (proto)
-            {
-                if (proto._class == 'Item') {
-                    return true;
-                }
-                else
-                {
-                    return isPaperJsItem.call(this, proto);
-                }
-            }
-            return false;
-        };
-        
         Object.keys(this.state).forEach( function(key)
         {
             var value = this.state[key];
-            if( value == null || typeof value == 'undefined' || typeof value == 'number' || typeof value == 'string' || typeof value == 'boolean')
-                exported_state[key] = value; // Primitive types can directly be exported
-            else if(value._class == 'Segment')
-                exported_state[key] = exportSegment.call(this, value);
-            else if(value._class == 'Curve')
-                exported_state[key] = exportCurve.call(this, value);
-            else if(value._class == 'CurveLocation')
-                exported_state[key] = exportCurveLocation.call(this, value);
-            else if(isPaperJsItem.call(this, value))
-                exported_state[key] = exportItem.call(this, value);
-            else if(value._class == 'Point') // Basic paperjs items can be directly converted to json. They have no relation to another paperjs object in the same paperscope (XXX: Not entirely true).
-                exported_state[key] = value.toJSON();
-            else if(value._class == 'Size')
-                exported_state[key] = value.toJSON();
-            else if(value._class == 'Rectangle')
-                exported_state[key] = value.toJSON();
-            else
-                throw new Error("Can't export "+key+": " + value);
+            exported_state[key] = this.userDrawContext.getSharedPaper().exportPaperThing(value);
         }, this);
         
         return exported_state;

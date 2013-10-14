@@ -62,6 +62,11 @@ Ext.define('DD.UserDrawContext',{
         return new paper.Color(this.color.r/255, this.color.g/255, this.color.b/255, this.color.a);
     },
     
+    getSharedPaper: function()
+    {
+        return this.sharedPaper;
+    },
+    
     getSharedProject: function()
     {
         return this.sharedPaper.getSharedProject();

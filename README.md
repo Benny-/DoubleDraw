@@ -11,6 +11,13 @@ The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org
 
 - cairo-dev (`sudo apt-get install libcairo2-dev`, `brew install cairo`, see below for installation on cloud9)
 
+For downloading all nodejs dependecies into `./node_modueles/`:
+
+```bash
+npm install canvas@1.0.4; # Latest version has a issue: https://github.com/LearnBoost/node-canvas/issues/328
+npm install
+```
+
 The following dependencies are included in this repo and do not need to be downloaded:
 
 - http://paperjs.org/about/
@@ -20,8 +27,6 @@ The following dependencies are included in this repo and do not need to be downl
 - http://www.digitalmagicpro.com/jPicker/
 - http://jquery.com/ required for jPicker
 - http://www.sencha.com/products/extjs (The public CDN is used)
-
-`npm install` for all other external dependencies.
 
 ### Cloud9
 
