@@ -14,7 +14,6 @@ The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org
 For downloading all nodejs dependecies into `./node_modueles/`:
 
 ```bash
-npm install canvas@1.0.4; # Latest version has a issue: https://github.com/LearnBoost/node-canvas/issues/328
 npm install
 ```
 
