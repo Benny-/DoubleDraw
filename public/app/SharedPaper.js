@@ -115,34 +115,32 @@ Ext.define('DD.SharedPaper',{
     paperSerializers: {
         item: {
             export: function(item) {
-                var exportedItem;
+                var exportedItem = ['item'];
                 var project = this.getSharedProject();
                 
-                // This implementation has flaws:
-                // - it assumes the item is in the top layer
-                // - it assumes the item exist
-                for(var l = 0; l<project.layers.length; l++)
+                var recursiveExportItem = function(exportedItem, item)
                 {
-                    for(var i = 0; i<project.layers[l].children.length; i++)
-                    {
-                        var possibleMatch = project.layers[l].children[i];
-                        if(possibleMatch == item)
-                        {
-                            exportedItem = ['item',l, i];
-                        }
-                    }
+                    if(item.parent)
+                        recursiveExportItem(exportedItem, item.parent);
+                    exportedItem.push(item.index);
                 }
                 
-                if(!exportedItem)
-                {
-                    console.warn("Item not found: ", item);
-                    throw new Error("Item not found");
-                }
+                recursiveExportItem(exportedItem, item);
                 
                 return exportedItem;
             },
             import: function(exportedItem) {
-                return this.getSharedProject().layers[exportedItem[1]].children[exportedItem[2]];
+                
+                // First we get the correct layer.
+                var item = this.getSharedProject().layers[exportedItem[1]];
+                
+                // And then we go down the rabbit hole, Wheee!
+                for(var i = 2; i<exportedItem.length; i++)
+                {
+                    item = item.children[ exportedItem[i] ];
+                }
+                
+                return item;
             },
         },
         segment: {

@@ -71,9 +71,9 @@ Ext.define('DD.model.tools.PaperTool',{
          * Uncommenting the following lines will execute the import/export code on every tool event,
          * making it easier to debug in the browser.
          */
-        var exportedState = this.exportState();
-        this.state = {};
-        this.state = this.importState(exportedState);
+        // var exportedState = this.exportState();
+        // this.state = {};
+        // this.state = this.importState(exportedState);
         // console.log("exportedState", exportedState, "importedState", this.state, event);
     },
     
