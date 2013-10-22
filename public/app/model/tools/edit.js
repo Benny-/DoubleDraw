@@ -18,7 +18,7 @@ var EditDescription = new DD.model.tools.ToolDescription({
     version : '0.0.0',
     deprecated : false,
     icon : null,
-    name : 'edit',
+    name : 'Edit',
     description : "Edit paths by nodes",
     
     toolInit: function()
@@ -73,11 +73,6 @@ var EditDescription = new DD.model.tools.ToolDescription({
     onMouseDown: function(event)
     {
 	    var handle = null;
-	    
-	    // XXX: event.item is not yet implemented in the import/export mechanism. So we do it here instead.
-	    var hittest = this.getSharedProject().hitTest(event.point);
-	    if(hittest)
-	        event.item = hittest.item;
 	    
 	    if(this.state.currentSegment)
             this.state.currentSegment.selected = false;

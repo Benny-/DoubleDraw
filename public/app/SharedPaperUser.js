@@ -69,12 +69,12 @@ Ext.define('DD.SharedPaperUser',{
         
         var orginalLayer = this.getSharedProject().activeLayer; // This line might not be needed in the future.
         // It might not be needed if events always activate the correct layer.
-        var guiLayer = this.getSharedProject().layers[0];
+        this.getUiProject().activate();
         
-        guiLayer.activate();
         var cursor = new this.paperScope.Path.Circle(new paper.Point(80, 50), 3);
         cursor.name = 'u' + user.user_id;
         cursor.strokeColor = 'black';
+        cursor.fillColor = new paper.Color(1, 1, 0.5, 0.6);
         cursor.visible = false;
         orginalLayer.activate();
     },
@@ -82,14 +82,14 @@ Ext.define('DD.SharedPaperUser',{
     removeUser: function(user_id)
     {
         this.callParent( arguments );
-        var guiLayer = this.getSharedProject().layers[0];
-        guiLayer.children['u'+user_id].remove();
+        var cursorLayer = this.getUiProject().layers[0];
+        cursorLayer.children['u'+user_id].remove();
     },
     
     updateCursor: function(user_id, importedToolEvent)
     {
-        var guiLayer = this.getSharedProject().layers[0];
-        var cursor = guiLayer.children['u'+user_id];
+        var cursorLayer = this.getUiProject().layers[0];
+        var cursor = cursorLayer.children['u'+user_id];
         cursor.position = importedToolEvent.point;
         cursor.visible = true;
     },
@@ -105,8 +105,8 @@ Ext.define('DD.SharedPaperUser',{
     
     offscreen: function(user_id)
     {
-        var guiLayer = this.getSharedProject().layers[0];
-        var cursor = guiLayer.children['u'+user_id];
+        var cursorLayer = this.getUiProject().layers[0];
+        var cursor = cursorLayer.children['u'+user_id];
         cursor.visible = false;
     },
     
@@ -116,8 +116,8 @@ Ext.define('DD.SharedPaperUser',{
     setUser: function(user)
     {
         this.user = this.getUser(user.user_id);
-        var guiLayer = this.getSharedProject().layers[0];
-        guiLayer.children['u'+user.user_id].visible = false;
+        var cursorLayer = this.getUiProject().layers[0];
+        cursorLayer.children['u'+user.user_id].visible = false;
         return this.user;
     },
     

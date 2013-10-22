@@ -135,39 +135,45 @@ Ext.define('DD.controller.Drawing', {
         this.application.paper.setup('html5_canvas');
         
         this.application.on("room::entered", function(roomState) {
-            me.sharedPaperUser = new Ext.create(
-                'DD.SharedPaperUser',
-                me.application.paper,
-                ToolDescriptions,
-                function(event){
-                    var cursorVisibleForOther = true;
-                    
-                    // We do not need to send our mousemove events.
-                    // They are not essential for a consistent shared canvas.
-                    // They will only be used to draw the cursors.
-                    if(event.type == 'mousemove')
-                    {
-                        if(me.mouseOverCanvas)
+            
+            if( !me.sharedPaperUser )
+            {
+                me.sharedPaperUser = new Ext.create(
+                    'DD.SharedPaperUser',
+                    me.application.paper,
+                    ToolDescriptions,
+                    function(event){
+                        var cursorVisibleForOther = true;
+                        
+                        // We do not need to send our mousemove events.
+                        // They are not essential for a consistent shared canvas.
+                        // They will only be used to draw the cursors.
+                        if(event.type == 'mousemove')
                         {
-                            cursorVisibleForOther = true;
+                            if(me.mouseOverCanvas)
+                            {
+                                cursorVisibleForOther = true;
+                                me.application.socket.emit("user::drawing::tool::event", event );
+                            }
+                            else if(cursorVisibleForOther)
+                            {
+                                // This event will hide our cursor on the other's computer.
+                                // The boolean cursorVisibleForOther ensures we do not send unnecessary user::drawing::move::offscreen events.
+                                cursorVisibleForOther = false;
+                                me.application.socket.emit("user::drawing::move::offscreen");
+                            }
+                        }
+                        else
+                        {
+                            // All other event types however are essential for a consistent canvas and should always be send.
                             me.application.socket.emit("user::drawing::tool::event", event );
                         }
-                        else if(cursorVisibleForOther)
-                        {
-                            // This event will hide our cursor on the other's computer.
-                            // The boolean cursorVisibleForOther ensures we do not send unnecessary user::drawing::move::offscreen events.
-                            cursorVisibleForOther = false;
-                            me.application.socket.emit("user::drawing::move::offscreen");
-                        }
                     }
-                    else
-                    {
-                        // All other event types however are essential for a consistent canvas and should always be send.
-                        me.application.socket.emit("user::drawing::tool::event", event );
-                    }
-                }
-            );
+                );
+            }
+            
             me.application.sharedPaperUser = me.sharedPaperUser;
+            me.application.paper.view.draw();
             
             me.sharedPaperUser.import (roomState.sharedPaper);
             me.sharedPaperUser.setUser(roomState.user);
@@ -339,15 +345,15 @@ Ext.define('DD.controller.Drawing', {
     },
     
     refreshLayers: function () {
-   		root = Ext.getStore('PaperItems').getRootNode();
-   		root.removeAll();
-   		
-   		var layers = this.sharedPaperUser.getSharedProject().layers;
-		for (var i = 0; i < layers.length; i++) {
-			var layer = layers[i];
-			var layerNode = Ext.create("DD.model.PaperItem", {item:layer, children:[] } )
-			root.appendChild(layerNode);
-		}
+           root = Ext.getStore('PaperItems').getRootNode();
+           root.removeAll();
+           
+           var layers = this.sharedPaperUser.getSharedProject().layers;
+        for (var i = 0; i < layers.length; i++) {
+            var layer = layers[i];
+            var layerNode = Ext.create("DD.model.PaperItem", {item:layer, children:[] } )
+            root.appendChild(layerNode);
+        }
     },
     
     appendLayer: function() {

@@ -23,19 +23,9 @@ Ext.define('DD.SharedPaper',{
         this.paperScope = paperScope;
         this.toolDescriptions = toolDescriptions.clone();
         
-        {
-            // Ensure we have two layers.
-            // One layer is used for the UI and the others will be used for the drawing.
-            this.paperScope.activate();
-            new paperScope.Layer();
-            new paperScope.Layer();
-            for(var i = 2; i<paperScope.project.layers.length; i++)
-            {
-                paperScope.project.layers[i].remove();
-            }
-            paperScope.project.layers[0].removeChildren();
-            paperScope.project.layers[1].removeChildren();
-        }
+        this.paperScope.activate();
+        this.sharedProject = new this.paperScope.Project(this.paperScope.view);
+        this.uiProject = new this.paperScope.Project(this.paperScope.view);
     },
     
     colorChange: function(user_id, color)
@@ -60,6 +50,7 @@ Ext.define('DD.SharedPaper',{
         var user = this.users[user_id];
         var tool = user.tool;
         this.paperScope.activate(); // Note: Activating this paperScope is actually only required on NodeJS, as only the server side program uses multiple paper-scopes.
+        this.getSharedProject().activate();
         var importedToolEvent = this.importToolEvent(toolEvent);
         tool.fire(toolEvent.type, importedToolEvent );
         return importedToolEvent;
@@ -87,9 +78,19 @@ Ext.define('DD.SharedPaper',{
         return delete this.users[user_id];
     },
     
+    removeAllUsers: function()
+    {
+    	this.users = {};
+    },
+    
     getSharedProject: function()
     {
-        return this.paperScope.project;
+        return this.sharedProject;
+    },
+    
+    getUiProject: function()
+    {
+        return this.uiProject;
     },
     
     getUser: function(user_id)
@@ -151,8 +152,8 @@ Ext.define('DD.SharedPaper',{
             import: function(exportedSegment)
             {
                 var path = this.paperSerializers.item.import.call(this, exportedSegment[2]);
-            	var segment = path.segments[exportedSegment[1]];
-            	return segment;
+                var segment = path.segments[exportedSegment[1]];
+                return segment;
             },
         },
         curve: {
@@ -163,8 +164,8 @@ Ext.define('DD.SharedPaper',{
             import: function(exportedCurve)
             {
                 var path = this.paperSerializers.item.import.call(this, exportedCurve[2]);
-            	var curve = path.curves[exportedCurve[1]];
-            	return curve;
+                var curve = path.curves[exportedCurve[1]];
+                return curve;
             },
         },
         curveLocation: {
@@ -175,10 +176,10 @@ Ext.define('DD.SharedPaper',{
             import: function(exportedCurveLocation)
             {
                 var curve = this.paperSerializers.curve.import.call(this, exportedCurveLocation[1]);
-            	var parameter = exportedCurveLocation[2];
-            	var exportedPoint = exportedCurveLocation[3];
-            	var point = new paper.Point(exportedPoint[0], exportedPoint[1]);
-            	return new paper.CurveLocation(curve, parameter, point);
+                var parameter = exportedCurveLocation[2];
+                var exportedPoint = exportedCurveLocation[3];
+                var point = new paper.Point(exportedPoint[0], exportedPoint[1]);
+                return new paper.CurveLocation(curve, parameter, point);
             },
         },
     },
@@ -253,10 +254,8 @@ Ext.define('DD.SharedPaper',{
             middlePoint: event.middlePoint  ?   { x: event.middlePoint.x, y: event.middlePoint.y} : null,
             delta: event.delta              ?   { x: event.delta.x, y: event.delta.y} : null,
             count: event.count,
-            event: { which:event.event.which }
-            // item: {
-            //     id : event.item.id,
-            // }
+            event: { which:event.event.which },
+            item: this.exportPaperThing(event.item),
         }
     },
     
@@ -271,23 +270,17 @@ Ext.define('DD.SharedPaper',{
             delta: new this.paperScope.Point(event.delta),
             count: event.count,
             event: event.event,
-            // item: {
-            //     id : event.item.id,
-            // }
+            item: this.importPaperThing(event.item),
         }
     },
     
     import: function(sharedPaper) {
     
-        // Remove all layers.
-        for(var i = 0; i<this.getSharedProject().layers.length; i++)
-        {
-            this.getSharedProject().layers[i].remove();
-        }
-        
+        this.getSharedProject().clear();
         this.getSharedProject().importJSON(sharedPaper.paperProject);
-        this.getSharedProject().layers[0].remove();
-        this.paperScope.view.draw();
+        
+        this.removeAllUsers();
+        
         for (var i = 0; i < sharedPaper.users.length; i++) {
             this.addUser(sharedPaper.users[i]);
         }
