@@ -40,10 +40,10 @@ Ext.application({
     ],
     
     launch: function() {
+        var me = this;
+        me.roomName = initialServerVars.roomName;
         
         createLayout(); // See /public/app/view/layout.js
-        
-        var app = this;
         
         var socket = io.connect();
         this.socket = socket;
@@ -54,46 +54,46 @@ Ext.application({
                 nickname: 'Anonymous'
             };
             
-            var roomName = initialServerVars.roomName;
+            var roomName = me.roomName;
             console.log("Requesting to enter room "+roomName);
             socket.emit('room::enter', {roomName:roomName, preferred_user:preferred_user} );
         });
         
         socket.on('room::entered', function (roomState) {
             console.log("Entered room: ", roomState.roomName, roomState);
-            app.fireEvent("room::entered", roomState);
+            me.fireEvent("room::entered", roomState);
         });
         
         socket.on('user::chat', function (message) {
-            app.fireEvent("user::chat", message);
+            me.fireEvent("user::chat", message);
         });
         
         socket.on('user::drawing::color', function (data) {
-            app.fireEvent("user::drawing::color", data);
+            me.fireEvent("user::drawing::color", data);
         });
         
         socket.on('user::drawing::selection', function (data) {
-            app.fireEvent("user::drawing::selection", data);
+            me.fireEvent("user::drawing::selection", data);
         });
         
         socket.on('user::drawing::tool::change', function (data) {
-            app.fireEvent("user::drawing::tool::change", data);
+            me.fireEvent("user::drawing::tool::change", data);
         });
         
         socket.on('user::drawing::tool::event', function (event) {
-            app.fireEvent("user::drawing::tool::event", event);
+            me.fireEvent("user::drawing::tool::event", event);
         });
         
         socket.on('user::drawing::move::offscreen', function (user) {
-            app.fireEvent("user::drawing::move::offscreen", user);
+            me.fireEvent("user::drawing::move::offscreen", user);
         });
         
         socket.on('room::user::leave', function (user) {
-            app.fireEvent("room::user::leave", user);
+            me.fireEvent("room::user::leave", user);
         });
         
         socket.on('room::user::new', function (user) {
-            app.fireEvent("room::user::new", user);
+            me.fireEvent("room::user::new", user);
         });
         
         socket.on('disconnect', function () {
