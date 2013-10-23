@@ -18,10 +18,6 @@ drawing a cursor for the new user. ect...
 // Init the color picker.
 $.fn.jPicker.defaults.images.clientPath='resources/images/jpicker/';
 
-Ext.onReady(function() {
-    
-});
-
 // Make sure extjs windows can't move offscreen. That would be inconvenient.
 Ext.override(Ext.Window, {
     constrainHeader:true
@@ -29,7 +25,7 @@ Ext.override(Ext.Window, {
 
 Ext.application({
     name: 'DD', // DoubleDraw
-    appFolder : 'app',
+    appFolder : '/app',
 
     canvas : null,
     paper : new paper.PaperScope(),
@@ -45,7 +41,7 @@ Ext.application({
     
     launch: function() {
         
-        createLayout(); // See app/view/layout.js
+        createLayout(); // See /public/app/view/layout.js
         
         var app = this;
         
@@ -54,16 +50,18 @@ Ext.application({
         socket.on('connect', function () {
             console.log("socket.io connection established");
             
-            var roomName = "#default";
             var preferred_user = {
                 nickname: 'Anonymous'
             };
             
-            if(window.location.hash != '')
-                roomName = window.location.hash;
-            
+            var roomName = initialServerVars.roomName;
             console.log("Requesting to enter room "+roomName);
             socket.emit('room::enter', {roomName:roomName, preferred_user:preferred_user} );
+        });
+        
+        socket.on('room::entered', function (roomState) {
+            console.log("Entered room: ", roomState.roomName, roomState);
+            app.fireEvent("room::entered", roomState);
         });
         
         socket.on('user::chat', function (message) {
@@ -96,12 +94,6 @@ Ext.application({
         
         socket.on('room::user::new', function (user) {
             app.fireEvent("room::user::new", user);
-        });
-        
-        socket.on('room::entered', function (roomState) {
-            console.log("Entered room: ", roomState.roomName, roomState);
-            window.location.hash = roomState.roomName;
-            app.fireEvent("room::entered", roomState);
         });
         
         socket.on('disconnect', function () {

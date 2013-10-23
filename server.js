@@ -1,39 +1,71 @@
-var express     = require('express')
-  , app         = express()
-  , http        = require('http')
-  , server      = http.createServer(app)
-  , io          = require('socket.io').listen(server)
-  , Paper       = require('paper');  // Note: There are two paperjs variants.
+var express     = require('express');
+var app         = express();
+var http        = require('http');
+var server      = http.createServer(app);
+var io          = require('socket.io').listen(server);
+var Paper       = require('paper');  // Note: There are two paperjs variants.
                               // One for the browser and one for nodejs.
                               // Functionality they are - almost - the same.
                               // The one for the browser is in ./public
                               // The one for nodejs is located in ./node_modules
-
 var repl        = require("repl");
+var path        = require('path');
 
-var SharedPaper = require('./public/app/SharedPaper.js');
-var ToolDescription = require('./public/app/model/tools/ToolDescription.js');
-require('./public/app/model/tools/toolDescriptions.js');
-require('./public/app/model/tools/pencil.js');
-require('./public/app/model/tools/clouds.js');
-require('./public/app/model/tools/box.js');
-require('./public/app/model/tools/circle.js');
-require('./public/app/model/tools/ellipse.js');
-require('./public/app/model/tools/bezier.js');
-require('./public/app/model/tools/select.js');
-require('./public/app/model/tools/wormfarm.js');
-require('./public/app/model/tools/edit.js');
-require('./public/app/model/tools/text.js');
+// Project specific requires.
+var SharedPaper       = require('./public/app/SharedPaper.js');
+var ToolDescription   = require('./public/app/model/tools/ToolDescription.js');
+                        require('./public/app/model/tools/toolDescriptions.js');
+                        require('./public/app/model/tools/pencil.js');
+                        require('./public/app/model/tools/clouds.js');
+                        require('./public/app/model/tools/box.js');
+                        require('./public/app/model/tools/circle.js');
+                        require('./public/app/model/tools/ellipse.js');
+                        require('./public/app/model/tools/bezier.js');
+                        require('./public/app/model/tools/select.js');
+                        require('./public/app/model/tools/wormfarm.js');
+                        require('./public/app/model/tools/edit.js');
+                        require('./public/app/model/tools/text.js');
 
+// Global variables.
 var sharedPapers = {};
 
 io.set('log level', 1);
-
+app.set('port', process.env.PORT || 4100);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+app.set('case sensitive routing', true);
+app.set('strict routing', true);
 app.use(express.compress());
 app.use(express.static(__dirname + '/public'));
-server.listen(process.env.PORT, process.env.IP);
 
-console.log("Server is running on http://"+server.address().address+":"+server.address().port)
+if ('development' == app.get('env')) {
+    app.use(express.logger('dev'));
+    app.use(express.errorHandler());
+    
+    // The run execute programming loop is used for debugging or messing around.
+    var local_console = repl.start({
+      prompt: "> ",
+      input: process.stdin,
+      output: process.stdout,
+    });
+    local_console.context.sharedPapers = sharedPapers;
+    local_console.context.server = server;
+    local_console.context.app = app;
+    local_console.context.io = io;
+}
+
+app.get("/room/*", function(req, res){
+    var roomName = req.url.split("/")[2];
+    if(!roomName)
+    {
+        res.send(400, 'Invalid room name. Try again.');
+        res.end();
+    }
+    else
+    {
+        res.render('room', { roomName:roomName });
+    }
+});
 
 var next_user_id = 1;
 io.sockets.on('connection', function (socket) {
@@ -182,13 +214,7 @@ io.sockets.on('connection', function (socket) {
     });
 });
 
-var local_console = repl.start({
-  prompt: "> ",
-  input: process.stdin,
-  output: process.stdout,
+server.listen(app.get('port'), function(){
+  console.log('Express server listening on port ' + app.get('port'));
 });
-local_console.context.sharedPapers = sharedPapers;
-local_console.context.server = server;
-local_console.context.app = app;
-local_console.context.io = io;
 

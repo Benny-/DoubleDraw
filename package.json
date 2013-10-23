@@ -23,7 +23,8 @@
         "extnode"       :   "4.1.0-beta",
         "socket.io"     :   "0.9.x",
         "paper"         :   "0.9.x",
-        "express"       :   "3.2.x"
+        "express"       :   "3.4.x",
+        "ejs"           :   "0.8.x"
     },
     "engines": {
         "node": ">=0.8.9"
