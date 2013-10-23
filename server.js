@@ -54,17 +54,21 @@ if ('development' == app.get('env')) {
     local_console.context.io = io;
 }
 
-app.get("/room/*", function(req, res){
-    var roomName = req.url.split("/")[2];
-    if(!roomName)
-    {
-        res.send(400, 'Invalid room name. Try again.');
-        res.end();
-    }
+app.param('roomName', function(req, res, next){
+    req.roomName = req.url.split("/")[2];
+    if(!req.roomName)
+        next(new Error('No valid roomName'));
     else
-    {
-        res.render('room', { roomName:roomName });
-    }
+        next();
+});
+
+app.get("/room/", function(req, res){
+    res.send(400, 'Invalid room name. Try again.');
+    res.end();
+});
+
+app.get("/room/:roomName", function(req, res){
+    res.render('room', { roomName:req.roomName });
 });
 
 var next_user_id = 1;
