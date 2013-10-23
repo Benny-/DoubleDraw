@@ -58,13 +58,13 @@ app.param('roomName', function(req, res, next) {
     req.roomName = req.url.split("/")[2];
     req.sharedPaper = sharedPapers[req.roomName]; // req.sharedPaper is allowed to be null
     if(!req.roomName)
-        next(new Error('No valid roomName'));
+        next(new Error('Invalid room name.'));
     else
         next();
 });
 
 app.get("/room/", function(req, res) {
-    res.send(400, 'Invalid room name. Try again.');
+    res.send(400, 'Invalid room name.');
     res.end();
 });
 
