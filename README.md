@@ -3,7 +3,7 @@ DoubleDraw
 
 DoubleDraw allows multiple people to work collaboratively on a vector drawing. A possible outdated or unstable example may or may not run [here](http://dd.bennyjacobs.nl:5100/). This project aims to create a pure html5 vector editor as a response to Microsoft's decision to disallow any native applications in the next version of windows™.
 
-<!-- Ok, that part about windows was a lie. heh heh. This project is aims to increase fun. -->
+<!-- Ok, that part about windows was a lie. This project is aims double the fun! -->
 
 ## Installing and running
 
@@ -26,7 +26,7 @@ The following dependencies are included in this repo and do not need to be downl
 - https://github.com/eligrey/canvas-toBlob.js
 - https://github.com/eligrey/FileSaver.js
 - http://www.digitalmagicpro.com/jPicker/
-- http://jquery.com/ required for jPicker
+- http://jquery.com/ (required for jPicker)
 - http://www.sencha.com/products/extjs (The public CDN is used)
 
 ### Cloud9
