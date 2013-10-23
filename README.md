@@ -1,7 +1,9 @@
 DoubleDraw
 =============
 
-DoubleDraw allows multiple people to work collaboratively on a vector drawing. A possible outdated or unstable example may or may not run [here](http://dd.bennyjacobs.nl:5100/).
+DoubleDraw allows multiple people to work collaboratively on a vector drawing. A possible outdated or unstable example may or may not run [here](http://dd.bennyjacobs.nl:5100/). This project aims to create a pure html5 vector editor as a response to Microsoft's decision to disallow any native applications in the next version of windows™.
+
+<!-- Ok, that part about windows was a lie. heh heh. This project is aims to increase fun. -->
 
 ## Installing and running
 
@@ -109,7 +111,7 @@ The server is rather simply and is actually a small portion of the total code ba
 
 ## Contact
 
-For bugs and feature requests you should make a [ticket](https://github.com/Benny-/DoubleDraw/issues). Please check if there issent already a ticket open.
+For bugs and feature requests you should make a [ticket](https://github.com/Benny-/DoubleDraw/issues). Please check if there issent already a ticket open about the same issue.
 
 For questions or offering help of any kind (programming, graphics, testers, advice) you can send a email or join on irc: room `#DoubleDraw` on `irc.freenode.net`. For convenience you can join using [webchat](https://webchat.freenode.net/?channels=DoubleDraw).
 
