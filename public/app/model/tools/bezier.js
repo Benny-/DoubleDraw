@@ -49,12 +49,7 @@ var BezierDescription = new DD.model.tools.ToolDescription({
 
 		if (!this.state.path) {
 			this.state.path = new paper.Path();
-			this.state.path.fillColor = {
-				hue: 360 * Math.random(),
-				saturation: 1,
-				brightness: 1,
-				alpha: 0.5
-			};
+			this.state.path.strokeColor = this.getColor();
 		}
 		var result = findHandle.call(this, event.point);
 		if (result) {
