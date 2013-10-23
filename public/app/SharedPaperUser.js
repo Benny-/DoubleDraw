@@ -28,6 +28,8 @@ Ext.define('DD.SharedPaperUser',{
         var me = this;
         this.callParent( arguments );
         
+        this.uiProject = new this.paperScope.Project(this.paperScope.view);
+        
         this.proxyTool = null;
         this.user = null;
         
@@ -58,6 +60,11 @@ Ext.define('DD.SharedPaperUser',{
         }
     },
     
+    getUiProject: function()
+    {
+        return this.uiProject;
+    },
+    
     addToolDescription: function(ToolDescription)
     {
         this.callParent( arguments );
@@ -67,16 +74,12 @@ Ext.define('DD.SharedPaperUser',{
     {
         this.callParent( arguments );
         
-        var orginalLayer = this.getSharedProject().activeLayer; // This line might not be needed in the future.
-        // It might not be needed if events always activate the correct layer.
         this.getUiProject().activate();
-        
         var cursor = new this.paperScope.Path.Circle(new paper.Point(80, 50), 3);
         cursor.name = 'u' + user.user_id;
         cursor.strokeColor = 'black';
         cursor.fillColor = new paper.Color(1, 1, 0.5, 0.6);
         cursor.visible = false;
-        orginalLayer.activate();
     },
     
     removeUser: function(user_id)
@@ -108,6 +111,12 @@ Ext.define('DD.SharedPaperUser',{
         var cursorLayer = this.getUiProject().layers[0];
         var cursor = cursorLayer.children['u'+user_id];
         cursor.visible = false;
+    },
+    
+    import: function(sharedPaper) {
+        this.getUiProject().layers[0].removeChildren();
+        
+        this.callParent( arguments );
     },
     
     /**

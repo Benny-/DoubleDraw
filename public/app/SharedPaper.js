@@ -25,7 +25,6 @@ Ext.define('DD.SharedPaper',{
         
         this.paperScope.activate();
         this.sharedProject = new this.paperScope.Project(this.paperScope.view);
-        this.uiProject = new this.paperScope.Project(this.paperScope.view);
     },
     
     colorChange: function(user_id, color)
@@ -86,11 +85,6 @@ Ext.define('DD.SharedPaper',{
     getSharedProject: function()
     {
         return this.sharedProject;
-    },
-    
-    getUiProject: function()
-    {
-        return this.uiProject;
     },
     
     getUser: function(user_id)

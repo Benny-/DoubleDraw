@@ -11,7 +11,7 @@ var SelectDescription = new DD.model.tools.ToolDescription({
     version : '0.0.0',
     deprecated : false,
     icon : null,
-    name : 'Select',
+    name : 'Select & move',
     description : "Select and move objects",
     
     onMouseDown : function(event) {
