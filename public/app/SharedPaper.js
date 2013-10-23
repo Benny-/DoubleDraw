@@ -254,6 +254,8 @@ Ext.define('DD.SharedPaper',{
             middlePoint: event.middlePoint  ?   { x: event.middlePoint.x, y: event.middlePoint.y} : null,
             delta: event.delta              ?   { x: event.delta.x, y: event.delta.y} : null,
             count: event.count,
+            character: event.character, // This attribute exist only for a KeyEvent.
+            key: event.key,             // This attribute exist only for a KeyEvent.
             event: { which:event.event.which },
             item: this.exportPaperThing(event.item),
         }
@@ -269,6 +271,8 @@ Ext.define('DD.SharedPaper',{
             middlePoint: event.middlePoint ? new this.paperScope.Point(event.middlePoint) : null,
             delta: new this.paperScope.Point(event.delta),
             count: event.count,
+            character: event.character,
+            key: event.key,
             event: event.event,
             item: this.importPaperThing(event.item),
         }

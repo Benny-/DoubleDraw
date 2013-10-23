@@ -18,7 +18,7 @@ var EditDescription = new DD.model.tools.ToolDescription({
     version : '0.0.0',
     deprecated : false,
     icon : null,
-    name : 'Edit',
+    name : 'Edit path',
     description : "Edit paths by nodes",
     
     toolInit: function()
@@ -73,6 +73,10 @@ var EditDescription = new DD.model.tools.ToolDescription({
     onMouseDown: function(event)
     {
 	    var handle = null;
+	    
+	    // This edit tool can only handle paths. We set event.item to null if it is a non-path item.
+	    if( event.item && !(event.item._class == "Path" || event.item._class == "CompoundPath") )
+	        event.item = null;
 	    
 	    if(this.state.currentSegment)
             this.state.currentSegment.selected = false;

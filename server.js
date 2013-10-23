@@ -23,6 +23,7 @@ require('./public/app/model/tools/bezier.js');
 require('./public/app/model/tools/select.js');
 require('./public/app/model/tools/wormfarm.js');
 require('./public/app/model/tools/edit.js');
+require('./public/app/model/tools/text.js');
 
 var sharedPapers = {};
 
