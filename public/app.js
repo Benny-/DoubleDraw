@@ -16,7 +16,7 @@ drawing a cursor for the new user. ect...
 */
 
 // Init the color picker.
-$.fn.jPicker.defaults.images.clientPath='resources/images/jpicker/';
+$.fn.jPicker.defaults.images.clientPath='/resources/images/jpicker/';
 
 // Make sure extjs windows can't move offscreen. That would be inconvenient.
 Ext.override(Ext.Window, {
