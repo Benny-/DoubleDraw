@@ -54,21 +54,66 @@ if ('development' == app.get('env')) {
     local_console.context.io = io;
 }
 
-app.param('roomName', function(req, res, next){
+app.param('roomName', function(req, res, next) {
     req.roomName = req.url.split("/")[2];
+    req.sharedPaper = sharedPapers[req.roomName]; // req.sharedPaper is allowed to be null
     if(!req.roomName)
         next(new Error('No valid roomName'));
     else
         next();
 });
 
-app.get("/room/", function(req, res){
+app.get("/room/", function(req, res) {
     res.send(400, 'Invalid room name. Try again.');
     res.end();
 });
 
-app.get("/room/:roomName", function(req, res){
+app.get("/room/:roomName", function(req, res) {
     res.render('room', { roomName:req.roomName });
+    res.end();
+});
+
+app.get("/room/:roomName/snapshot.png", function(req, res) {
+    if(req.sharedPaper)
+    {
+        var view = req.sharedPaper.getPaperScope().view;
+        var canvas = view.element;
+        view.draw();
+        var stream = stream = canvas.pngStream();
+        
+        res.writeHead(200, {'Content-Type': 'image/png' });
+        stream.on('data', function(chunk){
+            res.write(chunk);
+        });
+
+        stream.on('end', function(){
+            res.end();
+        });
+    }
+    else
+    {
+        res.send(500, 'Room does not exist');
+        res.end();
+    }
+});
+
+app.get("/room/:roomName/snapshot.svg", function(req, res) {
+    if(req.sharedPaper)
+    {
+        var paperProject = req.sharedPaper.getSharedProject();
+        var serializer= new Paper.XMLSerializer();
+        var svg = paperProject.exportSVG();
+        var svg_string = serializer.serializeToString(svg);
+        
+        res.writeHead(200, {'Content-Type': 'image/svg+xml' });
+        res.write( svg_string );
+        res.end();
+    }
+    else
+    {
+        res.send(500, 'Room does not exist');
+        res.end();
+    }
 });
 
 var next_user_id = 1;
@@ -185,7 +230,7 @@ io.sockets.on('connection', function (socket) {
         if(!sharedPapers[roomName])
         {
             console.log("Creating new shared paper for room", roomName)
-            var canvas              = new Paper.Canvas(200,200);
+            var canvas              = new Paper.Canvas(400,600);
             var paperscope          = new Paper.PaperScope();
             paperscope.setup(canvas);
             sharedPaper = sharedPapers[roomName] = new SharedPaper(paperscope, ToolDescriptions);
