@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Introduction - Double Draw</title>
+    </head>
+    <body>
+    
+        <noscript>
+            We have detected you have JavaScript disabled.
+            To use this website it is necessary to enable JavaScript.
+            Here are the <a href="http://www.enable-javascript.com/" target="_blank">
+            instructions how to enable JavaScript in your web browser</a>.
+        </noscript>
+
+        <p>DoubleDraw is a collaborative vector drawing program usable in any modern browser.</p>
+        <p>DoubleDraw is split in a infinite amount of rooms. Every room's drawing is separated by blast walls from the other rooms. Join a room to start drawing. All players in the same room can collaborate on the same picture. Make sure your friends join the same room. Here are some rooms:</p>
+        <ul>
+            <li><a href="room/Concrete canvas">Concrete canvas</a></li>
+            <li><a href="room/Picture garden">Picture garden</a></li>
+            <li><a href="room/Abstract sensations">Abstract sensations</a></li>
+            <li><a href="room/test">Chamber of testing</a></li>
+        </ul>
+        <p>Or join a custom room:</p>
+        <p>Room: <input type="text" id="input_room"><a href="room/" id="room_url">Go</a></p>
+        
+        <script>
+            var input_room = document.getElementById('input_room');
+            var room_url = document.getElementById('room_url');
+            input_room.onchange = function() {
+                console.log( input_room.value );
+                room_url.setAttribute("href", "room/"+input_room.value);
+            };
+        </script>
+        <p>This open-source project is viewable on <a href="https://github.com/Benny-/DoubleDraw">GitHub</a></p>
+    </body>
+</html>
+
