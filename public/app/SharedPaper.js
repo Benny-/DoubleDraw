@@ -265,7 +265,7 @@ Ext.define('DD.SharedPaper',{
     {
         return {
             type: event.type,
-            point: new this.paperScope.Point(event.point),
+            point: event.point         ? new this.paperScope.Point(event.point)      : null,
             lastPoint: event.lastPoint ? new this.paperScope.Point(event.lastPoint) : null,
             downPoint: event.downPoint ? new this.paperScope.Point(event.downPoint) : null,
             middlePoint: event.middlePoint ? new this.paperScope.Point(event.middlePoint) : null,

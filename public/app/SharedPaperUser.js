@@ -97,7 +97,7 @@ Ext.define('DD.SharedPaperUser',{
     userToolEvent: function(user_id, toolEvent)
     {
         var importedToolEvent = this.callParent( arguments );
-        if(importedToolEvent.point && this.user.user_id != user_id)
+        if(importedToolEvent.point && this.user.user_id != user_id && importedToolEvent.point)
         {
             this.updateCursor(user_id, importedToolEvent);
         }
