@@ -113,12 +113,6 @@ Ext.define('DD.SharedPaperUser',{
         cursor.visible = false;
     },
     
-    import: function(sharedPaper) {
-        this.getUiProject().layers[0].removeChildren();
-        
-        this.callParent( arguments );
-    },
-    
     /**
      * SetUser should be called once the user was added using addUser(user).
      */

@@ -27,6 +27,12 @@ Ext.define('DD.SharedPaper',{
         this.sharedProject = new this.paperScope.Project(this.paperScope.view);
     },
     
+    reset: function()
+    {
+        this.getSharedProject().clear();
+        this.removeAllUsers();
+    },
+    
     colorChange: function(user_id, color)
     {
         var user = this.users[user_id];
@@ -79,7 +85,10 @@ Ext.define('DD.SharedPaper',{
     
     removeAllUsers: function()
     {
-    	this.users = {};
+        var user_ids = Object.keys(this.users);
+        for (var i = 0; i < user_ids.length; i++) {
+            this.removeUser(user_ids[i]);
+        }
     },
     
     getSharedProject: function()
@@ -273,11 +282,8 @@ Ext.define('DD.SharedPaper',{
     },
     
     import: function(sharedPaper) {
-    
-        this.getSharedProject().clear();
+        this.reset();
         this.getSharedProject().importJSON(sharedPaper.paperProject);
-        
-        this.removeAllUsers();
         
         for (var i = 0; i < sharedPaper.users.length; i++) {
             this.addUser(sharedPaper.users[i]);
