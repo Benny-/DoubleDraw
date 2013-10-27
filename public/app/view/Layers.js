@@ -3,9 +3,6 @@ Ext.define('DD.view.Layers' ,{
     extend: 'Ext.tree.Panel',
     alias: 'widget.layers',
     
-    title: 'Simple Tree',
-    width: 200,
-    height: 150,
     store: 'PaperItems',
     rootVisible: false,
     

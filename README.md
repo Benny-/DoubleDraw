@@ -103,7 +103,13 @@ The clients send mouse inputs (click/drag/release) events to the server. The ser
 
 The public folder contains all the client related code and resources. It is organized according to [extjs MVC structure](http://docs.sencha.com/extjs/#!/guide/application_architecture).
 
-The server is rather simply and is actually a small portion of the total code base. It has two purposes, to re-transmit all events and to process those events using a tool on a local paper. The following code is shared between the server and the client for processing events and drawing on the local paper:
+The server part is rather simply and is actually a small portion of the total code base. Its primary purposes:
+
+- Receive events and re-transmit them to all clients.
+- Process those events using a tool on a local paper.
+- Send paper if a new client joins a room.
+
+The following code is shared between the server and the client for processing events and drawing on the local paper:
 
 - public/app/SharedPaper.js
 - public/app/UserDrawContext.js

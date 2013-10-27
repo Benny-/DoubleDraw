@@ -53,12 +53,28 @@ Ext.define('DD.SharedPaper',{
     userToolEvent: function(user_id, toolEvent)
     {
         var user = this.users[user_id];
-        var tool = user.tool;
-        this.paperScope.activate(); // Note: Activating this paperScope is actually only required on NodeJS, as only the server side program uses multiple paper-scopes.
+        this.paperScope.activate();
         this.getSharedProject().activate();
         var importedToolEvent = this.importToolEvent(toolEvent);
-        tool.fire(toolEvent.type, importedToolEvent );
+        user.processToolEvent(importedToolEvent);
         return importedToolEvent;
+    },
+    
+    addLayer: function(user_id)
+    {
+        this.paperScope.activate();
+        this.getSharedProject().activate();
+        var newLayer = new paper.Layer();
+        var user = this.users[user_id];
+        user.setLayer(newLayer);
+    },
+    
+    activateLayer: function(user_id, layer)
+    {
+        var user = this.users[user_id];
+        layer = this.getSharedProject().layers[layer];
+        if( layer )
+            user.setLayer( layer );
     },
     
     addToolDescription: function(toolDescription)

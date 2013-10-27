@@ -21,7 +21,7 @@ var TextDescription = new DD.model.tools.ToolDescription({
     
     onMouseDown: function(event) {
         this.state.text = new paper.PointText( event.point );
-        this.state.text.strokeColor = this.getColor();
+        this.state.text.fillColor = this.getColor();
         this.state.text.content = '';
     },
     

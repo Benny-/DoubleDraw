@@ -14,7 +14,7 @@ var path        = require('path');
 // Project specific requires.
 var SharedPaper       = require('./public/app/SharedPaper.js');
 var ToolDescription   = require('./public/app/model/tools/ToolDescription.js');
-                        require('./public/app/model/tools/toolDescriptions.js');
+var ToolDescriptions  = require('./public/app/model/tools/toolDescriptions.js');
                         require('./public/app/model/tools/pencil.js');
                         require('./public/app/model/tools/clouds.js');
                         require('./public/app/model/tools/box.js');
@@ -195,6 +195,24 @@ io.sockets.on('connection', function (socket) {
         }
     });
     
+    socket.on('user::drawing::layer::add', function () {
+        if(this.inRoom())
+        {
+            socket.broadcastRoom('user::drawing::layer::add', socket.user_id );
+            sharedPapers[this.getRoom()].addLayer(socket.user_id);
+        }
+    });
+    
+    socket.on('user::drawing::layer::activate', function (layer) {
+        // TODO: sanitize data from client.
+        
+        if(this.inRoom())
+        {
+            socket.broadcastRoom('user::drawing::layer::activate', {user_id:socket.user_id, layer:layer} );
+            sharedPapers[this.getRoom()].activateLayer(socket.user_id, layer);
+        }
+    });
+    
     socket.on('user::drawing::move::offscreen', function () {
         if(this.inRoom())
             socket.broadcastRoom('user::drawing::move::offscreen', {user_id : socket.user_id} );
@@ -229,8 +247,8 @@ io.sockets.on('connection', function (socket) {
         var sharedPaper;
         if(!sharedPapers[roomName])
         {
-            console.log("Creating new shared paper for room", roomName)
-            var canvas              = new Paper.Canvas(400,600);
+            console.log("Creating new SharedPaper for room", roomName)
+            var canvas              = new Paper.Canvas(800,600);
             var paperscope          = new Paper.PaperScope();
             paperscope.setup(canvas);
             sharedPaper = sharedPapers[roomName] = new SharedPaper(paperscope, ToolDescriptions);
@@ -264,6 +282,6 @@ io.sockets.on('connection', function (socket) {
 });
 
 server.listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+    console.log('Express server listening on port ' + app.get('port'));
 });
 

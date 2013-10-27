@@ -11,6 +11,7 @@ Ext.define('DD.UserDrawContext',{
     //extend: 'Ext.util.Observable',
     
     config: {
+        layer: 0,
         user_id: 0,
         nickname: 'Unknown',
         tool: {
@@ -30,6 +31,11 @@ Ext.define('DD.UserDrawContext',{
         this.initConfig( config );
         this.tools = {};
         this.selection = [];
+        
+        var layer = this.sharedPaper.getSharedProject().layers[this.layer];
+        if(!layer)
+            throw new Error("Layer "+this.layer+" does not exist");
+        this.layer = layer;
         
         if(config.tools)
         {
@@ -52,9 +58,21 @@ Ext.define('DD.UserDrawContext',{
         // });
     },
     
-    setColor: function(color) {
+    processToolEvent: function(toolEvent)
+    {
+        this.layer.activate();
+        this.tool.fire(toolEvent.type, toolEvent );
+    },
+    
+    setColor: function(color)
+    {
         this.color = color;
         //this.fireEvent('color', color);
+    },
+    
+    setLayer: function(layer)
+    {
+        this.layer = layer;
     },
     
     getPaperColor: function()
@@ -90,6 +108,7 @@ Ext.define('DD.UserDrawContext',{
             tool        : { uuid: this.tool.uuid },
             tools       : [],
             color       : this.color,
+            layer       : this.layer.index,
         };
         
         var tool_uuids = Object.keys(this.tools);

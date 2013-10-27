@@ -118,6 +118,10 @@ Ext.define('DD.controller.Drawing', {
             '#appendLayer': {
                 click:  this.appendLayer,
             },
+            
+            'layers#layers': {
+                itemclick: this.layerItemClick,
+            },
         });
     },
     
@@ -171,27 +175,17 @@ Ext.define('DD.controller.Drawing', {
                     }
                 );
             }
-            
             me.application.sharedPaperUser = me.sharedPaperUser;
             me.application.paper.view.draw();
             
             me.sharedPaperUser.import (roomState.sharedPaper);
             me.sharedPaperUser.setUser(roomState.user);
+            me.refreshLayers();
             me.application.paper.view.draw();
         });
         
         this.application.on("user::drawing::color", function(data) {
             me.sharedPaperUser.colorChange(data.user_id, data.color);
-        });
-        
-        this.application.on("room::user::leave", function(user) {
-            me.sharedPaperUser.removeUser(user.user_id);
-            me.application.paper.view.draw();
-        });
-        
-        this.application.on("room::user::new", function(user) {
-            me.sharedPaperUser.addUser(user);
-            me.application.paper.view.draw();
         });
         
         this.application.on("user::drawing::tool::change", function(data) {
@@ -206,6 +200,26 @@ Ext.define('DD.controller.Drawing', {
         
         this.application.on("user::drawing::move::offscreen", function(user) {
             me.sharedPaperUser.offscreen(user.user_id);
+            me.application.paper.view.draw();
+        });
+        
+        this.application.on("user::drawing::layer::add", function(user_id) {
+            me.sharedPaperUser.addLayer(user_id);
+            me.refreshLayers();
+        });
+        
+        this.application.on("user::drawing::layer::activate", function(activateLayer) {
+            me.sharedPaperUser.activateLayer(activateLayer.user_id, activateLayer.layer);
+            me.refreshLayers();
+        });
+        
+        this.application.on("room::user::leave", function(user) {
+            me.sharedPaperUser.removeUser(user.user_id);
+            me.application.paper.view.draw();
+        });
+        
+        this.application.on("room::user::new", function(user) {
+            me.sharedPaperUser.addUser(user);
             me.application.paper.view.draw();
         });
     },
@@ -345,10 +359,10 @@ Ext.define('DD.controller.Drawing', {
     },
     
     refreshLayers: function () {
-           root = Ext.getStore('PaperItems').getRootNode();
-           root.removeAll();
-           
-           var layers = this.sharedPaperUser.getSharedProject().layers;
+        root = Ext.getStore('PaperItems').getRootNode();
+        root.removeAll();
+
+        var layers = this.sharedPaperUser.getSharedProject().layers;
         for (var i = 0; i < layers.length; i++) {
             var layer = layers[i];
             var layerNode = Ext.create("DD.model.PaperItem", {item:layer, children:[] } )
@@ -357,7 +371,13 @@ Ext.define('DD.controller.Drawing', {
     },
     
     appendLayer: function() {
-        console.log("appendLayer()", "TODO: Implement function.");
+        this.application.socket.emit("user::drawing::layer::add");
+    },
+    
+    layerItemClick: function(view,rec,item,index,eventObj) {
+        if( rec.get('type') == 'layer' )
+            this.application.socket.emit("user::drawing::layer::activate", index );
     },
     
 });
+

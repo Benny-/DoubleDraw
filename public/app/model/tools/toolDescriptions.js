@@ -36,3 +36,9 @@ ToolDescriptions.clone = function () {
     });
     return clone;
 };
+
+if( typeof exports !== 'undefined' )
+{
+    module.exports = ToolDescriptions;
+}
+

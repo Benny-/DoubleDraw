@@ -21,18 +21,18 @@ createLayout = function()
                                 xtype: 'menu',
                                 items: [
                                     {
-                                        xtype: 'menuitem',  
-                                        text: 'Save all locally',
+                                        xtype: 'menuitem',
+                                        text: 'Save as .paperjs.json',
                                         id: 'file_menu_save',
                                     },
                                     '-',
                                     {
-                                        xtype: 'menuitem',  
+                                        xtype: 'menuitem',
                                         text: 'Export all as SVG',
                                         id: 'file_menu_export_svg',
                                     },
                                     {
-                                        xtype: 'menuitem',  
+                                        xtype: 'menuitem',
                                         text: 'Export view as PNG',
                                         id: 'file_menu_export_png',
                                     },
@@ -179,6 +179,7 @@ createLayout = function()
                                 ],
                             },
                             {
+                                id: 'layers',
                                 xtype: 'layers',
                                 title: 'Layers',
                                 tbar: [
@@ -189,7 +190,7 @@ createLayout = function()
                                     },
                                     {
                                         text: 'Add',
-                                        disabled: true,
+                                        disabled: false,
                                         tooltip: 'Append a new layer',
                                         id: 'appendLayer'
                                     },
