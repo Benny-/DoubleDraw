@@ -39,7 +39,7 @@ var TextDescription = new DD.model.tools.ToolDescription({
         {
             if(event.key == 'space')
                 text.content = text.content + ' ';
-            if(event.key == 'backspace')
+            else if(event.key == 'backspace')
                 text.content = text.content.substr(0, text.content.length - 1);
             else
                 text.content = text.content + event.character;
