@@ -3,7 +3,7 @@ var app         = express();
 var http        = require('http');
 var server      = http.createServer(app);
 var io          = require('socket.io').listen(server);
-var Paper       = require('paper');  // Note: There are two paperjs variants.
+var paper       = require('paper');  // Note: There are two paperjs variants.
                               // One for the browser and one for nodejs.
                               // Functionality they are - almost - the same.
                               // The one for the browser is in ./public
@@ -101,7 +101,7 @@ app.get("/room/:roomName/snapshot.svg", function(req, res) {
     if(req.sharedPaper)
     {
         var paperProject = req.sharedPaper.getSharedProject();
-        var serializer= new Paper.XMLSerializer();
+        var serializer= new paper.XMLSerializer();
         var svg = paperProject.exportSVG();
         var svg_string = serializer.serializeToString(svg);
         
@@ -248,8 +248,8 @@ io.sockets.on('connection', function (socket) {
         if(!sharedPapers[roomName])
         {
             console.log("Creating new SharedPaper for room", roomName)
-            var canvas              = new Paper.Canvas(800,600);
-            var paperscope          = new Paper.PaperScope();
+            var canvas              = new paper.Canvas(800,600);
+            var paperscope          = new paper.PaperScope();
             paperscope.setup(canvas);
             sharedPaper = sharedPapers[roomName] = new SharedPaper(paperscope, ToolDescriptions);
         }
