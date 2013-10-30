@@ -201,6 +201,7 @@ createLayout = function()
                 ],
                 
                 bbar: {
+                    id: 'statusBar',
                     items: [
                         {
                             id: 'colorSelectionPrimary',
@@ -215,7 +216,11 @@ createLayout = function()
                         '-',
                         'position values',
                         '-',
-                        'Connection state',
+                        {
+                            id: 'connectionStatus',
+                            xtype: 'tbtext',
+                            text: 'Connecting...',
+                        },
                     ]
                 }
         }

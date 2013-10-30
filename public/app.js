@@ -21,6 +21,7 @@ Ext.application({
         'Drawing',
         'Users',
         'Menu',
+        'Connection',
     ],
     
     launch: function() {
@@ -69,6 +70,7 @@ Ext.application({
             var roomName = me.roomName;
             console.log("Requesting to enter room "+roomName);
             socket.emit('room::enter', {roomName:roomName, preferred_user:preferred_user} );
+            me.fireEvent("server::connect");
         });
         
         this.on("room::entered", function(roomState) {
@@ -77,6 +79,7 @@ Ext.application({
         
         socket.on('disconnect', function () {
             console.log("Connection to the DD server is lost");
+            me.fireEvent("server::disconnect");
         });
     },
 });
