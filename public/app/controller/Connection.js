@@ -21,11 +21,13 @@ Ext.define('DD.controller.Connection', {
         });
         
         this.application.on("server::connect", function(user_id) {
+            console.log("socket.io connection to DD server established");
             me.connectionStatusView.setText("Connected");
         });
         
         this.application.on("server::disconnect", function(user_id) {
-            me.connectionStatusView.setText("<b>Disconnected</b>");
+            console.log("socket.io connection to DD server lost");
+            me.connectionStatusView.setText("<strong>Disconnected</strong>");
         });
         
     },
