@@ -212,9 +212,17 @@ createLayout = function()
                             xtype: 'colorbox',
                         },
                         '-',
-                        'colour values',
+                        {
+                            id: 'colorStatus',
+                            xtype: 'tbtext',
+                            text: 'N/A',
+                        },
                         '-',
-                        'position values',
+                        {
+                            id: 'positionStatus',
+                            xtype: 'tbtext',
+                            text: 'N/A',
+                        },
                         '-',
                         {
                             id: 'connectionStatus',

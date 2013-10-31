@@ -44,6 +44,7 @@ Ext.define('DD.controller.Drawing', {
             'change',
             function() {
                 this.application.socket.emit('user::drawing::color', this.primaryColor.export() );
+                this.colorStatusView.setText( this.primaryColor.toHex() );
             },
             this);
         
@@ -122,6 +123,19 @@ Ext.define('DD.controller.Drawing', {
             'layers#layers': {
                 itemclick: this.layerItemClick,
             },
+            
+            'tbtext#positionStatus': {
+                render: function(view) {
+                    this.positionStatusView = view;
+                },
+            },
+            
+            'tbtext#colorStatus': {
+                render: function(view) {
+                    this.colorStatusView = view;
+                    this.colorStatusView.setText( this.primaryColor.toHex() );
+                },
+            },
         });
     },
     
@@ -148,6 +162,9 @@ Ext.define('DD.controller.Drawing', {
                     ToolDescriptions,
                     function(event){
                         var cursorVisibleForOther = true;
+                        
+                        if(event.point)
+                            me.positionStatusView.setText("x " + event.point.x + " y " + event.point.y);
                         
                         // We do not need to send our mousemove events.
                         // They are not essential for a consistent shared canvas.

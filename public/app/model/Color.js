@@ -87,7 +87,7 @@ Ext.define('DD.model.Color', {
     toHex: function() {
         
         var componentToHex = function(c) {
-            var hex = c.toString(16);
+            var hex = c.toString(16).toUpperCase();
             return hex.length == 1 ? "0" + hex : hex;
         };
         
