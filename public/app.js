@@ -30,8 +30,7 @@ Ext.application({
         
         createLayout(); // See /public/app/view/layout.js
         
-        var socket = io.connect();
-        this.socket = socket;
+        var socket = this.socket = io.connect();
         
         // The following events from the server are converted to app-wide events:
         var serverEvents = [

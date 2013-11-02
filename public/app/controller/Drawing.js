@@ -28,15 +28,15 @@ Ext.define('DD.controller.Drawing', {
     init: function() {
         
         this.primaryColor = Ext.create("DD.model.Color",{
-            r:5,
-            g:5,
-            b:5,
+            r:221,
+            g:31,
+            b:209,
             a:0.8
         });
         this.secondaryColor = Ext.create("DD.model.Color",{
-            r:255,
-            g:255,
-            b:255,
+            r:249,
+            g:54,
+            b:0,
             a:0.8
         });
         
@@ -153,6 +153,8 @@ Ext.define('DD.controller.Drawing', {
         this.application.paper.setup('html5_canvas');
         
         this.application.on("room::entered", function(roomState) {
+        
+            me.application.socket.emit('user::drawing::color', me.primaryColor.export() );
             
             if( !me.sharedPaperUser )
             {
