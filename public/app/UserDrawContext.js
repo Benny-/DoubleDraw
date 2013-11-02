@@ -70,6 +70,11 @@ Ext.define('DD.UserDrawContext',{
         //this.fireEvent('color', color);
     },
     
+    getLayer: function()
+    {
+        return this.layer;
+    },
+    
     setLayer: function(layer)
     {
         this.layer = layer;

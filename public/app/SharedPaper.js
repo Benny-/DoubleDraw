@@ -52,7 +52,7 @@ Ext.define('DD.SharedPaper',{
     
     userToolEvent: function(user_id, toolEvent)
     {
-        var user = this.users[user_id];
+        var user = this.getUser(user_id);
         this.paperScope.activate();
         this.getSharedProject().activate();
         var importedToolEvent = this.importToolEvent(toolEvent);
@@ -65,16 +65,24 @@ Ext.define('DD.SharedPaper',{
         this.paperScope.activate();
         this.getSharedProject().activate();
         var newLayer = new paper.Layer();
-        var user = this.users[user_id];
+        var user = this.getUser(user_id);
         user.setLayer(newLayer);
     },
     
     activateLayer: function(user_id, layer)
     {
-        var user = this.users[user_id];
+        var user = this.getUser(user_id);
         layer = this.getSharedProject().layers[layer];
         if( layer )
             user.setLayer( layer );
+    },
+    
+    importRaster: function(user_id, url)
+    {
+        this.paperScope.activate();
+        this.getSharedProject().activate();
+        this.getUser(user_id).getLayer().activate();
+        var raster = new paper.Raster(url);
     },
     
     addToolDescription: function(toolDescription)

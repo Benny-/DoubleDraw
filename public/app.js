@@ -41,6 +41,7 @@ Ext.application({
             'user::drawing::move::offscreen',
             'user::drawing::layer::add',
             'user::drawing::layer::activate',
+            'user::drawing::import::raster',
             'room::entered',
             'room::user::leave',
             'room::user::new',

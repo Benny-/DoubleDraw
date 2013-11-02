@@ -11,7 +11,7 @@ The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org
 
 ### Dependencies:
 
-- cairo-dev (`sudo apt-get install libcairo2-dev`, `brew install cairo`, see below for installation on cloud9)
+- cairo-dev (`sudo apt-get install libcairo2-dev libgif-dev`, `brew install cairo`, see below for installation on cloud9)
 
 For downloading all nodejs dependencies into `./node_modueles/`:
 

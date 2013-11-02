@@ -7,19 +7,15 @@ Ext.define('DD.controller.Menu', {
         this.control({
             'menuitem#file_menu_save': {
                 click: this.onSave
-            }
-        });
-        
-        this.control({
+            },
+            
             'menuitem#file_menu_export_svg': {
                 click: this.onExportSVG
-            }
-        });
-        
-        this.control({
+            },
+            
             'menuitem#file_menu_export_png': {
                 click: this.onExportPNG
-            }
+            },
         });
         
     },

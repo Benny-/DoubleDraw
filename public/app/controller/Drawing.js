@@ -26,6 +26,7 @@ Ext.define('DD.controller.Drawing', {
     ],
     
     init: function() {
+        var me = this;
         
         this.primaryColor = Ext.create("DD.model.Color",{
             r:221,
@@ -136,6 +137,24 @@ Ext.define('DD.controller.Drawing', {
                     this.colorStatusView.setText( this.primaryColor.toHex() );
                 },
             },
+            
+            'menuitem#file_menu_import_svg': {
+                click: function() {
+                    console.log("menuitem#file_menu_import_svg: Not implemented");
+                },
+            },
+            
+            'menuitem#file_menu_import_raster': {
+                click: function() {
+                    Ext.Msg.prompt('Import raster', 'Please enter the url of the image.', function(btn, text){
+                        if (btn == 'ok') {
+                            // TODO: Put some pre-validation here before we send the request to the server.
+                            me.application.socket.emit("user::drawing::import::raster", text );
+                        }
+                    });
+                },
+            },
+            
         });
     },
     
@@ -230,6 +249,10 @@ Ext.define('DD.controller.Drawing', {
         this.application.on("user::drawing::layer::activate", function(activateLayer) {
             me.sharedPaperUser.activateLayer(activateLayer.user_id, activateLayer.layer);
             me.refreshLayers();
+        });
+        
+        this.application.on("user::drawing::import::raster", function(raster) {
+            me.sharedPaperUser.importRaster(raster.user_id, raster.url);
         });
         
         this.application.on("room::user::leave", function(user) {

@@ -213,6 +213,17 @@ io.sockets.on('connection', function (socket) {
         }
     });
     
+    socket.on('user::drawing::import::raster', function (url) {
+        // TODO: sanitize data from client.
+        
+        if(this.inRoom())
+        {
+            socket.broadcastRoom('user::drawing::import::raster', {user_id:socket.user_id, url:url} );
+            // XXX: NodeJS paper can not import raster. See https://github.com/paperjs/paper.js/issues/328
+            // sharedPapers[this.getRoom()].importRaster( socket.user_id, url );
+        }
+    });
+    
     socket.on('user::drawing::move::offscreen', function () {
         if(this.inRoom())
             socket.broadcastRoom('user::drawing::move::offscreen', {user_id : socket.user_id} );

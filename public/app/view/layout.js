@@ -22,19 +22,32 @@ createLayout = function()
                                 items: [
                                     {
                                         xtype: 'menuitem',
-                                        text: 'Save as .paperjs.json',
-                                        id: 'file_menu_save',
+                                        id: 'file_menu_import_svg',
+                                        text: 'Import SVG',
+                                        disabled: true,
+                                    },
+                                    {
+                                        xtype: 'menuitem',
+                                        id: 'file_menu_import_raster',
+                                        text: 'Import raster',
+                                        disabled: true,
                                     },
                                     '-',
                                     {
                                         xtype: 'menuitem',
-                                        text: 'Export all as SVG',
+                                        id: 'file_menu_save',
+                                        text: 'Save as .paperjs.json',
+                                    },
+                                    '-',
+                                    {
+                                        xtype: 'menuitem',
                                         id: 'file_menu_export_svg',
+                                        text: 'Export all as SVG',
                                     },
                                     {
                                         xtype: 'menuitem',
-                                        text: 'Export view as PNG',
                                         id: 'file_menu_export_png',
+                                        text: 'Export view as PNG',
                                     },
                                 ]
                             }
