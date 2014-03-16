@@ -54,13 +54,17 @@ if ('development' == app.get('env')) {
     local_console.context.io = io;
 }
 
-app.param('roomName', function(req, res, next) {
-    req.roomName = req.url.split("/")[2];
-    req.sharedPaper = sharedPapers[req.roomName]; // req.sharedPaper is allowed to be null
-    if(!req.roomName)
-        next(new Error('Invalid room name.'));
-    else
+app.param('roomName', function(req, res, next, roomName) {
+    if(roomName)
+    {
+        req.roomName = roomName;
+        req.sharedPaper = sharedPapers[roomName]; // req.sharedPaper is allowed to be null
         next();
+    }
+    else
+    {
+        next(new Error('Invalid room name.'));
+    }
 });
 
 app.get("/room/", function(req, res) {
