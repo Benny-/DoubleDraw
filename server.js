@@ -1,6 +1,7 @@
 var express     = require('express');
 var app         = express();
 var http        = require('http');
+var url			= require('url');
 var server      = http.createServer(app);
 var io          = require('socket.io').listen(server);
 var paper       = require('paper');  // Note: There are two paperjs variants.
@@ -10,6 +11,12 @@ var paper       = require('paper');  // Note: There are two paperjs variants.
                               // The one for nodejs is located in ./node_modules
 var repl        = require("repl");
 var path        = require('path');
+
+// Middleware
+var compression = require('compression')
+var morgan = require('morgan') // A fancy logger
+var errorhandler = require('errorhandler')
+var serve_static = require('serve-static');
 
 // Project specific requires.
 var SharedPaper       = require('./public/app/SharedPaper.js');
@@ -35,12 +42,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.set('case sensitive routing', true);
 app.set('strict routing', true);
-app.use(express.compress());
-app.use(express.static(__dirname + '/public'));
+
+app.use(compression());
+app.use(serve_static(__dirname + '/public'));
 
 if ('development' == app.get('env')) {
-    app.use(express.logger('dev'));
-    app.use(express.errorHandler());
+    app.use(morgan('dev'));
+    app.use(errorhandler());
     
     // The run execute programming loop is used for debugging or messing around.
     var local_console = repl.start({
