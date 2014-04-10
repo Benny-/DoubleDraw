@@ -15,6 +15,11 @@ npm-debug.log
 node_modules
 
 /public/extjs/
+
+# Cloud 9 stuff
 /.c9revisions/
 /.settings
 /.settings~*
+
+# gedit backup files
+*~
