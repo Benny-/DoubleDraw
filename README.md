@@ -11,7 +11,7 @@ The server-side is written in JavaScript. It requires [NodeJs](http://nodejs.org
 
 ### Dependencies:
 
-- cairo-dev (`sudo apt-get install libcairo2-dev libgif-dev`, `brew install cairo`, see below for installation on cloud9)
+[Install all dependencies for node-canvas](https://github.com/LearnBoost/node-canvas/wiki/_pages) before proceeding.
 
 For downloading all nodejs dependencies into `./node_modueles/`:
 
@@ -28,41 +28,6 @@ The following dependencies are included in this repo and do not need to be downl
 - http://www.digitalmagicpro.com/jPicker/
 - http://jquery.com/ (required for jPicker)
 - http://www.sencha.com/products/extjs (The public CDN is used)
-
-### Cloud9
-
-You might need to compile pixman and cairo to run DoubleDraw on [cloud9](https://c9.io/):
-
-```bash
-mkdir ~/custom_installs
-
-cd;
-wget http://cairographics.org/releases/pixman-0.30.0.tar.gz
-tar xvzf ./pixman-0.30.0.tar.gz
-cd pixman-0.30.0
-./configure --prefix ~/custom_installs/ && make && make install
-cd;
-rm -rf pixman-0.30.0/
-rm pixman-0.30.0.tar.gz
-
-# Append the following line to your ~/.bashrc file and restart bash (run 'exit').
-export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$(echo ~/custom_installs/lib/pkgconfig)";
-
-cd;
-wget http://cairographics.org/releases/cairo-1.12.14.tar.xz
-unxz -c ./cairo-1.12.14.tar.xz | tar xv
-cd ./cairo-1.12.14
-./configure --prefix ~/custom_installs/ && make && make install
-cd;
-rm -rf cairo-1.12.14/
-rm cairo-1.12.14.tar.xz
-
-# The include directories are not set correctly on this version of cairo.
-# This is one way to fix it:
-ln -s ~/custom_installs/include/cairo/ ~/custom_installs/include/cairo/cairo
-
-# You can now perform "npm install". Make sure you do it in the correct directory.
-```
 
 ### Running
 
