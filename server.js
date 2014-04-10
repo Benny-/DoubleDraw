@@ -77,45 +77,49 @@ app.get("/room/:roomName", function(req, res) {
     res.end();
 });
 
-app.get("/room/:roomName/snapshot.png", function(req, res) {
+app.get("/room/:roomName/snapshot.*", function(req, res) {
+	var extension = path.extname(url.parse(req.url).pathname)
     if(req.sharedPaper)
     {
-        var view = req.sharedPaper.getPaperScope().view;
+    	var paperProject = req.sharedPaper.getSharedProject();
+        var view = paperProject.view;
         var canvas = view.element;
-        view.draw();
-        var stream = stream = canvas.pngStream();
         
-        res.writeHead(200, {'Content-Type': 'image/png' });
-        stream.on('data', function(chunk){
-            res.write(chunk);
-        });
-
-        stream.on('end', function(){
-            res.end();
-        });
+		if('.svg' == extension)
+		{
+		    var serializer= new paper.XMLSerializer();
+		    var svg = paperProject.exportSVG();
+		    var svg_string = serializer.serializeToString(svg);
+		    
+		    res.writeHead(200, {'Content-Type': 'image/svg+xml' });
+		    res.write( svg_string );
+		    res.end();
+		}
+		else if('.png' == extension)
+		{
+		    view.draw();
+		    var pngOutputStream = canvas.createPNGStream();
+		    
+		    res.writeHead(200, {'Content-Type': 'image/png' });
+			pngOutputStream.pipe(res);
+		}
+		else if('.jpg' == extension || '.jpeg' == extension)
+        {
+		    view.draw();
+		    var pngOutputStream = canvas.createJPEGStream();
+		    
+		    res.writeHead(200, {'Content-Type': 'image/jpeg' });
+			pngOutputStream.pipe(res);
+        }
+        else
+        {
+		    res.send(400, "The server can't serve "+extension+' files');
+		    res.end();
+        }
     }
     else
     {
-        res.send(500, 'Room does not exist');
-        res.end();
-    }
-});
-
-app.get("/room/:roomName/snapshot.svg", function(req, res) {
-    if(req.sharedPaper)
-    {
-        var paperProject = req.sharedPaper.getSharedProject();
-        var serializer= new paper.XMLSerializer();
-        var svg = paperProject.exportSVG();
-        var svg_string = serializer.serializeToString(svg);
-        
-        res.writeHead(200, {'Content-Type': 'image/svg+xml' });
-        res.write( svg_string );
-        res.end();
-    }
-    else
-    {
-        res.send(500, 'Room does not exist');
+        res.send(404, 'Room does not exist');
         res.end();
     }
 });
