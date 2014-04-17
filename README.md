@@ -1,9 +1,11 @@
 DoubleDraw
 =============
 
-DoubleDraw allows multiple people to work collaboratively on a vector drawing. A possible outdated or unstable example may or may not run [here](http://dd.bennyjacobs.nl:5100/). This project aims to create a pure HTML5 vector editor as a response to Microsoft's decision to disallow any native applications in the next version of windows™.
+DoubleDraw allows multiple people to work collaboratively on a vector drawing. A possible outdated or unstable example may or may not run [here](http://dd.bennyjacobs.nl:5100/room/test). This project aims to create a pure HTML5 vector editor as a response to Microsoft's decision for the next version of Windows™ to disallow any native applications.
 
-<!-- Ok, that part about windows was a lie. This project aims to double the fun! -->
+<!-- Ok, that part about windows was a lie. -->
+
+![DoubleDraw preview](https://raw.githubusercontent.com/Benny-/DoubleDraw/master/doc/img/preview_001.png)
 
 ## Installing and running
 
